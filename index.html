@@ -188,7 +188,8 @@
     }
 
     .text-input,
-    .time-input {
+    .time-input,
+    .select-input {
       display: block;
       width: 100%;
       min-height: 48px;
@@ -592,6 +593,52 @@
       margin-bottom: 18px;
     }
 
+    .registration-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .registration-tab {
+      min-height: 46px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      background: #fff;
+      font-weight: 700;
+      color: #666;
+    }
+
+    .registration-tab.active {
+      background: #222;
+      color: #fff;
+      border-color: #222;
+    }
+
+    .quick-panel {
+      display: none;
+    }
+
+    .quick-panel.active {
+      display: block;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .checkbox-row input {
+      width: 20px;
+      height: 20px;
+      margin-top: 1px;
+      flex: 0 0 auto;
+    }
+
     @media (max-width: 360px) {
       .page {
         padding: 16px;
@@ -634,17 +681,11 @@
       <div class="card">
         <h2>次の勤務</h2>
 
-        <div
-          id="nextShiftMain"
-          class="big-text"
-        >
+        <div id="nextShiftMain" class="big-text">
           まだ登録されていません
         </div>
 
-        <div
-          id="nextShiftSub"
-          class="sub-text"
-        >
+        <div id="nextShiftSub" class="sub-text">
           シフトを登録するとここに表示されます
         </div>
       </div>
@@ -652,17 +693,11 @@
       <div class="card">
         <h2>今月の勤務</h2>
 
-        <div
-          id="homeMonthDays"
-          class="big-text"
-        >
+        <div id="homeMonthDays" class="big-text">
           0日
         </div>
 
-        <div
-          id="homeMonthHours"
-          class="sub-text"
-        >
+        <div id="homeMonthHours" class="sub-text">
           合計実働時間 0時間
         </div>
       </div>
@@ -682,10 +717,7 @@
 
       <div class="calendar-header">
 
-        <button
-          id="calendarPrev"
-          type="button"
-        >
+        <button id="calendarPrev" type="button">
           ‹
         </button>
 
@@ -694,18 +726,15 @@
           class="calendar-title"
         ></div>
 
-        <button
-          id="calendarNext"
-          type="button"
-        >
+        <button id="calendarNext" type="button">
           ›
         </button>
 
       </div>
 
       <p class="sub-text">
-        登録済みの勤務日をタップすると、
-        その日の勤務時間・休憩時間を編集できます。
+        シフトが入っている日をタップすると編集、
+        空いている日をタップするとその日に新しく登録できます。
       </p>
 
       <div class="calendar-weekdays">
@@ -726,7 +755,7 @@
     </section>
 
 
-    <!-- 登録 -->
+    <!-- 一括登録 -->
     <section id="register" class="page">
 
       <div
@@ -925,7 +954,6 @@
               id="workStart"
               class="time-input"
               type="time"
-              aria-label="勤務開始時刻"
             >
 
             <div class="time-separator">
@@ -936,15 +964,9 @@
               id="workEnd"
               class="time-input"
               type="time"
-              aria-label="勤務終了時刻"
             >
 
           </div>
-
-          <p class="sub-text">
-            終了時刻が開始時刻以下の場合は
-            翌日の終了として計算します。
-          </p>
 
         </div>
 
@@ -1078,7 +1100,7 @@
 </div>
 
 
-<!-- 一括登録の重複確認 -->
+<!-- 一括登録重複 -->
 <div
   id="conflictModal"
   class="modal-backdrop"
@@ -1133,7 +1155,7 @@
 </div>
 
 
-<!-- 登録済みシフト編集 -->
+<!-- シフト編集 -->
 <div
   id="shiftEditModal"
   class="modal-backdrop"
@@ -1170,7 +1192,6 @@
           id="shiftEditStart"
           class="time-input"
           type="time"
-          aria-label="編集する勤務開始時刻"
         >
 
         <div class="time-separator">
@@ -1181,7 +1202,6 @@
           id="shiftEditEnd"
           class="time-input"
           type="time"
-          aria-label="編集する勤務終了時刻"
         >
 
       </div>
@@ -1252,6 +1272,206 @@
 </div>
 
 
+<!-- 空いている日に新規登録 -->
+<div
+  id="quickRegisterModal"
+  class="modal-backdrop"
+>
+
+  <div class="modal">
+
+    <h2>この日にシフトを登録</h2>
+
+    <div
+      id="quickRegisterDate"
+      class="shift-date-label"
+    ></div>
+
+    <div
+      id="quickRegisterMessage"
+      class="message"
+    ></div>
+
+    <div class="registration-tabs">
+
+      <button
+        id="quickTemplateTab"
+        class="registration-tab active"
+        type="button"
+      >
+        テンプレート
+      </button>
+
+      <button
+        id="quickManualTab"
+        class="registration-tab"
+        type="button"
+      >
+        直接入力
+      </button>
+
+    </div>
+
+
+    <!-- テンプレートから -->
+    <div
+      id="quickTemplatePanel"
+      class="quick-panel active"
+    >
+
+      <div
+        id="quickTemplateList"
+        class="template-choice-list"
+      ></div>
+
+      <button
+        id="quickTemplateSaveButton"
+        class="primary-button"
+        type="button"
+        style="margin-top:16px;"
+      >
+        この日に登録
+      </button>
+
+    </div>
+
+
+    <!-- 直接入力 -->
+    <div
+      id="quickManualPanel"
+      class="quick-panel"
+    >
+
+      <div class="form-group">
+
+        <label class="form-label">
+          勤務名
+        </label>
+
+        <input
+          id="quickShiftName"
+          class="text-input"
+          type="text"
+          maxlength="30"
+          placeholder="例：突発応援"
+        >
+
+      </div>
+
+      <div class="form-group">
+
+        <label class="form-label">
+          勤務時間
+        </label>
+
+        <div class="time-row">
+
+          <input
+            id="quickWorkStart"
+            class="time-input"
+            type="time"
+          >
+
+          <div class="time-separator">
+            〜
+          </div>
+
+          <input
+            id="quickWorkEnd"
+            class="time-input"
+            type="time"
+          >
+
+        </div>
+
+      </div>
+
+      <div class="form-group">
+
+        <label class="form-label">
+          休憩時間
+        </label>
+
+        <div id="quickBreakList"></div>
+
+        <button
+          id="addQuickBreakButton"
+          class="secondary-button"
+          type="button"
+        >
+          ＋ 休憩を追加
+        </button>
+
+      </div>
+
+      <div class="form-group">
+
+        <label class="form-label">
+          カレンダー表示色
+        </label>
+
+        <input
+          id="quickColor"
+          class="color-input"
+          type="color"
+          value="#8b8b8b"
+        >
+
+      </div>
+
+      <div
+        id="quickWorkSummary"
+        class="summary-box"
+      >
+
+        <div class="sub-text">
+          実働時間
+        </div>
+
+        <strong>－</strong>
+
+      </div>
+
+      <label class="checkbox-row">
+
+        <input
+          id="saveQuickAsTemplate"
+          type="checkbox"
+        >
+
+        <span>
+          この勤務内容を今後も使えるように
+          テンプレートとして保存する
+        </span>
+
+      </label>
+
+      <button
+        id="quickManualSaveButton"
+        class="primary-button"
+        type="button"
+        style="margin-top:18px;"
+      >
+        この日に登録
+      </button>
+
+    </div>
+
+
+    <button
+      id="cancelQuickRegisterButton"
+      class="modal-cancel"
+      type="button"
+      style="width:100%; margin-top:12px;"
+    >
+      キャンセル
+    </button>
+
+  </div>
+
+</div>
+
+
 <script>
   const TEMPLATE_STORAGE_KEY =
     "shiftManagerTemplates";
@@ -1281,6 +1501,7 @@
 
   let breakCounter = 0;
   let shiftBreakCounter = 0;
+  let quickBreakCounter = 0;
 
   let editingTemplateId = null;
   let editingShiftId = null;
@@ -1292,6 +1513,9 @@
   let selectedTemplateId = null;
 
   let pendingRegistration = null;
+
+  let quickRegisterDateKey = null;
+  let quickSelectedTemplateId = null;
 
 
   /* ============================
@@ -1632,7 +1856,7 @@
 
 
   /* ============================
-     テンプレート
+     テンプレート作成・編集
   ============================ */
 
   const templateName =
@@ -2072,9 +2296,9 @@
       "テンプレートを保存";
 
 
-    templateEditNote.classList.remove(
-      "show"
-    );
+    templateEditNote
+      .classList
+      .remove("show");
 
     cancelTemplateEditButton
       .classList
@@ -2232,12 +2456,6 @@
 
 
       if (index === -1) {
-
-        showTemplateMessage(
-          "編集するテンプレートが見つかりません。",
-          "error"
-        );
-
         return;
       }
 
@@ -2256,6 +2474,7 @@
       clearTemplateForm();
 
       renderSavedTemplates();
+
       renderTemplateChoices();
 
 
@@ -2432,16 +2651,13 @@
     if (
       selectedTemplateId === id
     ) {
-
-      selectedTemplateId =
-        null;
+      selectedTemplateId = null;
     }
 
 
     if (
       editingTemplateId === id
     ) {
-
       clearTemplateForm();
     }
 
@@ -2680,7 +2896,7 @@
 
 
   /* ============================
-     登録テンプレート選択
+     一括登録テンプレート
   ============================ */
 
   const templateChoiceList =
@@ -2977,15 +3193,24 @@
           }
         );
 
-      } else if (dayShift) {
+      } else {
 
         button.addEventListener(
           "click",
           () => {
 
-            openShiftEditor(
-              dayShift.id
-            );
+            if (dayShift) {
+
+              openShiftEditor(
+                dayShift.id
+              );
+
+            } else {
+
+              openQuickRegister(
+                key
+              );
+            }
 
           }
         );
@@ -3316,12 +3541,6 @@
 
 
     if (!template) {
-
-      showRegisterMessage(
-        "選択したテンプレートが見つかりません。",
-        "error"
-      );
-
       return;
     }
 
@@ -3521,15 +3740,7 @@
 
     closeConflictModal();
 
-    renderRegisterCalendar();
-
-    renderMainCalendar();
-
-    updateSelectionStatus();
-
-    updateHome();
-
-    updateSummary();
+    refreshAll();
 
 
     let message =
@@ -3615,7 +3826,7 @@
 
 
   /* ============================
-     登録済みシフト編集
+     既存シフト編集
   ============================ */
 
   const shiftEditModal =
@@ -3652,35 +3863,6 @@
     document.getElementById(
       "shiftEditSummary"
     );
-
-  const shiftEditMessage =
-    document.getElementById(
-      "shiftEditMessage"
-    );
-
-
-  function showShiftEditMessage(
-    text,
-    type
-  ) {
-
-    shiftEditMessage.textContent =
-      text;
-
-    shiftEditMessage.className =
-      "message show " +
-      type;
-  }
-
-
-  function clearShiftEditMessage() {
-
-    shiftEditMessage.className =
-      "message";
-
-    shiftEditMessage.textContent =
-      "";
-  }
 
 
   function getShiftBreakRows() {
@@ -3791,29 +3973,11 @@
       calculateShiftBreakMinutes();
 
 
-    const actual =
-      workDuration -
-      breakMinutes;
-
-
-    if (
-      actual < 0
-    ) {
-
-      output.textContent =
-        "休憩時間を確認してください";
-
-      return;
-    }
-
-
     output.textContent =
-      minutesToText(actual) +
-      "（休憩 " +
       minutesToText(
+        workDuration -
         breakMinutes
-      ) +
-      "）";
+      );
   }
 
 
@@ -3834,50 +3998,13 @@
       "break-card";
 
 
-    const header =
-      document.createElement(
-        "div"
-      );
-
-    header.className =
-      "break-header";
-
-
-    const title =
-      document.createElement(
-        "div"
-      );
-
-    title.className =
-      "break-title shift-break-title";
-
-    title.textContent =
-      "休憩 " +
-      shiftBreakCounter;
-
-
-    const remove =
-      document.createElement(
-        "button"
-      );
-
-    remove.type =
-      "button";
-
-    remove.className =
-      "break-remove";
-
-    remove.textContent =
-      "削除";
-
-
-    header.appendChild(
-      title
-    );
-
-    header.appendChild(
-      remove
-    );
+    card.innerHTML =
+      '<div class="break-header">' +
+        '<div class="break-title shift-break-title">' +
+        '休憩 ' +
+        shiftBreakCounter +
+        '</div>' +
+      '</div>';
 
 
     const row =
@@ -3931,32 +4058,38 @@
       endValue;
 
 
-    row.appendChild(
-      start
-    );
+    const remove =
+      document.createElement(
+        "button"
+      );
 
-    row.appendChild(
-      separator
-    );
+    remove.type =
+      "button";
 
-    row.appendChild(
-      end
-    );
+    remove.className =
+      "break-remove";
+
+    remove.textContent =
+      "削除";
 
 
-    card.appendChild(
-      header
-    );
+    card
+      .querySelector(
+        ".break-header"
+      )
+      .appendChild(
+        remove
+      );
 
-    card.appendChild(
-      row
-    );
 
+    row.appendChild(start);
+    row.appendChild(separator);
+    row.appendChild(end);
+
+    card.appendChild(row);
 
     shiftEditBreakList
-      .appendChild(
-        card
-      );
+      .appendChild(card);
 
 
     remove.addEventListener(
@@ -3964,8 +4097,6 @@
       () => {
 
         card.remove();
-
-        renumberShiftBreaks();
 
         updateShiftEditSummary();
 
@@ -3985,43 +4116,16 @@
   }
 
 
-  function renumberShiftBreaks() {
-
-    const rows =
-      getShiftBreakRows();
-
-
-    rows.forEach(
-      (row, index) => {
-
-        row.querySelector(
-          ".shift-break-title"
-        ).textContent =
-          "休憩 " +
-          (index + 1);
-
-      }
-    );
-
-
-    shiftBreakCounter =
-      rows.length;
-  }
-
-
   function openShiftEditor(
     shiftId
   ) {
 
-    const shifts =
-      loadShifts();
-
-
     const shift =
-      shifts.find(
-        item =>
-          item.id === shiftId
-      );
+      loadShifts()
+        .find(
+          item =>
+            item.id === shiftId
+        );
 
 
     if (!shift) {
@@ -4031,9 +4135,6 @@
 
     editingShiftId =
       shift.id;
-
-
-    clearShiftEditMessage();
 
 
     shiftEditName.innerHTML =
@@ -4105,8 +4206,6 @@
     editingShiftId =
       null;
 
-    clearShiftEditMessage();
-
     shiftEditModal
       .classList
       .remove("show");
@@ -4122,74 +4221,22 @@
     }
 
 
-    if (
-      !shiftEditStart.value ||
-      !shiftEditEnd.value
-    ) {
-
-      showShiftEditMessage(
-        "勤務開始時刻と終了時刻を入力してください。",
-        "error"
-      );
-
-      return;
-    }
-
-
-    for (
-      const row
-      of getShiftBreakRows()
-    ) {
-
-      const start =
-        row.querySelector(
-          ".shift-break-start"
-        ).value;
-
-      const end =
-        row.querySelector(
-          ".shift-break-end"
-        ).value;
-
-
-      if (
-        (start && !end) ||
-        (!start && end)
-      ) {
-
-        showShiftEditMessage(
-          "休憩時間は開始と終了の両方を入力してください。",
-          "error"
-        );
-
-        return;
-      }
-    }
-
-
-    const workDuration =
+    const duration =
       calculateDuration(
         shiftEditStart.value,
         shiftEditEnd.value
       );
 
 
-    const breakMinutes =
-      calculateShiftBreakMinutes();
-
-
     if (
-      breakMinutes >
-      workDuration
+      duration === null
     ) {
-
-      showShiftEditMessage(
-        "休憩時間が勤務時間を超えています。",
-        "error"
-      );
-
       return;
     }
+
+
+    const breaks =
+      calculateShiftBreakMinutes();
 
 
     const shifts =
@@ -4207,12 +4254,6 @@
     if (
       index === -1
     ) {
-
-      showShiftEditMessage(
-        "シフトが見つかりません。",
-        "error"
-      );
-
       return;
     }
 
@@ -4231,8 +4272,9 @@
         getShiftBreakData(),
 
       actualMinutes:
-        workDuration -
-        breakMinutes
+        duration -
+        breaks
+
     };
 
 
@@ -4243,13 +4285,7 @@
 
     closeShiftEditor();
 
-    renderMainCalendar();
-
-    renderRegisterCalendar();
-
-    updateHome();
-
-    updateSummary();
+    refreshAll();
   }
 
 
@@ -4293,28 +4329,18 @@
     }
 
 
-    const result =
+    saveShifts(
       shifts.filter(
         item =>
           item.id !==
           editingShiftId
-      );
-
-
-    saveShifts(
-      result
+      )
     );
 
 
     closeShiftEditor();
 
-    renderMainCalendar();
-
-    renderRegisterCalendar();
-
-    updateHome();
-
-    updateSummary();
+    refreshAll();
   }
 
 
@@ -4372,6 +4398,860 @@
       "click",
       closeShiftEditor
     );
+
+
+  /* ============================
+     空いている日に新規登録
+  ============================ */
+
+  const quickRegisterModal =
+    document.getElementById(
+      "quickRegisterModal"
+    );
+
+  const quickRegisterDate =
+    document.getElementById(
+      "quickRegisterDate"
+    );
+
+  const quickTemplateList =
+    document.getElementById(
+      "quickTemplateList"
+    );
+
+  const quickTemplateTab =
+    document.getElementById(
+      "quickTemplateTab"
+    );
+
+  const quickManualTab =
+    document.getElementById(
+      "quickManualTab"
+    );
+
+  const quickTemplatePanel =
+    document.getElementById(
+      "quickTemplatePanel"
+    );
+
+  const quickManualPanel =
+    document.getElementById(
+      "quickManualPanel"
+    );
+
+  const quickShiftName =
+    document.getElementById(
+      "quickShiftName"
+    );
+
+  const quickWorkStart =
+    document.getElementById(
+      "quickWorkStart"
+    );
+
+  const quickWorkEnd =
+    document.getElementById(
+      "quickWorkEnd"
+    );
+
+  const quickBreakList =
+    document.getElementById(
+      "quickBreakList"
+    );
+
+  const quickColor =
+    document.getElementById(
+      "quickColor"
+    );
+
+  const quickWorkSummary =
+    document.getElementById(
+      "quickWorkSummary"
+    );
+
+
+  function setQuickMode(
+    mode
+  ) {
+
+    const templateMode =
+      mode === "template";
+
+
+    quickTemplateTab
+      .classList
+      .toggle(
+        "active",
+        templateMode
+      );
+
+    quickManualTab
+      .classList
+      .toggle(
+        "active",
+        !templateMode
+      );
+
+
+    quickTemplatePanel
+      .classList
+      .toggle(
+        "active",
+        templateMode
+      );
+
+    quickManualPanel
+      .classList
+      .toggle(
+        "active",
+        !templateMode
+      );
+  }
+
+
+  function openQuickRegister(
+    dateKey
+  ) {
+
+    quickRegisterDateKey =
+      dateKey;
+
+    quickSelectedTemplateId =
+      null;
+
+
+    quickRegisterDate.textContent =
+      formatDateFull(
+        dateKey
+      );
+
+
+    quickShiftName.value =
+      "";
+
+    quickWorkStart.value =
+      "";
+
+    quickWorkEnd.value =
+      "";
+
+    quickColor.value =
+      "#8b8b8b";
+
+    document
+      .getElementById(
+        "saveQuickAsTemplate"
+      )
+      .checked =
+        false;
+
+
+    quickBreakList.innerHTML =
+      "";
+
+    quickBreakCounter =
+      0;
+
+
+    addQuickBreakRow();
+
+
+    setQuickMode(
+      "template"
+    );
+
+
+    renderQuickTemplates();
+
+    updateQuickSummary();
+
+
+    quickRegisterModal
+      .classList
+      .add("show");
+  }
+
+
+  function closeQuickRegister() {
+
+    quickRegisterDateKey =
+      null;
+
+    quickSelectedTemplateId =
+      null;
+
+
+    quickRegisterModal
+      .classList
+      .remove("show");
+  }
+
+
+  function renderQuickTemplates() {
+
+    const templates =
+      loadTemplates();
+
+
+    quickTemplateList.innerHTML =
+      "";
+
+
+    if (
+      templates.length === 0
+    ) {
+
+      quickTemplateList.innerHTML =
+        '<div class="empty-state">' +
+        '保存済みテンプレートがありません。<br>' +
+        '「直接入力」から登録できます。' +
+        '</div>';
+
+      return;
+    }
+
+
+    templates.forEach(
+      template => {
+
+        const button =
+          document.createElement(
+            "button"
+          );
+
+        button.type =
+          "button";
+
+        button.className =
+          "template-choice";
+
+
+        if (
+          quickSelectedTemplateId ===
+          template.id
+        ) {
+
+          button.classList.add(
+            "selected"
+          );
+        }
+
+
+        button.innerHTML =
+          '<div class="choice-title">' +
+
+            '<span class="template-color" ' +
+            'style="background:' +
+            template.color +
+            '"></span>' +
+
+            escapeHtml(
+              template.name
+            ) +
+
+          '</div>' +
+
+          '<div class="choice-details">' +
+            template.workStart +
+            '〜' +
+            template.workEnd +
+            ' ／ 実働 ' +
+            minutesToText(
+              template.actualMinutes
+            ) +
+          '</div>';
+
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            quickSelectedTemplateId =
+              template.id;
+
+            renderQuickTemplates();
+
+          }
+        );
+
+
+        quickTemplateList
+          .appendChild(
+            button
+          );
+
+      }
+    );
+  }
+
+
+  function saveQuickFromTemplate() {
+
+    if (
+      !quickRegisterDateKey ||
+      !quickSelectedTemplateId
+    ) {
+      return;
+    }
+
+
+    const template =
+      loadTemplates()
+        .find(
+          item =>
+            item.id ===
+            quickSelectedTemplateId
+        );
+
+
+    if (!template) {
+      return;
+    }
+
+
+    const shifts =
+      loadShifts();
+
+
+    shifts.push(
+      createShiftFromTemplate(
+        quickRegisterDateKey,
+        template
+      )
+    );
+
+
+    shifts.sort(
+      (a, b) =>
+        a.date.localeCompare(
+          b.date
+        )
+    );
+
+
+    saveShifts(
+      shifts
+    );
+
+
+    closeQuickRegister();
+
+    refreshAll();
+  }
+
+
+  function getQuickBreakRows() {
+
+    return Array.from(
+      quickBreakList
+        .querySelectorAll(
+          ".break-card"
+        )
+    );
+  }
+
+
+  function getQuickBreakData() {
+
+    const result = [];
+
+
+    getQuickBreakRows()
+      .forEach(row => {
+
+        const start =
+          row.querySelector(
+            ".quick-break-start"
+          ).value;
+
+        const end =
+          row.querySelector(
+            ".quick-break-end"
+          ).value;
+
+
+        if (
+          start &&
+          end
+        ) {
+
+          result.push({
+            start,
+            end
+          });
+        }
+
+      });
+
+
+    return result;
+  }
+
+
+  function calculateQuickBreakMinutes() {
+
+    let total = 0;
+
+
+    getQuickBreakData()
+      .forEach(item => {
+
+        const duration =
+          calculateDuration(
+            item.start,
+            item.end
+          );
+
+
+        if (
+          duration !== null
+        ) {
+
+          total += duration;
+        }
+
+      });
+
+
+    return total;
+  }
+
+
+  function updateQuickSummary() {
+
+    const duration =
+      calculateDuration(
+        quickWorkStart.value,
+        quickWorkEnd.value
+      );
+
+
+    const output =
+      quickWorkSummary
+        .querySelector(
+          "strong"
+        );
+
+
+    if (
+      duration === null
+    ) {
+
+      output.textContent =
+        "－";
+
+      return;
+    }
+
+
+    const breaks =
+      calculateQuickBreakMinutes();
+
+
+    const actual =
+      duration -
+      breaks;
+
+
+    if (
+      actual < 0
+    ) {
+
+      output.textContent =
+        "休憩時間を確認してください";
+
+      return;
+    }
+
+
+    output.textContent =
+      minutesToText(actual) +
+      "（休憩 " +
+      minutesToText(breaks) +
+      "）";
+  }
+
+
+  function addQuickBreakRow(
+    startValue = "",
+    endValue = ""
+  ) {
+
+    quickBreakCounter += 1;
+
+
+    const card =
+      document.createElement(
+        "div"
+      );
+
+    card.className =
+      "break-card";
+
+
+    const header =
+      document.createElement(
+        "div"
+      );
+
+    header.className =
+      "break-header";
+
+
+    const title =
+      document.createElement(
+        "div"
+      );
+
+    title.className =
+      "break-title";
+
+    title.textContent =
+      "休憩 " +
+      quickBreakCounter;
+
+
+    const remove =
+      document.createElement(
+        "button"
+      );
+
+    remove.type =
+      "button";
+
+    remove.className =
+      "break-remove";
+
+    remove.textContent =
+      "削除";
+
+
+    header.appendChild(
+      title
+    );
+
+    header.appendChild(
+      remove
+    );
+
+
+    const row =
+      document.createElement(
+        "div"
+      );
+
+    row.className =
+      "time-row";
+
+
+    const start =
+      document.createElement(
+        "input"
+      );
+
+    start.type =
+      "time";
+
+    start.className =
+      "time-input quick-break-start";
+
+    start.value =
+      startValue;
+
+
+    const separator =
+      document.createElement(
+        "div"
+      );
+
+    separator.className =
+      "time-separator";
+
+    separator.textContent =
+      "〜";
+
+
+    const end =
+      document.createElement(
+        "input"
+      );
+
+    end.type =
+      "time";
+
+    end.className =
+      "time-input quick-break-end";
+
+    end.value =
+      endValue;
+
+
+    row.appendChild(start);
+    row.appendChild(separator);
+    row.appendChild(end);
+
+    card.appendChild(header);
+    card.appendChild(row);
+
+    quickBreakList
+      .appendChild(card);
+
+
+    remove.addEventListener(
+      "click",
+      () => {
+
+        card.remove();
+
+        updateQuickSummary();
+
+      }
+    );
+
+
+    start.addEventListener(
+      "input",
+      updateQuickSummary
+    );
+
+    end.addEventListener(
+      "input",
+      updateQuickSummary
+    );
+  }
+
+
+  function saveQuickManual() {
+
+    if (
+      !quickRegisterDateKey
+    ) {
+      return;
+    }
+
+
+    const name =
+      quickShiftName
+        .value
+        .trim();
+
+
+    if (
+      !name ||
+      !quickWorkStart.value ||
+      !quickWorkEnd.value
+    ) {
+      return;
+    }
+
+
+    const duration =
+      calculateDuration(
+        quickWorkStart.value,
+        quickWorkEnd.value
+      );
+
+
+    const breaks =
+      calculateQuickBreakMinutes();
+
+
+    if (
+      duration === null ||
+      breaks > duration
+    ) {
+      return;
+    }
+
+
+    const actual =
+      duration -
+      breaks;
+
+
+    const shifts =
+      loadShifts();
+
+
+    shifts.push({
+
+      id:
+        createId(),
+
+      date:
+        quickRegisterDateKey,
+
+      templateId:
+        null,
+
+      templateName:
+        name,
+
+      workStart:
+        quickWorkStart.value,
+
+      workEnd:
+        quickWorkEnd.value,
+
+      breaks:
+        getQuickBreakData(),
+
+      color:
+        quickColor.value,
+
+      actualMinutes:
+        actual,
+
+      isManual:
+        true
+
+    });
+
+
+    shifts.sort(
+      (a, b) =>
+        a.date.localeCompare(
+          b.date
+        )
+    );
+
+
+    saveShifts(
+      shifts
+    );
+
+
+    if (
+      document
+        .getElementById(
+          "saveQuickAsTemplate"
+        )
+        .checked
+    ) {
+
+      const templates =
+        loadTemplates();
+
+
+      templates.push({
+
+        id:
+          createId(),
+
+        name,
+
+        workStart:
+          quickWorkStart.value,
+
+        workEnd:
+          quickWorkEnd.value,
+
+        breaks:
+          getQuickBreakData(),
+
+        color:
+          quickColor.value,
+
+        actualMinutes:
+          actual
+
+      });
+
+
+      saveTemplates(
+        templates
+      );
+    }
+
+
+    closeQuickRegister();
+
+    refreshAll();
+
+    renderSavedTemplates();
+
+    renderTemplateChoices();
+  }
+
+
+  quickTemplateTab.addEventListener(
+    "click",
+    () => {
+
+      setQuickMode(
+        "template"
+      );
+
+    }
+  );
+
+
+  quickManualTab.addEventListener(
+    "click",
+    () => {
+
+      setQuickMode(
+        "manual"
+      );
+
+    }
+  );
+
+
+  document
+    .getElementById(
+      "quickTemplateSaveButton"
+    )
+    .addEventListener(
+      "click",
+      saveQuickFromTemplate
+    );
+
+
+  document
+    .getElementById(
+      "quickManualSaveButton"
+    )
+    .addEventListener(
+      "click",
+      saveQuickManual
+    );
+
+
+  document
+    .getElementById(
+      "addQuickBreakButton"
+    )
+    .addEventListener(
+      "click",
+      () => {
+
+        addQuickBreakRow();
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "cancelQuickRegisterButton"
+    )
+    .addEventListener(
+      "click",
+      closeQuickRegister
+    );
+
+
+  quickWorkStart.addEventListener(
+    "input",
+    updateQuickSummary
+  );
+
+
+  quickWorkEnd.addEventListener(
+    "input",
+    updateQuickSummary
+  );
 
 
   /* ============================
@@ -4464,7 +5344,7 @@
       now.getMonth() + 1;
 
 
-    const currentMonthPrefix =
+    const prefix =
       year +
       "-" +
       String(month)
@@ -4475,12 +5355,12 @@
       shifts.filter(
         shift =>
           shift.date.startsWith(
-            currentMonthPrefix
+            prefix
           )
       );
 
 
-    const totalMinutes =
+    const total =
       monthShifts.reduce(
         (sum, shift) =>
           sum +
@@ -4508,7 +5388,7 @@
       .textContent =
         "合計実働時間 " +
         minutesToText(
-          totalMinutes
+          total
         );
   }
 
@@ -4643,6 +5523,24 @@
         minutesToText(
           overtime
         );
+  }
+
+
+  /* ============================
+     全画面更新
+  ============================ */
+
+  function refreshAll() {
+
+    renderMainCalendar();
+
+    renderRegisterCalendar();
+
+    updateSelectionStatus();
+
+    updateHome();
+
+    updateSummary();
   }
 
 
