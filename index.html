@@ -42,14 +42,14 @@
       max-width: 520px;
       margin: 0 auto;
       min-height: 100vh;
-      background: #ffffff;
+      background: #fff;
       padding-bottom: 100px;
     }
 
     .header {
       padding: 22px 20px 16px;
       border-bottom: 1px solid #e5e5e5;
-      background: #ffffff;
+      background: #fff;
     }
 
     .header h1 {
@@ -73,7 +73,7 @@
     }
 
     .card {
-      background: #ffffff;
+      background: #fff;
       border: 1px solid #e4e4e4;
       border-radius: 16px;
       padding: 18px;
@@ -83,11 +83,6 @@
     .card h2 {
       margin: 0 0 12px;
       font-size: 18px;
-    }
-
-    .card h3 {
-      margin: 0 0 10px;
-      font-size: 16px;
     }
 
     .big-text {
@@ -102,6 +97,40 @@
       line-height: 1.6;
     }
 
+    .primary-button {
+      width: 100%;
+      min-height: 52px;
+      border: none;
+      border-radius: 14px;
+      padding: 15px;
+      background: #222;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .secondary-button {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 13px;
+      background: #fff;
+      color: #222;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .danger-button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: #f7eaea;
+      color: #b3261e;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     .nav {
       position: fixed;
       bottom: 0;
@@ -111,7 +140,7 @@
       max-width: 520px;
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      background: rgba(255, 255, 255, 0.97);
+      background: rgba(255,255,255,0.97);
       border-top: 1px solid #ddd;
       padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
       z-index: 100;
@@ -123,7 +152,6 @@
       padding: 8px 2px;
       font-size: 11px;
       color: #777;
-      cursor: pointer;
       min-height: 50px;
     }
 
@@ -138,58 +166,6 @@
       margin-bottom: 3px;
     }
 
-    .primary-button {
-      width: 100%;
-      min-height: 52px;
-      border: none;
-      border-radius: 14px;
-      padding: 15px;
-      background: #222;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .secondary-button {
-      width: 100%;
-      min-height: 48px;
-      border: 1px solid #ccc;
-      border-radius: 12px;
-      padding: 13px;
-      background: #fff;
-      color: #222;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .danger-button {
-      border: none;
-      border-radius: 10px;
-      padding: 10px 14px;
-      background: #f7eaea;
-      color: #b3261e;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .small-button {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 10px 12px;
-      background: #fff;
-      color: #222;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .placeholder {
-      text-align: center;
-      color: #888;
-      padding: 40px 20px;
-      border: 2px dashed #ddd;
-      border-radius: 16px;
-    }
-
     .form-group {
       margin-bottom: 18px;
     }
@@ -202,10 +178,10 @@
     }
 
     .text-input,
-    .time-input {
+    .time-input,
+    .select-input {
       display: block;
       width: 100%;
-      max-width: 100%;
       min-height: 48px;
       border: 1px solid #ccc;
       border-radius: 12px;
@@ -262,9 +238,8 @@
       border: none;
       background: transparent;
       color: #b3261e;
-      font-weight: 600;
+      font-weight: 700;
       padding: 8px;
-      cursor: pointer;
     }
 
     .summary-box {
@@ -291,14 +266,14 @@
       display: block;
     }
 
-    .message.error {
-      background: #fdecec;
-      color: #9a1c1c;
-    }
-
     .message.success {
       background: #edf7ed;
       color: #246b2c;
+    }
+
+    .message.error {
+      background: #fdecec;
+      color: #9a1c1c;
     }
 
     .template-list {
@@ -313,18 +288,10 @@
       background: #fff;
     }
 
-    .template-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
     .template-name-row {
       display: flex;
       align-items: center;
       gap: 9px;
-      min-width: 0;
     }
 
     .template-color {
@@ -332,13 +299,12 @@
       height: 16px;
       border-radius: 50%;
       flex: 0 0 auto;
-      border: 1px solid rgba(0, 0, 0, 0.12);
+      border: 1px solid rgba(0,0,0,0.12);
     }
 
     .template-name {
       font-size: 17px;
       font-weight: 700;
-      word-break: break-word;
     }
 
     .template-details {
@@ -354,6 +320,11 @@
       justify-content: flex-end;
     }
 
+    .section-title {
+      font-size: 20px;
+      margin: 0 0 14px;
+    }
+
     .empty-state {
       color: #888;
       text-align: center;
@@ -361,15 +332,207 @@
       font-size: 14px;
     }
 
-    .section-title {
-      font-size: 20px;
-      margin: 0 0 14px;
-    }
-
     .divider {
       border: 0;
       border-top: 1px solid #eee;
       margin: 24px 0;
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .calendar-header button {
+      width: 44px;
+      height: 44px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      background: #fff;
+      font-size: 22px;
+    }
+
+    .calendar-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .calendar-weekdays,
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+
+    .weekday {
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+      padding: 6px 0;
+    }
+
+    .calendar-day {
+      min-width: 0;
+      min-height: 60px;
+      border: 1px solid #e1e1e1;
+      border-radius: 10px;
+      background: #fff;
+      padding: 5px;
+      position: relative;
+      text-align: left;
+    }
+
+    .calendar-day.empty {
+      border-color: transparent;
+      background: transparent;
+    }
+
+    .calendar-day.selected {
+      outline: 3px solid #222;
+      outline-offset: -3px;
+    }
+
+    .calendar-day.has-shift {
+      border-width: 2px;
+    }
+
+    .day-number {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .shift-dot {
+      display: block;
+      margin-top: 5px;
+      padding: 3px 4px;
+      border-radius: 6px;
+      font-size: 9px;
+      line-height: 1.2;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .selection-status {
+      background: #f6f6f6;
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .template-choice-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .template-choice {
+      width: 100%;
+      border: 2px solid #ddd;
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+      text-align: left;
+    }
+
+    .template-choice.selected {
+      border-color: #222;
+      background: #f6f6f6;
+    }
+
+    .choice-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .choice-details {
+      margin-top: 6px;
+      color: #777;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 440px;
+      background: #fff;
+      border-radius: 18px;
+      padding: 20px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    .modal p {
+      color: #666;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .conflict-list {
+      background: #f7f7f7;
+      border-radius: 12px;
+      padding: 12px;
+      margin: 14px 0;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .modal-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .modal-overwrite {
+      background: #222;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      min-height: 48px;
+      font-weight: 700;
+    }
+
+    .modal-skip {
+      background: #fff;
+      color: #222;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      min-height: 48px;
+      font-weight: 700;
+    }
+
+    .modal-cancel {
+      background: transparent;
+      color: #777;
+      border: none;
+      min-height: 44px;
+      font-weight: 700;
     }
 
     @media (max-width: 360px) {
@@ -383,8 +546,12 @@
       }
 
       .time-row {
-        grid-template-columns: minmax(0, 1fr) 22px minmax(0, 1fr);
+        grid-template-columns: minmax(0,1fr) 22px minmax(0,1fr);
         gap: 5px;
+      }
+
+      .calendar-day {
+        min-height: 52px;
       }
     }
   </style>
@@ -392,1438 +559,1525 @@
 
 <body>
 
-  <div class="app">
+<div class="app">
 
-    <header class="header">
-      <h1 id="pageTitle">ホーム</h1>
-      <p>自分専用のシフト管理</p>
-    </header>
+  <header class="header">
+    <h1 id="pageTitle">ホーム</h1>
+    <p>自分専用のシフト管理</p>
+  </header>
 
-    <main>
+  <main>
 
-      <!-- ホーム -->
-      <section id="home" class="page active">
+    <!-- ホーム -->
+    <section id="home" class="page active">
 
-        <div class="card">
-          <h2>次の勤務</h2>
-          <div class="big-text">まだ登録されていません</div>
-          <div class="sub-text">
-            シフトを登録するとここに表示されます
+      <div class="card">
+        <h2>次の勤務</h2>
+        <div id="nextShiftMain" class="big-text">
+          まだ登録されていません
+        </div>
+        <div id="nextShiftSub" class="sub-text">
+          シフトを登録するとここに表示されます
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>今月の勤務</h2>
+        <div id="homeMonthDays" class="big-text">0日</div>
+        <div id="homeMonthHours" class="sub-text">
+          合計実働時間 0時間
+        </div>
+      </div>
+
+      <button class="primary-button" data-page="register">
+        シフトを登録する
+      </button>
+
+    </section>
+
+    <!-- カレンダー -->
+    <section id="calendar" class="page">
+
+      <div class="calendar-header">
+        <button id="calendarPrev" type="button">‹</button>
+        <div id="calendarTitle" class="calendar-title"></div>
+        <button id="calendarNext" type="button">›</button>
+      </div>
+
+      <div class="calendar-weekdays">
+        <div class="weekday">日</div>
+        <div class="weekday">月</div>
+        <div class="weekday">火</div>
+        <div class="weekday">水</div>
+        <div class="weekday">木</div>
+        <div class="weekday">金</div>
+        <div class="weekday">土</div>
+      </div>
+
+      <div id="mainCalendarGrid" class="calendar-grid"></div>
+
+    </section>
+
+    <!-- 登録 -->
+    <section id="register" class="page">
+
+      <div id="registerMessage" class="message"></div>
+
+      <div class="card">
+        <h2>勤務テンプレート</h2>
+
+        <div id="templateChoiceList" class="template-choice-list"></div>
+      </div>
+
+      <div class="card">
+
+        <h2>勤務日を選択</h2>
+
+        <p class="sub-text">
+          同じテンプレートを登録したい日を複数タップできます。
+        </p>
+
+        <div class="calendar-header">
+          <button id="registerPrev" type="button">‹</button>
+          <div id="registerCalendarTitle" class="calendar-title"></div>
+          <button id="registerNext" type="button">›</button>
+        </div>
+
+        <div class="calendar-weekdays">
+          <div class="weekday">日</div>
+          <div class="weekday">月</div>
+          <div class="weekday">火</div>
+          <div class="weekday">水</div>
+          <div class="weekday">木</div>
+          <div class="weekday">金</div>
+          <div class="weekday">土</div>
+        </div>
+
+        <div id="registerCalendarGrid" class="calendar-grid"></div>
+
+      </div>
+
+      <div id="selectionStatus" class="selection-status">
+        選択中の日付：0日
+      </div>
+
+      <button id="bulkRegisterButton" class="primary-button" type="button">
+        選択した日にまとめて登録
+      </button>
+
+    </section>
+
+    <!-- 集計 -->
+    <section id="summary" class="page">
+
+      <div class="card">
+        <h2>今月の実働時間</h2>
+        <div id="summaryWorkHours" class="big-text">0時間</div>
+        <div id="summaryWorkDays" class="sub-text">
+          勤務日数 0日
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>所定労働時間</h2>
+        <div id="summaryRequiredHours" class="big-text">－</div>
+      </div>
+
+      <div class="card">
+        <h2>所定労働時間超過</h2>
+        <div id="summaryOvertime" class="big-text">0時間</div>
+        <div class="sub-text">
+          月間実働時間から所定労働時間を引いて計算します
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 設定 -->
+    <section id="settings" class="page">
+
+      <h2 class="section-title">勤務テンプレート</h2>
+
+      <div id="templateMessage" class="message"></div>
+
+      <div class="card">
+
+        <h2>新しいテンプレート</h2>
+
+        <div class="form-group">
+          <label class="form-label" for="templateName">
+            テンプレート名
+          </label>
+
+          <input
+            id="templateName"
+            class="text-input"
+            type="text"
+            maxlength="30"
+            placeholder="例：タワー2"
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">勤務時間</label>
+
+          <div class="time-row">
+            <input
+              id="workStart"
+              class="time-input"
+              type="time"
+              aria-label="勤務開始時刻"
+            >
+
+            <div class="time-separator">〜</div>
+
+            <input
+              id="workEnd"
+              class="time-input"
+              type="time"
+              aria-label="勤務終了時刻"
+            >
           </div>
-        </div>
-
-        <div class="card">
-          <h2>今月の勤務</h2>
-          <div class="big-text">0日</div>
-          <div class="sub-text">
-            合計勤務時間 0時間
-          </div>
-        </div>
-
-        <button
-          class="primary-button"
-          data-page="register"
-        >
-          シフトを登録する
-        </button>
-
-      </section>
-
-      <!-- カレンダー -->
-      <section id="calendar" class="page">
-
-        <div class="placeholder">
-          カレンダーは次の工程で作ります
-        </div>
-
-      </section>
-
-      <!-- シフト登録 -->
-      <section id="register" class="page">
-
-        <div class="card">
-          <h2>シフト登録</h2>
 
           <p class="sub-text">
-            保存した勤務テンプレートから
-            シフトを登録できるようにします。
+            終了時刻が開始時刻以下の場合は翌日の終了として計算します。
           </p>
         </div>
 
-        <div class="placeholder">
-          シフト登録機能は次の工程で追加します
-        </div>
+        <div class="form-group">
+          <label class="form-label">休憩時間</label>
 
-      </section>
-
-      <!-- 集計 -->
-      <section id="summary" class="page">
-
-        <div class="card">
-          <h2>今月の集計</h2>
-
-          <div class="big-text">
-            0時間
-          </div>
-
-          <div class="sub-text">
-            勤務日数 0日
-          </div>
-        </div>
-
-        <div class="card">
-          <h2>所定労働時間</h2>
-
-          <div class="sub-text">
-            31日月：177時間<br>
-            30日月：171時間<br>
-            29日月：165時間<br>
-            28日月：160時間
-          </div>
-        </div>
-
-        <div class="placeholder">
-          シフト登録後に月間実働時間と
-          残業時間を自動計算します
-        </div>
-
-      </section>
-
-      <!-- 設定 -->
-      <section id="settings" class="page">
-
-        <h2 class="section-title">
-          勤務テンプレート
-        </h2>
-
-        <div
-          id="templateMessage"
-          class="message"
-        ></div>
-
-        <div class="card">
-
-          <h2>
-            新しいテンプレート
-          </h2>
-
-          <div class="form-group">
-
-            <label
-              class="form-label"
-              for="templateName"
-            >
-              テンプレート名
-            </label>
-
-            <input
-              id="templateName"
-              class="text-input"
-              type="text"
-              maxlength="30"
-              placeholder="例：早番"
-            >
-
-          </div>
-
-          <div class="form-group">
-
-            <label class="form-label">
-              勤務時間
-            </label>
-
-            <div class="time-row">
-
-              <input
-                id="workStart"
-                class="time-input"
-                type="time"
-                aria-label="勤務開始時刻"
-              >
-
-              <div class="time-separator">
-                〜
-              </div>
-
-              <input
-                id="workEnd"
-                class="time-input"
-                type="time"
-                aria-label="勤務終了時刻"
-              >
-
-            </div>
-
-            <p class="sub-text">
-              終了時刻が開始時刻より早い場合は、
-              翌日の終了として計算します。
-            </p>
-
-          </div>
-
-          <div class="form-group">
-
-            <label class="form-label">
-              休憩時間
-            </label>
-
-            <div id="breakList"></div>
-
-            <button
-              id="addBreakButton"
-              class="secondary-button"
-              type="button"
-            >
-              ＋ 休憩を追加
-            </button>
-
-          </div>
-
-          <div class="form-group">
-
-            <label
-              class="form-label"
-              for="templateColor"
-            >
-              カレンダー表示色
-            </label>
-
-            <input
-              id="templateColor"
-              class="color-input"
-              type="color"
-              value="#5b8def"
-            >
-
-          </div>
-
-          <div
-            id="workSummary"
-            class="summary-box"
-          >
-            <div class="sub-text">
-              実働時間
-            </div>
-
-            <strong>
-              －
-            </strong>
-          </div>
+          <div id="breakList"></div>
 
           <button
-            id="saveTemplateButton"
-            class="primary-button"
+            id="addBreakButton"
+            class="secondary-button"
             type="button"
           >
-            テンプレートを保存
+            ＋ 休憩を追加
           </button>
-
         </div>
 
-        <hr class="divider">
+        <div class="form-group">
+          <label class="form-label" for="templateColor">
+            カレンダー表示色
+          </label>
 
-        <h2 class="section-title">
-          保存済みテンプレート
-        </h2>
+          <input
+            id="templateColor"
+            class="color-input"
+            type="color"
+            value="#5b8def"
+          >
+        </div>
 
-        <div
-          id="savedTemplateList"
-          class="template-list"
-        ></div>
+        <div id="workSummary" class="summary-box">
+          <div class="sub-text">実働時間</div>
+          <strong>－</strong>
+        </div>
 
-      </section>
+        <button
+          id="saveTemplateButton"
+          class="primary-button"
+          type="button"
+        >
+          テンプレートを保存
+        </button>
 
-    </main>
+      </div>
 
-    <nav class="nav">
+      <hr class="divider">
+
+      <h2 class="section-title">保存済みテンプレート</h2>
+
+      <div id="savedTemplateList" class="template-list"></div>
+
+    </section>
+
+  </main>
+
+  <nav class="nav">
+
+    <button class="nav-button active" data-page="home">
+      <span class="icon">🏠</span>
+      ホーム
+    </button>
+
+    <button class="nav-button" data-page="calendar">
+      <span class="icon">📅</span>
+      カレンダー
+    </button>
+
+    <button class="nav-button" data-page="register">
+      <span class="icon">＋</span>
+      登録
+    </button>
+
+    <button class="nav-button" data-page="summary">
+      <span class="icon">📊</span>
+      集計
+    </button>
+
+    <button class="nav-button" data-page="settings">
+      <span class="icon">⚙️</span>
+      設定
+    </button>
+
+  </nav>
+
+</div>
+
+<!-- 重複確認ポップアップ -->
+<div id="conflictModal" class="modal-backdrop">
+
+  <div class="modal">
+
+    <h2>登録済みのシフトがあります</h2>
+
+    <p>
+      選択した日の中に、すでにシフトが登録されている日があります。
+    </p>
+
+    <div id="conflictList" class="conflict-list"></div>
+
+    <div class="modal-actions">
 
       <button
-        class="nav-button active"
-        data-page="home"
+        id="overwriteButton"
+        class="modal-overwrite"
+        type="button"
       >
-        <span class="icon">
-          🏠
-        </span>
-
-        ホーム
+        すべて上書きする
       </button>
 
       <button
-        class="nav-button"
-        data-page="calendar"
+        id="skipButton"
+        class="modal-skip"
+        type="button"
       >
-        <span class="icon">
-          📅
-        </span>
-
-        カレンダー
+        登録済みの日だけスキップ
       </button>
 
       <button
-        class="nav-button"
-        data-page="register"
+        id="cancelConflictButton"
+        class="modal-cancel"
+        type="button"
       >
-        <span class="icon">
-          ＋
-        </span>
-
-        登録
+        キャンセル
       </button>
 
-      <button
-        class="nav-button"
-        data-page="summary"
-      >
-        <span class="icon">
-          📊
-        </span>
-
-        集計
-      </button>
-
-      <button
-        class="nav-button"
-        data-page="settings"
-      >
-        <span class="icon">
-          ⚙️
-        </span>
-
-        設定
-      </button>
-
-    </nav>
+    </div>
 
   </div>
 
-  <script>
-    const STORAGE_KEY = "shiftManagerTemplates";
+</div>
 
-    const pages =
-      document.querySelectorAll(".page");
+<script>
 
-    const navButtons =
-      document.querySelectorAll(".nav-button");
+const TEMPLATE_STORAGE_KEY = "shiftManagerTemplates";
+const SHIFT_STORAGE_KEY = "shiftManagerShifts";
 
-    const pageTitle =
-      document.getElementById("pageTitle");
+const pages = document.querySelectorAll(".page");
+const navButtons = document.querySelectorAll(".nav-button");
+const pageTitle = document.getElementById("pageTitle");
 
-    const templateName =
-      document.getElementById("templateName");
+const titles = {
+  home: "ホーム",
+  calendar: "カレンダー",
+  register: "シフト登録",
+  summary: "集計",
+  settings: "設定"
+};
 
-    const workStart =
-      document.getElementById("workStart");
+let breakCounter = 0;
 
-    const workEnd =
-      document.getElementById("workEnd");
+let mainCalendarDate = new Date();
+let registerCalendarDate = new Date();
 
-    const breakList =
-      document.getElementById("breakList");
+let selectedDates = new Set();
+let selectedTemplateId = null;
 
-    const addBreakButton =
-      document.getElementById("addBreakButton");
+let pendingRegistration = null;
 
-    const templateColor =
-      document.getElementById("templateColor");
 
-    const saveTemplateButton =
-      document.getElementById("saveTemplateButton");
+/* ----------------------------
+   共通
+---------------------------- */
 
-    const savedTemplateList =
-      document.getElementById("savedTemplateList");
+function showPage(pageId) {
 
-    const templateMessage =
-      document.getElementById("templateMessage");
+  pages.forEach(page => {
+    page.classList.remove("active");
+  });
 
-    const workSummary =
-      document.getElementById("workSummary");
+  document.getElementById(pageId).classList.add("active");
 
-    const titles = {
-      home: "ホーム",
-      calendar: "カレンダー",
-      register: "シフト登録",
-      summary: "集計",
-      settings: "設定"
-    };
+  navButtons.forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.page === pageId
+    );
+  });
 
-    let breakCounter = 0;
+  pageTitle.textContent = titles[pageId];
 
-    function showPage(pageId) {
+  if (pageId === "home") {
+    updateHome();
+  }
 
-      pages.forEach(page => {
-        page.classList.remove("active");
+  if (pageId === "calendar") {
+    renderMainCalendar();
+  }
+
+  if (pageId === "register") {
+    renderTemplateChoices();
+    renderRegisterCalendar();
+    updateSelectionStatus();
+  }
+
+  if (pageId === "summary") {
+    updateSummary();
+  }
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+document.querySelectorAll("[data-page]").forEach(button => {
+
+  button.addEventListener("click", () => {
+    showPage(button.dataset.page);
+  });
+
+});
+
+
+function createId() {
+
+  return (
+    Date.now().toString(36) +
+    Math.random().toString(36).slice(2)
+  );
+
+}
+
+
+function timeToMinutes(time) {
+
+  if (!time) {
+    return null;
+  }
+
+  const [hours, minutes] =
+    time.split(":").map(Number);
+
+  return hours * 60 + minutes;
+}
+
+
+function calculateDuration(startTime, endTime) {
+
+  const start = timeToMinutes(startTime);
+  let end = timeToMinutes(endTime);
+
+  if (
+    start === null ||
+    end === null
+  ) {
+    return null;
+  }
+
+  if (end <= start) {
+    end += 24 * 60;
+  }
+
+  return end - start;
+}
+
+
+function minutesToText(minutes) {
+
+  if (
+    minutes === null ||
+    minutes < 0
+  ) {
+    return "－";
+  }
+
+  const hours =
+    Math.floor(minutes / 60);
+
+  const mins =
+    minutes % 60;
+
+  if (hours && mins) {
+    return `${hours}時間${mins}分`;
+  }
+
+  if (hours) {
+    return `${hours}時間`;
+  }
+
+  return `${mins}分`;
+}
+
+
+function dateToKey(year, month, day) {
+
+  return (
+    year +
+    "-" +
+    String(month + 1).padStart(2, "0") +
+    "-" +
+    String(day).padStart(2, "0")
+  );
+}
+
+
+function formatDateJapanese(dateKey) {
+
+  const parts =
+    dateKey.split("-").map(Number);
+
+  return `${parts[1]}月${parts[2]}日`;
+}
+
+
+function formatDateFull(dateKey) {
+
+  const [year, month, day] =
+    dateKey.split("-").map(Number);
+
+  return `${year}年${month}月${day}日`;
+}
+
+
+/* ----------------------------
+   保存
+---------------------------- */
+
+function loadTemplates() {
+
+  try {
+
+    const saved =
+      localStorage.getItem(
+        TEMPLATE_STORAGE_KEY
+      );
+
+    if (!saved) {
+      return [];
+    }
+
+    const parsed =
+      JSON.parse(saved);
+
+    return Array.isArray(parsed)
+      ? parsed
+      : [];
+
+  } catch {
+
+    return [];
+
+  }
+}
+
+
+function saveTemplates(templates) {
+
+  localStorage.setItem(
+    TEMPLATE_STORAGE_KEY,
+    JSON.stringify(templates)
+  );
+}
+
+
+function loadShifts() {
+
+  try {
+
+    const saved =
+      localStorage.getItem(
+        SHIFT_STORAGE_KEY
+      );
+
+    if (!saved) {
+      return [];
+    }
+
+    const parsed =
+      JSON.parse(saved);
+
+    return Array.isArray(parsed)
+      ? parsed
+      : [];
+
+  } catch {
+
+    return [];
+
+  }
+}
+
+
+function saveShifts(shifts) {
+
+  localStorage.setItem(
+    SHIFT_STORAGE_KEY,
+    JSON.stringify(shifts)
+  );
+}
+
+
+/* ----------------------------
+   テンプレート作成
+---------------------------- */
+
+const templateName =
+  document.getElementById("templateName");
+
+const workStart =
+  document.getElementById("workStart");
+
+const workEnd =
+  document.getElementById("workEnd");
+
+const breakList =
+  document.getElementById("breakList");
+
+const addBreakButton =
+  document.getElementById("addBreakButton");
+
+const templateColor =
+  document.getElementById("templateColor");
+
+const saveTemplateButton =
+  document.getElementById("saveTemplateButton");
+
+const savedTemplateList =
+  document.getElementById("savedTemplateList");
+
+const templateMessage =
+  document.getElementById("templateMessage");
+
+const workSummary =
+  document.getElementById("workSummary");
+
+
+function getBreakRows() {
+
+  return Array.from(
+    breakList.querySelectorAll(
+      ".break-card"
+    )
+  );
+}
+
+
+function getBreakData() {
+
+  const result = [];
+
+  getBreakRows().forEach(row => {
+
+    const start =
+      row.querySelector(
+        ".break-start"
+      ).value;
+
+    const end =
+      row.querySelector(
+        ".break-end"
+      ).value;
+
+    if (start && end) {
+
+      result.push({
+        start,
+        end
       });
 
-      document
-        .getElementById(pageId)
-        .classList
-        .add("active");
-
-      navButtons.forEach(button => {
-
-        button.classList.toggle(
-          "active",
-          button.dataset.page === pageId
-        );
-
-      });
-
-      pageTitle.textContent =
-        titles[pageId];
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-
     }
 
-    document
-      .querySelectorAll("[data-page]")
-      .forEach(button => {
+  });
 
-        button.addEventListener(
-          "click",
-          () => {
-
-            showPage(
-              button.dataset.page
-            );
-
-          }
-        );
-
-      });
+  return result;
+}
 
 
-    function timeToMinutes(time) {
+function calculateBreakMinutes() {
 
-      if (!time) {
-        return null;
-      }
+  let total = 0;
 
-      const parts =
-        time.split(":");
+  getBreakData().forEach(item => {
 
-      const hours =
-        Number(parts[0]);
-
-      const minutes =
-        Number(parts[1]);
-
-      return (
-        hours * 60 +
-        minutes
+    const duration =
+      calculateDuration(
+        item.start,
+        item.end
       );
 
+    if (duration !== null) {
+      total += duration;
     }
 
+  });
 
-    function minutesToText(minutes) {
+  return total;
+}
 
-      if (
-        minutes === null ||
-        minutes < 0
-      ) {
-        return "－";
-      }
 
-      const hours =
-        Math.floor(
-          minutes / 60
-        );
+function updateWorkSummary() {
 
-      const mins =
-        minutes % 60;
+  const duration =
+    calculateDuration(
+      workStart.value,
+      workEnd.value
+    );
 
-      if (
-        hours > 0 &&
-        mins > 0
-      ) {
+  const output =
+    workSummary.querySelector(
+      "strong"
+    );
 
-        return (
-          hours +
-          "時間" +
-          mins +
-          "分"
-        );
+  if (duration === null) {
 
-      }
+    output.textContent = "－";
+    return;
 
-      if (hours > 0) {
+  }
 
-        return (
-          hours +
-          "時間"
-        );
+  const breaks =
+    calculateBreakMinutes();
 
-      }
+  const actual =
+    duration - breaks;
 
-      return (
-        mins +
-        "分"
-      );
+  if (actual < 0) {
 
-    }
+    output.textContent =
+      "休憩時間を確認してください";
 
+    return;
+  }
 
-    function calculateDuration(
-      startTime,
-      endTime
-    ) {
+  output.textContent =
+    `${minutesToText(actual)}（休憩 ${minutesToText(breaks)}）`;
+}
 
-      const start =
-        timeToMinutes(
-          startTime
-        );
 
-      let end =
-        timeToMinutes(
-          endTime
-        );
+function addBreakRow(
+  startValue = "",
+  endValue = ""
+) {
 
-      if (
-        start === null ||
-        end === null
-      ) {
+  breakCounter += 1;
 
-        return null;
+  const card =
+    document.createElement("div");
 
-      }
+  card.className =
+    "break-card";
 
-      if (end <= start) {
 
-        end +=
-          24 * 60;
+  const header =
+    document.createElement("div");
 
-      }
+  header.className =
+    "break-header";
 
-      return (
-        end -
-        start
-      );
 
-    }
+  const title =
+    document.createElement("div");
 
+  title.className =
+    "break-title";
 
-    function getBreakRows() {
+  title.textContent =
+    `休憩 ${breakCounter}`;
 
-      return Array.from(
-        breakList.querySelectorAll(
-          ".break-card"
-        )
-      );
 
-    }
+  const remove =
+    document.createElement("button");
 
+  remove.type =
+    "button";
 
-    function getBreakData() {
+  remove.className =
+    "break-remove";
 
-      const breaks = [];
+  remove.textContent =
+    "削除";
 
-      getBreakRows()
-        .forEach(row => {
 
-          const startInput =
-            row.querySelector(
-              ".break-start"
-            );
+  header.appendChild(title);
+  header.appendChild(remove);
 
-          const endInput =
-            row.querySelector(
-              ".break-end"
-            );
 
-          if (
-            startInput.value &&
-            endInput.value
-          ) {
+  const row =
+    document.createElement("div");
 
-            breaks.push({
-              start:
-                startInput.value,
-              end:
-                endInput.value
-            });
+  row.className =
+    "time-row";
 
-          }
 
-        });
+  const start =
+    document.createElement("input");
 
-      return breaks;
+  start.type =
+    "time";
 
-    }
+  start.className =
+    "time-input break-start";
 
+  start.value =
+    startValue;
 
-    function calculateBreakMinutes() {
 
-      let total = 0;
+  const separator =
+    document.createElement("div");
 
-      const breaks =
-        getBreakData();
+  separator.className =
+    "time-separator";
 
-      for (
-        const breakItem
-        of breaks
-      ) {
+  separator.textContent =
+    "〜";
 
-        const duration =
-          calculateDuration(
-            breakItem.start,
-            breakItem.end
-          );
 
-        if (
-          duration !== null
-        ) {
+  const end =
+    document.createElement("input");
 
-          total +=
-            duration;
+  end.type =
+    "time";
 
-        }
+  end.className =
+    "time-input break-end";
 
-      }
+  end.value =
+    endValue;
 
-      return total;
 
-    }
+  row.appendChild(start);
+  row.appendChild(separator);
+  row.appendChild(end);
 
+  card.appendChild(header);
+  card.appendChild(row);
 
-    function updateWorkSummary() {
+  breakList.appendChild(card);
 
-      const workDuration =
-        calculateDuration(
-          workStart.value,
-          workEnd.value
-        );
 
-      const strong =
-        workSummary.querySelector(
-          "strong"
-        );
+  remove.addEventListener(
+    "click",
+    () => {
 
-      if (
-        workDuration === null
-      ) {
+      card.remove();
 
-        strong.textContent =
-          "－";
-
-        return;
-
-      }
-
-      const breakMinutes =
-        calculateBreakMinutes();
-
-      const actual =
-        workDuration -
-        breakMinutes;
-
-      if (actual < 0) {
-
-        strong.textContent =
-          "休憩時間を確認してください";
-
-        return;
-
-      }
-
-      strong.textContent =
-        minutesToText(actual) +
-        "（休憩 " +
-        minutesToText(
-          breakMinutes
-        ) +
-        "）";
-
-    }
-
-
-    function addBreakRow(
-      startValue = "",
-      endValue = ""
-    ) {
-
-      breakCounter += 1;
-
-      const card =
-        document.createElement(
-          "div"
-        );
-
-      card.className =
-        "break-card";
-
-      const header =
-        document.createElement(
-          "div"
-        );
-
-      header.className =
-        "break-header";
-
-      const title =
-        document.createElement(
-          "div"
-        );
-
-      title.className =
-        "break-title";
-
-      title.textContent =
-        "休憩 " +
-        breakCounter;
-
-      const removeButton =
-        document.createElement(
-          "button"
-        );
-
-      removeButton.type =
-        "button";
-
-      removeButton.className =
-        "break-remove";
-
-      removeButton.textContent =
-        "削除";
-
-      header.appendChild(
-        title
-      );
-
-      header.appendChild(
-        removeButton
-      );
-
-
-      const timeRow =
-        document.createElement(
-          "div"
-        );
-
-      timeRow.className =
-        "time-row";
-
-
-      const startInput =
-        document.createElement(
-          "input"
-        );
-
-      startInput.type =
-        "time";
-
-      startInput.className =
-        "time-input break-start";
-
-      startInput.value =
-        startValue;
-
-      startInput.setAttribute(
-        "aria-label",
-        "休憩開始時刻"
-      );
-
-
-      const separator =
-        document.createElement(
-          "div"
-        );
-
-      separator.className =
-        "time-separator";
-
-      separator.textContent =
-        "〜";
-
-
-      const endInput =
-        document.createElement(
-          "input"
-        );
-
-      endInput.type =
-        "time";
-
-      endInput.className =
-        "time-input break-end";
-
-      endInput.value =
-        endValue;
-
-      endInput.setAttribute(
-        "aria-label",
-        "休憩終了時刻"
-      );
-
-
-      timeRow.appendChild(
-        startInput
-      );
-
-      timeRow.appendChild(
-        separator
-      );
-
-      timeRow.appendChild(
-        endInput
-      );
-
-
-      card.appendChild(
-        header
-      );
-
-      card.appendChild(
-        timeRow
-      );
-
-
-      removeButton.addEventListener(
-        "click",
-        () => {
-
-          card.remove();
-
-          renumberBreaks();
-
-          updateWorkSummary();
-
-        }
-      );
-
-
-      startInput.addEventListener(
-        "input",
-        updateWorkSummary
-      );
-
-      endInput.addEventListener(
-        "input",
-        updateWorkSummary
-      );
-
-
-      breakList.appendChild(
-        card
-      );
-
-    }
-
-
-    function renumberBreaks() {
-
-      const rows =
-        getBreakRows();
-
-      rows.forEach(
-        (row, index) => {
-
-          const title =
-            row.querySelector(
-              ".break-title"
-            );
-
-          title.textContent =
-            "休憩 " +
-            (index + 1);
-
-        }
-      );
-
-      breakCounter =
-        rows.length;
-
-    }
-
-
-    function showMessage(
-      text,
-      type
-    ) {
-
-      templateMessage.textContent =
-        text;
-
-      templateMessage.className =
-        "message show " +
-        type;
-
-      window.setTimeout(
-        () => {
-
-          templateMessage.className =
-            "message";
-
-        },
-        3500
-      );
-
-    }
-
-
-    function loadTemplates() {
-
-      try {
-
-        const saved =
-          localStorage.getItem(
-            STORAGE_KEY
-          );
-
-        if (!saved) {
-          return [];
-        }
-
-        const parsed =
-          JSON.parse(saved);
-
-        if (
-          !Array.isArray(parsed)
-        ) {
-          return [];
-        }
-
-        return parsed;
-
-      } catch (error) {
-
-        console.error(
-          error
-        );
-
-        return [];
-
-      }
-
-    }
-
-
-    function saveTemplates(
-      templates
-    ) {
-
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(
-          templates
-        )
-      );
-
-    }
-
-
-    function validateTemplate() {
-
-      const name =
-        templateName.value
-          .trim();
-
-      if (!name) {
-
-        return {
-          valid: false,
-          message:
-            "テンプレート名を入力してください。"
-        };
-
-      }
-
-      if (
-        !workStart.value ||
-        !workEnd.value
-      ) {
-
-        return {
-          valid: false,
-          message:
-            "勤務開始時刻と終了時刻を入力してください。"
-        };
-
-      }
-
-      const workDuration =
-        calculateDuration(
-          workStart.value,
-          workEnd.value
-        );
-
-      if (
-        workDuration === null ||
-        workDuration <= 0
-      ) {
-
-        return {
-          valid: false,
-          message:
-            "勤務時間を確認してください。"
-        };
-
-      }
-
-
-      const rows =
-        getBreakRows();
-
-      for (
-        const row
-        of rows
-      ) {
-
-        const start =
-          row.querySelector(
-            ".break-start"
-          ).value;
-
-        const end =
-          row.querySelector(
-            ".break-end"
-          ).value;
-
-        if (
-          (start && !end) ||
-          (!start && end)
-        ) {
-
-          return {
-            valid: false,
-            message:
-              "休憩時間は開始と終了の両方を入力してください。"
-          };
-
-        }
-
-      }
-
-
-      const breakMinutes =
-        calculateBreakMinutes();
-
-      if (
-        breakMinutes >
-        workDuration
-      ) {
-
-        return {
-          valid: false,
-          message:
-            "休憩時間が勤務時間を超えています。"
-        };
-
-      }
-
-      return {
-        valid: true
-      };
-
-    }
-
-
-    function clearTemplateForm() {
-
-      templateName.value =
-        "";
-
-      workStart.value =
-        "";
-
-      workEnd.value =
-        "";
-
-      templateColor.value =
-        "#5b8def";
-
-      breakList.innerHTML =
-        "";
-
-      breakCounter =
-        0;
-
-      addBreakRow();
+      renumberBreaks();
 
       updateWorkSummary();
 
     }
+  );
 
 
-    function createId() {
+  start.addEventListener(
+    "input",
+    updateWorkSummary
+  );
 
-      return (
-        Date.now().toString(36) +
-        Math.random()
-          .toString(36)
-          .slice(2)
-      );
-
-    }
+  end.addEventListener(
+    "input",
+    updateWorkSummary
+  );
+}
 
 
-    function saveTemplate() {
+function renumberBreaks() {
 
-      const validation =
-        validateTemplate();
+  const rows =
+    getBreakRows();
 
-      if (
-        !validation.valid
-      ) {
+  rows.forEach(
+    (row, index) => {
 
-        showMessage(
-          validation.message,
-          "error"
-        );
-
-        return;
-
-      }
-
-      const templates =
-        loadTemplates();
-
-      const workDuration =
-        calculateDuration(
-          workStart.value,
-          workEnd.value
-        );
-
-      const breakMinutes =
-        calculateBreakMinutes();
-
-      const template = {
-        id:
-          createId(),
-
-        name:
-          templateName.value
-            .trim(),
-
-        workStart:
-          workStart.value,
-
-        workEnd:
-          workEnd.value,
-
-        breaks:
-          getBreakData(),
-
-        color:
-          templateColor.value,
-
-        workMinutes:
-          workDuration,
-
-        breakMinutes:
-          breakMinutes,
-
-        actualMinutes:
-          workDuration -
-          breakMinutes,
-
-        createdAt:
-          new Date()
-            .toISOString()
-      };
-
-      templates.push(
-        template
-      );
-
-      saveTemplates(
-        templates
-      );
-
-      renderSavedTemplates();
-
-      clearTemplateForm();
-
-      showMessage(
-        "勤務テンプレートを保存しました。",
-        "success"
-      );
+      row.querySelector(
+        ".break-title"
+      ).textContent =
+        `休憩 ${index + 1}`;
 
     }
+  );
+
+  breakCounter =
+    rows.length;
+}
 
 
-    function deleteTemplate(
-      templateId
+function showTemplateMessage(
+  text,
+  type
+) {
+
+  templateMessage.textContent =
+    text;
+
+  templateMessage.className =
+    `message show ${type}`;
+
+  setTimeout(() => {
+
+    templateMessage.className =
+      "message";
+
+  }, 3500);
+}
+
+
+function clearTemplateForm() {
+
+  templateName.value = "";
+  workStart.value = "";
+  workEnd.value = "";
+  templateColor.value = "#5b8def";
+
+  breakList.innerHTML = "";
+
+  breakCounter = 0;
+
+  addBreakRow();
+
+  updateWorkSummary();
+}
+
+
+function saveTemplate() {
+
+  const name =
+    templateName.value.trim();
+
+  if (!name) {
+
+    showTemplateMessage(
+      "テンプレート名を入力してください。",
+      "error"
+    );
+
+    return;
+  }
+
+  if (
+    !workStart.value ||
+    !workEnd.value
+  ) {
+
+    showTemplateMessage(
+      "勤務開始時刻と終了時刻を入力してください。",
+      "error"
+    );
+
+    return;
+  }
+
+
+  for (
+    const row of getBreakRows()
+  ) {
+
+    const start =
+      row.querySelector(
+        ".break-start"
+      ).value;
+
+    const end =
+      row.querySelector(
+        ".break-end"
+      ).value;
+
+    if (
+      (start && !end) ||
+      (!start && end)
     ) {
 
-      const templates =
-        loadTemplates();
-
-      const target =
-        templates.find(
-          template =>
-            template.id ===
-            templateId
-        );
-
-      if (!target) {
-        return;
-      }
-
-      const confirmed =
-        window.confirm(
-          "「" +
-          target.name +
-          "」を削除しますか？"
-        );
-
-      if (!confirmed) {
-        return;
-      }
-
-      const newTemplates =
-        templates.filter(
-          template =>
-            template.id !==
-            templateId
-        );
-
-      saveTemplates(
-        newTemplates
+      showTemplateMessage(
+        "休憩時間は開始と終了の両方を入力してください。",
+        "error"
       );
 
-      renderSavedTemplates();
+      return;
+    }
+  }
 
-      showMessage(
-        "勤務テンプレートを削除しました。",
-        "success"
+
+  const workDuration =
+    calculateDuration(
+      workStart.value,
+      workEnd.value
+    );
+
+  const breakMinutes =
+    calculateBreakMinutes();
+
+  if (
+    breakMinutes >
+    workDuration
+  ) {
+
+    showTemplateMessage(
+      "休憩時間が勤務時間を超えています。",
+      "error"
+    );
+
+    return;
+  }
+
+
+  const templates =
+    loadTemplates();
+
+
+  templates.push({
+
+    id:
+      createId(),
+
+    name,
+
+    workStart:
+      workStart.value,
+
+    workEnd:
+      workEnd.value,
+
+    breaks:
+      getBreakData(),
+
+    color:
+      templateColor.value,
+
+    actualMinutes:
+      workDuration -
+      breakMinutes
+
+  });
+
+
+  saveTemplates(
+    templates
+  );
+
+
+  clearTemplateForm();
+
+  renderSavedTemplates();
+
+  renderTemplateChoices();
+
+  showTemplateMessage(
+    "勤務テンプレートを保存しました。",
+    "success"
+  );
+}
+
+
+function deleteTemplate(id) {
+
+  const templates =
+    loadTemplates();
+
+  const target =
+    templates.find(
+      item => item.id === id
+    );
+
+  if (!target) {
+    return;
+  }
+
+
+  if (
+    !confirm(
+      `「${target.name}」を削除しますか？`
+    )
+  ) {
+    return;
+  }
+
+
+  const result =
+    templates.filter(
+      item => item.id !== id
+    );
+
+
+  saveTemplates(result);
+
+  if (
+    selectedTemplateId === id
+  ) {
+    selectedTemplateId = null;
+  }
+
+  renderSavedTemplates();
+  renderTemplateChoices();
+
+  showTemplateMessage(
+    "テンプレートを削除しました。",
+    "success"
+  );
+}
+
+
+function renderSavedTemplates() {
+
+  const templates =
+    loadTemplates();
+
+  savedTemplateList.innerHTML =
+    "";
+
+
+  if (
+    templates.length === 0
+  ) {
+
+    savedTemplateList.innerHTML =
+      `<div class="empty-state">
+        まだ勤務テンプレートがありません。
+      </div>`;
+
+    return;
+  }
+
+
+  templates.forEach(
+    template => {
+
+      const item =
+        document.createElement(
+          "div"
+        );
+
+      item.className =
+        "template-item";
+
+
+      let breaksText = "";
+
+      if (
+        template.breaks &&
+        template.breaks.length
+      ) {
+
+        template.breaks.forEach(
+          (breakItem, index) => {
+
+            breaksText +=
+              `<br>休憩${index + 1} ${breakItem.start}〜${breakItem.end}`;
+
+          }
+        );
+
+      } else {
+
+        breaksText =
+          "<br>休憩なし";
+
+      }
+
+
+      item.innerHTML = `
+        <div class="template-name-row">
+          <div
+            class="template-color"
+            style="background:${template.color}"
+          ></div>
+
+          <div class="template-name">
+            ${escapeHtml(template.name)}
+          </div>
+        </div>
+
+        <div class="template-details">
+          勤務 ${template.workStart}〜${template.workEnd}
+          ${breaksText}
+          <br>
+          <strong>
+            実働 ${minutesToText(template.actualMinutes)}
+          </strong>
+        </div>
+      `;
+
+
+      const actions =
+        document.createElement(
+          "div"
+        );
+
+      actions.className =
+        "template-actions";
+
+
+      const deleteButton =
+        document.createElement(
+          "button"
+        );
+
+      deleteButton.type =
+        "button";
+
+      deleteButton.className =
+        "danger-button";
+
+      deleteButton.textContent =
+        "削除";
+
+
+      deleteButton.addEventListener(
+        "click",
+        () => deleteTemplate(
+          template.id
+        )
+      );
+
+
+      actions.appendChild(
+        deleteButton
+      );
+
+      item.appendChild(
+        actions
+      );
+
+      savedTemplateList.appendChild(
+        item
+      );
+
+    }
+  );
+}
+
+
+function escapeHtml(text) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    text;
+
+  return div.innerHTML;
+}
+
+
+addBreakButton.addEventListener(
+  "click",
+  () => addBreakRow()
+);
+
+saveTemplateButton.addEventListener(
+  "click",
+  saveTemplate
+);
+
+workStart.addEventListener(
+  "input",
+  updateWorkSummary
+);
+
+workEnd.addEventListener(
+  "input",
+  updateWorkSummary
+);
+
+
+/* ----------------------------
+   登録用テンプレート選択
+---------------------------- */
+
+const templateChoiceList =
+  document.getElementById(
+    "templateChoiceList"
+  );
+
+
+function renderTemplateChoices() {
+
+  const templates =
+    loadTemplates();
+
+  templateChoiceList.innerHTML =
+    "";
+
+
+  if (
+    templates.length === 0
+  ) {
+
+    templateChoiceList.innerHTML =
+      `<div class="empty-state">
+        先に「設定」から勤務テンプレートを作成してください。
+      </div>`;
+
+    return;
+  }
+
+
+  templates.forEach(
+    template => {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+      button.type =
+        "button";
+
+      button.className =
+        "template-choice";
+
+
+      if (
+        selectedTemplateId ===
+        template.id
+      ) {
+        button.classList.add(
+          "selected"
+        );
+      }
+
+
+      button.innerHTML = `
+        <div class="choice-title">
+
+          <span
+            class="template-color"
+            style="background:${template.color}"
+          ></span>
+
+          ${escapeHtml(template.name)}
+
+        </div>
+
+        <div class="choice-details">
+          ${template.workStart}〜${template.workEnd}
+          ／ 実働 ${minutesToText(template.actualMinutes)}
+        </div>
+      `;
+
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          selectedTemplateId =
+            template.id;
+
+          renderTemplateChoices();
+
+        }
+      );
+
+
+      templateChoiceList.appendChild(
+        button
+      );
+
+    }
+  );
+}
+
+
+/* ----------------------------
+   カレンダー
+---------------------------- */
+
+function buildCalendar(
+  container,
+  targetDate,
+  selectable
+) {
+
+  container.innerHTML =
+    "";
+
+
+  const year =
+    targetDate.getFullYear();
+
+  const month =
+    targetDate.getMonth();
+
+
+  const firstDay =
+    new Date(
+      year,
+      month,
+      1
+    ).getDay();
+
+
+  const daysInMonth =
+    new Date(
+      year,
+      month + 1,
+      0
+    ).getDate();
+
+
+  const shifts =
+    loadShifts();
+
+
+  for (
+    let i = 0;
+    i < firstDay;
+    i++
+  ) {
+
+    const empty =
+      document.createElement(
+        "div"
+      );
+
+    empty.className =
+      "calendar-day empty";
+
+    container.appendChild(
+      empty
+    );
+
+  }
+
+
+  for (
+    let day = 1;
+    day <= daysInMonth;
+    day++
+  ) {
+
+    const key =
+      dateToKey(
+        year,
+        month,
+        day
+      );
+
+
+    const dayShift =
+      shifts.find(
+        shift =>
+          shift.date === key
+      );
+
+
+    const button =
+      document.createElement(
+        "button"
+      );
+
+    button.type =
+      "button";
+
+    button.className =
+      "calendar-day";
+
+
+    if (dayShift) {
+
+      button.classList.add(
+        "has-shift"
+      );
+
+      button.style.borderColor =
+        dayShift.color ||
+        "#444";
+
+    }
+
+
+    if (
+      selectable &&
+      selectedDates.has(key)
+    ) {
+
+      button.classList.add(
+        "selected"
       );
 
     }
 
 
-    function renderSavedTemplates() {
+    const number =
+      document.createElement(
+        "span"
+      );
 
-      const templates =
-        loadTemplates();
+    number.className =
+      "day-number";
 
-      savedTemplateList.innerHTML =
-        "";
+    number.textContent =
+      day;
 
-      if (
-        templates.length === 0
-      ) {
+    button.appendChild(
+      number
+    );
 
-        const empty =
-          document.createElement(
-            "div"
-          );
 
-        empty.className =
-          "empty-state";
+    if (dayShift) {
 
-        empty.textContent =
-          "まだ勤務テンプレートがありません。";
-
-        savedTemplateList.appendChild(
-          empty
+      const dot =
+        document.createElement(
+          "span"
         );
 
-        return;
+      dot.className =
+        "shift-dot";
 
-      }
+      dot.style.background =
+        dayShift.color ||
+        "#ddd";
 
+      dot.textContent =
+        dayShift.templateName;
 
-      templates.forEach(
-        template => {
+      button.appendChild(
+        dot
+      );
 
-          const item =
-            document.createElement(
-              "div"
-            );
-
-          item.className =
-            "template-item";
-
-
-          const top =
-            document.createElement(
-              "div"
-            );
-
-          top.className =
-            "template-top";
+    }
 
 
-          const nameRow =
-            document.createElement(
-              "div"
-            );
+    if (selectable) {
 
-          nameRow.className =
-            "template-name-row";
-
-
-          const color =
-            document.createElement(
-              "div"
-            );
-
-          color.className =
-            "template-color";
-
-          color.style.background =
-            template.color ||
-            "#5b8def";
-
-
-          const name =
-            document.createElement(
-              "div"
-            );
-
-          name.className =
-            "template-name";
-
-          name.textContent =
-            template.name;
-
-
-          nameRow.appendChild(
-            color
-          );
-
-          nameRow.appendChild(
-            name
-          );
-
-          top.appendChild(
-            nameRow
-          );
-
-
-          const details =
-            document.createElement(
-              "div"
-            );
-
-          details.className =
-            "template-details";
-
-
-          let detailText =
-            "勤務 " +
-            template.workStart +
-            "〜" +
-            template.workEnd;
-
+      button.addEventListener(
+        "click",
+        () => {
 
           if (
-            template.breaks &&
-            template.breaks.length > 0
+            selectedDates.has(key)
           ) {
 
-            detailText +=
-              "<br>";
-
-            template.breaks.forEach(
-              (
-                breakItem,
-                index
-              ) => {
-
-                detailText +=
-                  "休憩" +
-                  (index + 1) +
-                  " " +
-                  breakItem.start +
-                  "〜" +
-                  breakItem.end;
-
-                if (
-                  index <
-                  template.breaks.length -
-                  1
-                ) {
-
-                  detailText +=
-                    "<br>";
-
-                }
-
-              }
+            selectedDates.delete(
+              key
             );
 
           } else {
 
-            detailText +=
-              "<br>休憩なし";
+            selectedDates.add(
+              key
+            );
 
           }
 
+          renderRegisterCalendar();
 
-          detailText +=
-            "<br><strong>実働 " +
-            minutesToText(
-              template.actualMinutes
-            ) +
-            "</strong>";
-
-
-          details.innerHTML =
-            detailText;
-
-
-          const actions =
-            document.createElement(
-              "div"
-            );
-
-          actions.className =
-            "template-actions";
-
-
-          const deleteButton =
-            document.createElement(
-              "button"
-            );
-
-          deleteButton.type =
-            "button";
-
-          deleteButton.className =
-            "danger-button";
-
-          deleteButton.textContent =
-            "削除";
-
-
-          deleteButton.addEventListener(
-            "click",
-            () => {
-
-              deleteTemplate(
-                template.id
-              );
-
-            }
-          );
-
-
-          actions.appendChild(
-            deleteButton
-          );
-
-
-          item.appendChild(
-            top
-          );
-
-          item.appendChild(
-            details
-          );
-
-          item.appendChild(
-            actions
-          );
-
-
-          savedTemplateList.appendChild(
-            item
-          );
+          updateSelectionStatus();
 
         }
       );
@@ -1831,40 +2085,792 @@
     }
 
 
-    addBreakButton.addEventListener(
-      "click",
-      () => {
+    container.appendChild(
+      button
+    );
 
-        addBreakRow();
+  }
+}
+
+
+function renderMainCalendar() {
+
+  const title =
+    document.getElementById(
+      "calendarTitle"
+    );
+
+  title.textContent =
+    `${mainCalendarDate.getFullYear()}年${mainCalendarDate.getMonth() + 1}月`;
+
+
+  buildCalendar(
+    document.getElementById(
+      "mainCalendarGrid"
+    ),
+    mainCalendarDate,
+    false
+  );
+}
+
+
+function renderRegisterCalendar() {
+
+  const title =
+    document.getElementById(
+      "registerCalendarTitle"
+    );
+
+  title.textContent =
+    `${registerCalendarDate.getFullYear()}年${registerCalendarDate.getMonth() + 1}月`;
+
+
+  buildCalendar(
+    document.getElementById(
+      "registerCalendarGrid"
+    ),
+    registerCalendarDate,
+    true
+  );
+}
+
+
+document.getElementById(
+  "calendarPrev"
+).addEventListener(
+  "click",
+  () => {
+
+    mainCalendarDate =
+      new Date(
+        mainCalendarDate.getFullYear(),
+        mainCalendarDate.getMonth() - 1,
+        1
+      );
+
+    renderMainCalendar();
+
+  }
+);
+
+
+document.getElementById(
+  "calendarNext"
+).addEventListener(
+  "click",
+  () => {
+
+    mainCalendarDate =
+      new Date(
+        mainCalendarDate.getFullYear(),
+        mainCalendarDate.getMonth() + 1,
+        1
+      );
+
+    renderMainCalendar();
+
+  }
+);
+
+
+document.getElementById(
+  "registerPrev"
+).addEventListener(
+  "click",
+  () => {
+
+    registerCalendarDate =
+      new Date(
+        registerCalendarDate.getFullYear(),
+        registerCalendarDate.getMonth() - 1,
+        1
+      );
+
+    renderRegisterCalendar();
+
+  }
+);
+
+
+document.getElementById(
+  "registerNext"
+).addEventListener(
+  "click",
+  () => {
+
+    registerCalendarDate =
+      new Date(
+        registerCalendarDate.getFullYear(),
+        registerCalendarDate.getMonth() + 1,
+        1
+      );
+
+    renderRegisterCalendar();
+
+  }
+);
+
+
+/* ----------------------------
+   一括登録
+---------------------------- */
+
+const registerMessage =
+  document.getElementById(
+    "registerMessage"
+  );
+
+const selectionStatus =
+  document.getElementById(
+    "selectionStatus"
+  );
+
+const conflictModal =
+  document.getElementById(
+    "conflictModal"
+  );
+
+const conflictList =
+  document.getElementById(
+    "conflictList"
+  );
+
+
+function updateSelectionStatus() {
+
+  const sorted =
+    Array.from(
+      selectedDates
+    ).sort();
+
+
+  if (
+    sorted.length === 0
+  ) {
+
+    selectionStatus.textContent =
+      "選択中の日付：0日";
+
+    return;
+  }
+
+
+  const dateText =
+    sorted
+      .map(formatDateJapanese)
+      .join("、");
+
+
+  selectionStatus.innerHTML =
+    `選択中の日付：<strong>${sorted.length}日</strong><br>${dateText}`;
+}
+
+
+function showRegisterMessage(
+  text,
+  type
+) {
+
+  registerMessage.textContent =
+    text;
+
+  registerMessage.className =
+    `message show ${type}`;
+
+  setTimeout(() => {
+
+    registerMessage.className =
+      "message";
+
+  }, 4000);
+}
+
+
+function createShiftFromTemplate(
+  date,
+  template
+) {
+
+  return {
+
+    id:
+      createId(),
+
+    date,
+
+    templateId:
+      template.id,
+
+    templateName:
+      template.name,
+
+    workStart:
+      template.workStart,
+
+    workEnd:
+      template.workEnd,
+
+    breaks:
+      JSON.parse(
+        JSON.stringify(
+          template.breaks || []
+        )
+      ),
+
+    color:
+      template.color,
+
+    actualMinutes:
+      template.actualMinutes
+
+  };
+}
+
+
+function startBulkRegistration() {
+
+  if (
+    !selectedTemplateId
+  ) {
+
+    showRegisterMessage(
+      "勤務テンプレートを選択してください。",
+      "error"
+    );
+
+    return;
+  }
+
+
+  if (
+    selectedDates.size === 0
+  ) {
+
+    showRegisterMessage(
+      "勤務日を1日以上選択してください。",
+      "error"
+    );
+
+    return;
+  }
+
+
+  const templates =
+    loadTemplates();
+
+  const template =
+    templates.find(
+      item =>
+        item.id ===
+        selectedTemplateId
+    );
+
+
+  if (!template) {
+
+    showRegisterMessage(
+      "選択したテンプレートが見つかりません。",
+      "error"
+    );
+
+    return;
+  }
+
+
+  const shifts =
+    loadShifts();
+
+  const dates =
+    Array.from(
+      selectedDates
+    ).sort();
+
+
+  const conflicts =
+    dates
+      .map(date => {
+
+        const existing =
+          shifts.find(
+            shift =>
+              shift.date === date
+          );
+
+        return existing
+          ? {
+              date,
+              existing
+            }
+          : null;
+
+      })
+      .filter(Boolean);
+
+
+  pendingRegistration = {
+    template,
+    dates,
+    conflicts
+  };
+
+
+  if (
+    conflicts.length > 0
+  ) {
+
+    showConflictModal();
+
+  } else {
+
+    performRegistration(
+      "overwrite"
+    );
+
+  }
+}
+
+
+function showConflictModal() {
+
+  conflictList.innerHTML =
+    "";
+
+
+  pendingRegistration.conflicts
+    .forEach(item => {
+
+      const div =
+        document.createElement(
+          "div"
+        );
+
+      div.textContent =
+        `${formatDateFull(item.date)}：${item.existing.templateName}`;
+
+      conflictList.appendChild(
+        div
+      );
+
+    });
+
+
+  conflictModal.classList.add(
+    "show"
+  );
+}
+
+
+function closeConflictModal() {
+
+  conflictModal.classList.remove(
+    "show"
+  );
+}
+
+
+function performRegistration(mode) {
+
+  if (
+    !pendingRegistration
+  ) {
+    return;
+  }
+
+
+  const {
+    template,
+    dates
+  } =
+    pendingRegistration;
+
+
+  let shifts =
+    loadShifts();
+
+
+  let registeredCount = 0;
+  let skippedCount = 0;
+
+
+  dates.forEach(date => {
+
+    const existingIndex =
+      shifts.findIndex(
+        shift =>
+          shift.date === date
+      );
+
+
+    if (
+      existingIndex >= 0
+    ) {
+
+      if (
+        mode === "skip"
+      ) {
+
+        skippedCount += 1;
+        return;
 
       }
+
+
+      shifts.splice(
+        existingIndex,
+        1
+      );
+    }
+
+
+    shifts.push(
+      createShiftFromTemplate(
+        date,
+        template
+      )
+    );
+
+    registeredCount += 1;
+
+  });
+
+
+  shifts.sort(
+    (a, b) =>
+      a.date.localeCompare(
+        b.date
+      )
+  );
+
+
+  saveShifts(shifts);
+
+
+  selectedDates.clear();
+
+  pendingRegistration =
+    null;
+
+
+  closeConflictModal();
+
+  renderRegisterCalendar();
+
+  renderMainCalendar();
+
+  updateSelectionStatus();
+
+  updateHome();
+
+  updateSummary();
+
+
+  let message =
+    `${registeredCount}日分のシフトを登録しました。`;
+
+
+  if (
+    skippedCount > 0
+  ) {
+
+    message +=
+      ` 登録済みの${skippedCount}日はスキップしました。`;
+
+  }
+
+
+  showRegisterMessage(
+    message,
+    "success"
+  );
+}
+
+
+document.getElementById(
+  "bulkRegisterButton"
+).addEventListener(
+  "click",
+  startBulkRegistration
+);
+
+
+document.getElementById(
+  "overwriteButton"
+).addEventListener(
+  "click",
+  () => performRegistration(
+    "overwrite"
+  )
+);
+
+
+document.getElementById(
+  "skipButton"
+).addEventListener(
+  "click",
+  () => performRegistration(
+    "skip"
+  )
+);
+
+
+document.getElementById(
+  "cancelConflictButton"
+).addEventListener(
+  "click",
+  () => {
+
+    pendingRegistration =
+      null;
+
+    closeConflictModal();
+
+  }
+);
+
+
+/* ----------------------------
+   ホーム
+---------------------------- */
+
+function updateHome() {
+
+  const shifts =
+    loadShifts();
+
+
+  const now =
+    new Date();
+
+
+  const todayKey =
+    dateToKey(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
     );
 
 
-    saveTemplateButton.addEventListener(
-      "click",
-      saveTemplate
+  const future =
+    shifts
+      .filter(
+        shift =>
+          shift.date >= todayKey
+      )
+      .sort(
+        (a, b) =>
+          a.date.localeCompare(
+            b.date
+          )
+      );
+
+
+  const main =
+    document.getElementById(
+      "nextShiftMain"
+    );
+
+  const sub =
+    document.getElementById(
+      "nextShiftSub"
     );
 
 
-    workStart.addEventListener(
-      "input",
-      updateWorkSummary
+  if (
+    future.length === 0
+  ) {
+
+    main.textContent =
+      "まだ登録されていません";
+
+    sub.textContent =
+      "シフトを登録するとここに表示されます";
+
+  } else {
+
+    const next =
+      future[0];
+
+    main.textContent =
+      `${formatDateJapanese(next.date)} ${next.templateName}`;
+
+    sub.textContent =
+      `${next.workStart}〜${next.workEnd} ／ 実働 ${minutesToText(next.actualMinutes)}`;
+
+  }
+
+
+  const year =
+    now.getFullYear();
+
+  const month =
+    now.getMonth() + 1;
+
+
+  const currentMonthPrefix =
+    `${year}-${String(month).padStart(2,"0")}`;
+
+
+  const monthShifts =
+    shifts.filter(
+      shift =>
+        shift.date.startsWith(
+          currentMonthPrefix
+        )
     );
 
 
-    workEnd.addEventListener(
-      "input",
-      updateWorkSummary
+  const totalMinutes =
+    monthShifts.reduce(
+      (sum, shift) =>
+        sum +
+        Number(
+          shift.actualMinutes || 0
+        ),
+      0
     );
 
 
-    addBreakRow();
+  document.getElementById(
+    "homeMonthDays"
+  ).textContent =
+    `${monthShifts.length}日`;
 
-    renderSavedTemplates();
 
-    updateWorkSummary();
-  </script>
+  document.getElementById(
+    "homeMonthHours"
+  ).textContent =
+    `合計実働時間 ${minutesToText(totalMinutes)}`;
+}
+
+
+/* ----------------------------
+   集計
+---------------------------- */
+
+function getRequiredMinutes(year, month) {
+
+  const days =
+    new Date(
+      year,
+      month,
+      0
+    ).getDate();
+
+
+  if (days === 31) {
+    return 177 * 60;
+  }
+
+  if (days === 30) {
+    return 171 * 60;
+  }
+
+  if (days === 29) {
+    return 165 * 60;
+  }
+
+  return 160 * 60;
+}
+
+
+function updateSummary() {
+
+  const now =
+    new Date();
+
+  const year =
+    now.getFullYear();
+
+  const month =
+    now.getMonth() + 1;
+
+
+  const prefix =
+    `${year}-${String(month).padStart(2,"0")}`;
+
+
+  const shifts =
+    loadShifts().filter(
+      shift =>
+        shift.date.startsWith(
+          prefix
+        )
+    );
+
+
+  const total =
+    shifts.reduce(
+      (sum, shift) =>
+        sum +
+        Number(
+          shift.actualMinutes || 0
+        ),
+      0
+    );
+
+
+  const required =
+    getRequiredMinutes(
+      year,
+      month
+    );
+
+
+  const overtime =
+    Math.max(
+      0,
+      total - required
+    );
+
+
+  document.getElementById(
+    "summaryWorkHours"
+  ).textContent =
+    minutesToText(total);
+
+
+  document.getElementById(
+    "summaryWorkDays"
+  ).textContent =
+    `勤務日数 ${shifts.length}日`;
+
+
+  document.getElementById(
+    "summaryRequiredHours"
+  ).textContent =
+    minutesToText(required);
+
+
+  document.getElementById(
+    "summaryOvertime"
+  ).textContent =
+    minutesToText(overtime);
+}
+
+
+/* ----------------------------
+   初期化
+---------------------------- */
+
+addBreakRow();
+
+renderSavedTemplates();
+
+renderTemplateChoices();
+
+renderMainCalendar();
+
+renderRegisterCalendar();
+
+updateSelectionStatus();
+
+updateWorkSummary();
+
+updateHome();
+
+updateSummary();
+
+</script>
 
 </body>
 </html>
