@@ -12,6 +12,10 @@
       box-sizing: border-box;
     }
 
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
     body {
       margin: 0;
       font-family:
@@ -30,12 +34,16 @@
       font: inherit;
     }
 
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
     .app {
       max-width: 520px;
       margin: 0 auto;
       min-height: 100vh;
       background: #ffffff;
-      padding-bottom: 90px;
+      padding-bottom: 100px;
     }
 
     .header {
@@ -77,6 +85,11 @@
       font-size: 18px;
     }
 
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
     .big-text {
       font-size: 26px;
       font-weight: 700;
@@ -86,6 +99,7 @@
     .sub-text {
       color: #777;
       font-size: 14px;
+      line-height: 1.6;
     }
 
     .nav {
@@ -110,6 +124,7 @@
       font-size: 11px;
       color: #777;
       cursor: pointer;
+      min-height: 50px;
     }
 
     .nav button.active {
@@ -125,6 +140,7 @@
 
     .primary-button {
       width: 100%;
+      min-height: 52px;
       border: none;
       border-radius: 14px;
       padding: 15px;
@@ -134,12 +150,242 @@
       cursor: pointer;
     }
 
+    .secondary-button {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 13px;
+      background: #fff;
+      color: #222;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .danger-button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: #f7eaea;
+      color: #b3261e;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .small-button {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #fff;
+      color: #222;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
     .placeholder {
       text-align: center;
       color: #888;
       padding: 40px 20px;
       border: 2px dashed #ddd;
       border-radius: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .text-input,
+    .time-input {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      min-height: 48px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      background: #fff;
+      color: #222;
+      padding: 10px 12px;
+      font-size: 16px;
+    }
+
+    .color-input {
+      width: 100%;
+      height: 48px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 4px;
+      background: #fff;
+    }
+
+    .time-row {
+      display: grid;
+      grid-template-columns: 1fr 28px 1fr;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .time-separator {
+      text-align: center;
+      color: #777;
+      font-weight: 700;
+    }
+
+    .break-card {
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: #fafafa;
+    }
+
+    .break-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .break-title {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .break-remove {
+      border: none;
+      background: transparent;
+      color: #b3261e;
+      font-weight: 600;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .summary-box {
+      background: #f6f6f6;
+      border-radius: 14px;
+      padding: 14px;
+      margin: 16px 0;
+    }
+
+    .summary-box strong {
+      font-size: 20px;
+    }
+
+    .message {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.error {
+      background: #fdecec;
+      color: #9a1c1c;
+    }
+
+    .message.success {
+      background: #edf7ed;
+      color: #246b2c;
+    }
+
+    .template-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .template-item {
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .template-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .template-name-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .template-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    .template-name {
+      font-size: 17px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .template-details {
+      margin-top: 10px;
+      color: #666;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .template-actions {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .empty-state {
+      color: #888;
+      text-align: center;
+      padding: 24px 12px;
+      font-size: 14px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      margin: 0 0 14px;
+    }
+
+    .divider {
+      border: 0;
+      border-top: 1px solid #eee;
+      margin: 24px 0;
+    }
+
+    @media (max-width: 360px) {
+      .page {
+        padding: 16px;
+      }
+
+      .header {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .time-row {
+        grid-template-columns: minmax(0, 1fr) 22px minmax(0, 1fr);
+        gap: 5px;
+      }
     }
   </style>
 </head>
@@ -157,6 +403,7 @@
 
       <!-- ホーム -->
       <section id="home" class="page active">
+
         <div class="card">
           <h2>次の勤務</h2>
           <div class="big-text">まだ登録されていません</div>
@@ -179,58 +426,211 @@
         >
           シフトを登録する
         </button>
+
       </section>
 
       <!-- カレンダー -->
       <section id="calendar" class="page">
+
         <div class="placeholder">
-          カレンダーはここに作ります
+          カレンダーは次の工程で作ります
         </div>
+
       </section>
 
       <!-- シフト登録 -->
       <section id="register" class="page">
+
         <div class="card">
           <h2>シフト登録</h2>
 
           <p class="sub-text">
-            勤務テンプレートを選んで登録できるようにします。
+            保存した勤務テンプレートから
+            シフトを登録できるようにします。
           </p>
         </div>
 
         <div class="placeholder">
-          シフト登録画面
+          シフト登録機能は次の工程で追加します
         </div>
+
       </section>
 
       <!-- 集計 -->
       <section id="summary" class="page">
+
         <div class="card">
           <h2>今月の集計</h2>
-          <div class="big-text">0時間</div>
+
+          <div class="big-text">
+            0時間
+          </div>
+
           <div class="sub-text">
             勤務日数 0日
           </div>
         </div>
 
-        <div class="placeholder">
-          給与や勤務時間の集計を表示します
+        <div class="card">
+          <h2>所定労働時間</h2>
+
+          <div class="sub-text">
+            31日月：177時間<br>
+            30日月：171時間<br>
+            29日月：165時間<br>
+            28日月：160時間
+          </div>
         </div>
+
+        <div class="placeholder">
+          シフト登録後に月間実働時間と
+          残業時間を自動計算します
+        </div>
+
       </section>
 
       <!-- 設定 -->
       <section id="settings" class="page">
+
+        <h2 class="section-title">
+          勤務テンプレート
+        </h2>
+
+        <div
+          id="templateMessage"
+          class="message"
+        ></div>
+
         <div class="card">
-          <h2>勤務テンプレート</h2>
 
-          <p class="sub-text">
-            早番・遅番・夜勤などを登録できるようにします。
-          </p>
+          <h2>
+            新しいテンプレート
+          </h2>
+
+          <div class="form-group">
+
+            <label
+              class="form-label"
+              for="templateName"
+            >
+              テンプレート名
+            </label>
+
+            <input
+              id="templateName"
+              class="text-input"
+              type="text"
+              maxlength="30"
+              placeholder="例：早番"
+            >
+
+          </div>
+
+          <div class="form-group">
+
+            <label class="form-label">
+              勤務時間
+            </label>
+
+            <div class="time-row">
+
+              <input
+                id="workStart"
+                class="time-input"
+                type="time"
+                aria-label="勤務開始時刻"
+              >
+
+              <div class="time-separator">
+                〜
+              </div>
+
+              <input
+                id="workEnd"
+                class="time-input"
+                type="time"
+                aria-label="勤務終了時刻"
+              >
+
+            </div>
+
+            <p class="sub-text">
+              終了時刻が開始時刻より早い場合は、
+              翌日の終了として計算します。
+            </p>
+
+          </div>
+
+          <div class="form-group">
+
+            <label class="form-label">
+              休憩時間
+            </label>
+
+            <div id="breakList"></div>
+
+            <button
+              id="addBreakButton"
+              class="secondary-button"
+              type="button"
+            >
+              ＋ 休憩を追加
+            </button>
+
+          </div>
+
+          <div class="form-group">
+
+            <label
+              class="form-label"
+              for="templateColor"
+            >
+              カレンダー表示色
+            </label>
+
+            <input
+              id="templateColor"
+              class="color-input"
+              type="color"
+              value="#5b8def"
+            >
+
+          </div>
+
+          <div
+            id="workSummary"
+            class="summary-box"
+          >
+            <div class="sub-text">
+              実働時間
+            </div>
+
+            <strong>
+              －
+            </strong>
+          </div>
+
+          <button
+            id="saveTemplateButton"
+            class="primary-button"
+            type="button"
+          >
+            テンプレートを保存
+          </button>
+
         </div>
 
-        <div class="placeholder">
-          テンプレート設定画面
-        </div>
+        <hr class="divider">
+
+        <h2 class="section-title">
+          保存済みテンプレート
+        </h2>
+
+        <div
+          id="savedTemplateList"
+          class="template-list"
+        ></div>
+
       </section>
 
     </main>
@@ -241,7 +641,10 @@
         class="nav-button active"
         data-page="home"
       >
-        <span class="icon">🏠</span>
+        <span class="icon">
+          🏠
+        </span>
+
         ホーム
       </button>
 
@@ -249,7 +652,10 @@
         class="nav-button"
         data-page="calendar"
       >
-        <span class="icon">📅</span>
+        <span class="icon">
+          📅
+        </span>
+
         カレンダー
       </button>
 
@@ -257,7 +663,10 @@
         class="nav-button"
         data-page="register"
       >
-        <span class="icon">＋</span>
+        <span class="icon">
+          ＋
+        </span>
+
         登録
       </button>
 
@@ -265,7 +674,10 @@
         class="nav-button"
         data-page="summary"
       >
-        <span class="icon">📊</span>
+        <span class="icon">
+          📊
+        </span>
+
         集計
       </button>
 
@@ -273,7 +685,10 @@
         class="nav-button"
         data-page="settings"
       >
-        <span class="icon">⚙️</span>
+        <span class="icon">
+          ⚙️
+        </span>
+
         設定
       </button>
 
@@ -282,9 +697,46 @@
   </div>
 
   <script>
-    const pages = document.querySelectorAll(".page");
-    const navButtons = document.querySelectorAll(".nav-button");
-    const pageTitle = document.getElementById("pageTitle");
+    const STORAGE_KEY = "shiftManagerTemplates";
+
+    const pages =
+      document.querySelectorAll(".page");
+
+    const navButtons =
+      document.querySelectorAll(".nav-button");
+
+    const pageTitle =
+      document.getElementById("pageTitle");
+
+    const templateName =
+      document.getElementById("templateName");
+
+    const workStart =
+      document.getElementById("workStart");
+
+    const workEnd =
+      document.getElementById("workEnd");
+
+    const breakList =
+      document.getElementById("breakList");
+
+    const addBreakButton =
+      document.getElementById("addBreakButton");
+
+    const templateColor =
+      document.getElementById("templateColor");
+
+    const saveTemplateButton =
+      document.getElementById("saveTemplateButton");
+
+    const savedTemplateList =
+      document.getElementById("savedTemplateList");
+
+    const templateMessage =
+      document.getElementById("templateMessage");
+
+    const workSummary =
+      document.getElementById("workSummary");
 
     const titles = {
       home: "ホーム",
@@ -294,37 +746,1124 @@
       settings: "設定"
     };
 
+    let breakCounter = 0;
+
     function showPage(pageId) {
+
       pages.forEach(page => {
         page.classList.remove("active");
       });
 
       document
         .getElementById(pageId)
-        .classList.add("active");
+        .classList
+        .add("active");
 
       navButtons.forEach(button => {
+
         button.classList.toggle(
           "active",
           button.dataset.page === pageId
         );
+
       });
 
-      pageTitle.textContent = titles[pageId];
+      pageTitle.textContent =
+        titles[pageId];
 
       window.scrollTo({
         top: 0,
         behavior: "smooth"
       });
+
     }
 
     document
       .querySelectorAll("[data-page]")
       .forEach(button => {
-        button.addEventListener("click", () => {
-          showPage(button.dataset.page);
-        });
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            showPage(
+              button.dataset.page
+            );
+
+          }
+        );
+
       });
+
+
+    function timeToMinutes(time) {
+
+      if (!time) {
+        return null;
+      }
+
+      const parts =
+        time.split(":");
+
+      const hours =
+        Number(parts[0]);
+
+      const minutes =
+        Number(parts[1]);
+
+      return (
+        hours * 60 +
+        minutes
+      );
+
+    }
+
+
+    function minutesToText(minutes) {
+
+      if (
+        minutes === null ||
+        minutes < 0
+      ) {
+        return "－";
+      }
+
+      const hours =
+        Math.floor(
+          minutes / 60
+        );
+
+      const mins =
+        minutes % 60;
+
+      if (
+        hours > 0 &&
+        mins > 0
+      ) {
+
+        return (
+          hours +
+          "時間" +
+          mins +
+          "分"
+        );
+
+      }
+
+      if (hours > 0) {
+
+        return (
+          hours +
+          "時間"
+        );
+
+      }
+
+      return (
+        mins +
+        "分"
+      );
+
+    }
+
+
+    function calculateDuration(
+      startTime,
+      endTime
+    ) {
+
+      const start =
+        timeToMinutes(
+          startTime
+        );
+
+      let end =
+        timeToMinutes(
+          endTime
+        );
+
+      if (
+        start === null ||
+        end === null
+      ) {
+
+        return null;
+
+      }
+
+      if (end <= start) {
+
+        end +=
+          24 * 60;
+
+      }
+
+      return (
+        end -
+        start
+      );
+
+    }
+
+
+    function getBreakRows() {
+
+      return Array.from(
+        breakList.querySelectorAll(
+          ".break-card"
+        )
+      );
+
+    }
+
+
+    function getBreakData() {
+
+      const breaks = [];
+
+      getBreakRows()
+        .forEach(row => {
+
+          const startInput =
+            row.querySelector(
+              ".break-start"
+            );
+
+          const endInput =
+            row.querySelector(
+              ".break-end"
+            );
+
+          if (
+            startInput.value &&
+            endInput.value
+          ) {
+
+            breaks.push({
+              start:
+                startInput.value,
+              end:
+                endInput.value
+            });
+
+          }
+
+        });
+
+      return breaks;
+
+    }
+
+
+    function calculateBreakMinutes() {
+
+      let total = 0;
+
+      const breaks =
+        getBreakData();
+
+      for (
+        const breakItem
+        of breaks
+      ) {
+
+        const duration =
+          calculateDuration(
+            breakItem.start,
+            breakItem.end
+          );
+
+        if (
+          duration !== null
+        ) {
+
+          total +=
+            duration;
+
+        }
+
+      }
+
+      return total;
+
+    }
+
+
+    function updateWorkSummary() {
+
+      const workDuration =
+        calculateDuration(
+          workStart.value,
+          workEnd.value
+        );
+
+      const strong =
+        workSummary.querySelector(
+          "strong"
+        );
+
+      if (
+        workDuration === null
+      ) {
+
+        strong.textContent =
+          "－";
+
+        return;
+
+      }
+
+      const breakMinutes =
+        calculateBreakMinutes();
+
+      const actual =
+        workDuration -
+        breakMinutes;
+
+      if (actual < 0) {
+
+        strong.textContent =
+          "休憩時間を確認してください";
+
+        return;
+
+      }
+
+      strong.textContent =
+        minutesToText(actual) +
+        "（休憩 " +
+        minutesToText(
+          breakMinutes
+        ) +
+        "）";
+
+    }
+
+
+    function addBreakRow(
+      startValue = "",
+      endValue = ""
+    ) {
+
+      breakCounter += 1;
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+      card.className =
+        "break-card";
+
+      const header =
+        document.createElement(
+          "div"
+        );
+
+      header.className =
+        "break-header";
+
+      const title =
+        document.createElement(
+          "div"
+        );
+
+      title.className =
+        "break-title";
+
+      title.textContent =
+        "休憩 " +
+        breakCounter;
+
+      const removeButton =
+        document.createElement(
+          "button"
+        );
+
+      removeButton.type =
+        "button";
+
+      removeButton.className =
+        "break-remove";
+
+      removeButton.textContent =
+        "削除";
+
+      header.appendChild(
+        title
+      );
+
+      header.appendChild(
+        removeButton
+      );
+
+
+      const timeRow =
+        document.createElement(
+          "div"
+        );
+
+      timeRow.className =
+        "time-row";
+
+
+      const startInput =
+        document.createElement(
+          "input"
+        );
+
+      startInput.type =
+        "time";
+
+      startInput.className =
+        "time-input break-start";
+
+      startInput.value =
+        startValue;
+
+      startInput.setAttribute(
+        "aria-label",
+        "休憩開始時刻"
+      );
+
+
+      const separator =
+        document.createElement(
+          "div"
+        );
+
+      separator.className =
+        "time-separator";
+
+      separator.textContent =
+        "〜";
+
+
+      const endInput =
+        document.createElement(
+          "input"
+        );
+
+      endInput.type =
+        "time";
+
+      endInput.className =
+        "time-input break-end";
+
+      endInput.value =
+        endValue;
+
+      endInput.setAttribute(
+        "aria-label",
+        "休憩終了時刻"
+      );
+
+
+      timeRow.appendChild(
+        startInput
+      );
+
+      timeRow.appendChild(
+        separator
+      );
+
+      timeRow.appendChild(
+        endInput
+      );
+
+
+      card.appendChild(
+        header
+      );
+
+      card.appendChild(
+        timeRow
+      );
+
+
+      removeButton.addEventListener(
+        "click",
+        () => {
+
+          card.remove();
+
+          renumberBreaks();
+
+          updateWorkSummary();
+
+        }
+      );
+
+
+      startInput.addEventListener(
+        "input",
+        updateWorkSummary
+      );
+
+      endInput.addEventListener(
+        "input",
+        updateWorkSummary
+      );
+
+
+      breakList.appendChild(
+        card
+      );
+
+    }
+
+
+    function renumberBreaks() {
+
+      const rows =
+        getBreakRows();
+
+      rows.forEach(
+        (row, index) => {
+
+          const title =
+            row.querySelector(
+              ".break-title"
+            );
+
+          title.textContent =
+            "休憩 " +
+            (index + 1);
+
+        }
+      );
+
+      breakCounter =
+        rows.length;
+
+    }
+
+
+    function showMessage(
+      text,
+      type
+    ) {
+
+      templateMessage.textContent =
+        text;
+
+      templateMessage.className =
+        "message show " +
+        type;
+
+      window.setTimeout(
+        () => {
+
+          templateMessage.className =
+            "message";
+
+        },
+        3500
+      );
+
+    }
+
+
+    function loadTemplates() {
+
+      try {
+
+        const saved =
+          localStorage.getItem(
+            STORAGE_KEY
+          );
+
+        if (!saved) {
+          return [];
+        }
+
+        const parsed =
+          JSON.parse(saved);
+
+        if (
+          !Array.isArray(parsed)
+        ) {
+          return [];
+        }
+
+        return parsed;
+
+      } catch (error) {
+
+        console.error(
+          error
+        );
+
+        return [];
+
+      }
+
+    }
+
+
+    function saveTemplates(
+      templates
+    ) {
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(
+          templates
+        )
+      );
+
+    }
+
+
+    function validateTemplate() {
+
+      const name =
+        templateName.value
+          .trim();
+
+      if (!name) {
+
+        return {
+          valid: false,
+          message:
+            "テンプレート名を入力してください。"
+        };
+
+      }
+
+      if (
+        !workStart.value ||
+        !workEnd.value
+      ) {
+
+        return {
+          valid: false,
+          message:
+            "勤務開始時刻と終了時刻を入力してください。"
+        };
+
+      }
+
+      const workDuration =
+        calculateDuration(
+          workStart.value,
+          workEnd.value
+        );
+
+      if (
+        workDuration === null ||
+        workDuration <= 0
+      ) {
+
+        return {
+          valid: false,
+          message:
+            "勤務時間を確認してください。"
+        };
+
+      }
+
+
+      const rows =
+        getBreakRows();
+
+      for (
+        const row
+        of rows
+      ) {
+
+        const start =
+          row.querySelector(
+            ".break-start"
+          ).value;
+
+        const end =
+          row.querySelector(
+            ".break-end"
+          ).value;
+
+        if (
+          (start && !end) ||
+          (!start && end)
+        ) {
+
+          return {
+            valid: false,
+            message:
+              "休憩時間は開始と終了の両方を入力してください。"
+          };
+
+        }
+
+      }
+
+
+      const breakMinutes =
+        calculateBreakMinutes();
+
+      if (
+        breakMinutes >
+        workDuration
+      ) {
+
+        return {
+          valid: false,
+          message:
+            "休憩時間が勤務時間を超えています。"
+        };
+
+      }
+
+      return {
+        valid: true
+      };
+
+    }
+
+
+    function clearTemplateForm() {
+
+      templateName.value =
+        "";
+
+      workStart.value =
+        "";
+
+      workEnd.value =
+        "";
+
+      templateColor.value =
+        "#5b8def";
+
+      breakList.innerHTML =
+        "";
+
+      breakCounter =
+        0;
+
+      addBreakRow();
+
+      updateWorkSummary();
+
+    }
+
+
+    function createId() {
+
+      return (
+        Date.now().toString(36) +
+        Math.random()
+          .toString(36)
+          .slice(2)
+      );
+
+    }
+
+
+    function saveTemplate() {
+
+      const validation =
+        validateTemplate();
+
+      if (
+        !validation.valid
+      ) {
+
+        showMessage(
+          validation.message,
+          "error"
+        );
+
+        return;
+
+      }
+
+      const templates =
+        loadTemplates();
+
+      const workDuration =
+        calculateDuration(
+          workStart.value,
+          workEnd.value
+        );
+
+      const breakMinutes =
+        calculateBreakMinutes();
+
+      const template = {
+        id:
+          createId(),
+
+        name:
+          templateName.value
+            .trim(),
+
+        workStart:
+          workStart.value,
+
+        workEnd:
+          workEnd.value,
+
+        breaks:
+          getBreakData(),
+
+        color:
+          templateColor.value,
+
+        workMinutes:
+          workDuration,
+
+        breakMinutes:
+          breakMinutes,
+
+        actualMinutes:
+          workDuration -
+          breakMinutes,
+
+        createdAt:
+          new Date()
+            .toISOString()
+      };
+
+      templates.push(
+        template
+      );
+
+      saveTemplates(
+        templates
+      );
+
+      renderSavedTemplates();
+
+      clearTemplateForm();
+
+      showMessage(
+        "勤務テンプレートを保存しました。",
+        "success"
+      );
+
+    }
+
+
+    function deleteTemplate(
+      templateId
+    ) {
+
+      const templates =
+        loadTemplates();
+
+      const target =
+        templates.find(
+          template =>
+            template.id ===
+            templateId
+        );
+
+      if (!target) {
+        return;
+      }
+
+      const confirmed =
+        window.confirm(
+          "「" +
+          target.name +
+          "」を削除しますか？"
+        );
+
+      if (!confirmed) {
+        return;
+      }
+
+      const newTemplates =
+        templates.filter(
+          template =>
+            template.id !==
+            templateId
+        );
+
+      saveTemplates(
+        newTemplates
+      );
+
+      renderSavedTemplates();
+
+      showMessage(
+        "勤務テンプレートを削除しました。",
+        "success"
+      );
+
+    }
+
+
+    function renderSavedTemplates() {
+
+      const templates =
+        loadTemplates();
+
+      savedTemplateList.innerHTML =
+        "";
+
+      if (
+        templates.length === 0
+      ) {
+
+        const empty =
+          document.createElement(
+            "div"
+          );
+
+        empty.className =
+          "empty-state";
+
+        empty.textContent =
+          "まだ勤務テンプレートがありません。";
+
+        savedTemplateList.appendChild(
+          empty
+        );
+
+        return;
+
+      }
+
+
+      templates.forEach(
+        template => {
+
+          const item =
+            document.createElement(
+              "div"
+            );
+
+          item.className =
+            "template-item";
+
+
+          const top =
+            document.createElement(
+              "div"
+            );
+
+          top.className =
+            "template-top";
+
+
+          const nameRow =
+            document.createElement(
+              "div"
+            );
+
+          nameRow.className =
+            "template-name-row";
+
+
+          const color =
+            document.createElement(
+              "div"
+            );
+
+          color.className =
+            "template-color";
+
+          color.style.background =
+            template.color ||
+            "#5b8def";
+
+
+          const name =
+            document.createElement(
+              "div"
+            );
+
+          name.className =
+            "template-name";
+
+          name.textContent =
+            template.name;
+
+
+          nameRow.appendChild(
+            color
+          );
+
+          nameRow.appendChild(
+            name
+          );
+
+          top.appendChild(
+            nameRow
+          );
+
+
+          const details =
+            document.createElement(
+              "div"
+            );
+
+          details.className =
+            "template-details";
+
+
+          let detailText =
+            "勤務 " +
+            template.workStart +
+            "〜" +
+            template.workEnd;
+
+
+          if (
+            template.breaks &&
+            template.breaks.length > 0
+          ) {
+
+            detailText +=
+              "<br>";
+
+            template.breaks.forEach(
+              (
+                breakItem,
+                index
+              ) => {
+
+                detailText +=
+                  "休憩" +
+                  (index + 1) +
+                  " " +
+                  breakItem.start +
+                  "〜" +
+                  breakItem.end;
+
+                if (
+                  index <
+                  template.breaks.length -
+                  1
+                ) {
+
+                  detailText +=
+                    "<br>";
+
+                }
+
+              }
+            );
+
+          } else {
+
+            detailText +=
+              "<br>休憩なし";
+
+          }
+
+
+          detailText +=
+            "<br><strong>実働 " +
+            minutesToText(
+              template.actualMinutes
+            ) +
+            "</strong>";
+
+
+          details.innerHTML =
+            detailText;
+
+
+          const actions =
+            document.createElement(
+              "div"
+            );
+
+          actions.className =
+            "template-actions";
+
+
+          const deleteButton =
+            document.createElement(
+              "button"
+            );
+
+          deleteButton.type =
+            "button";
+
+          deleteButton.className =
+            "danger-button";
+
+          deleteButton.textContent =
+            "削除";
+
+
+          deleteButton.addEventListener(
+            "click",
+            () => {
+
+              deleteTemplate(
+                template.id
+              );
+
+            }
+          );
+
+
+          actions.appendChild(
+            deleteButton
+          );
+
+
+          item.appendChild(
+            top
+          );
+
+          item.appendChild(
+            details
+          );
+
+          item.appendChild(
+            actions
+          );
+
+
+          savedTemplateList.appendChild(
+            item
+          );
+
+        }
+      );
+
+    }
+
+
+    addBreakButton.addEventListener(
+      "click",
+      () => {
+
+        addBreakRow();
+
+      }
+    );
+
+
+    saveTemplateButton.addEventListener(
+      "click",
+      saveTemplate
+    );
+
+
+    workStart.addEventListener(
+      "input",
+      updateWorkSummary
+    );
+
+
+    workEnd.addEventListener(
+      "input",
+      updateWorkSummary
+    );
+
+
+    addBreakRow();
+
+    renderSavedTemplates();
+
+    updateWorkSummary();
   </script>
 
 </body>
