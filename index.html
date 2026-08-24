@@ -2,11 +2,16 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   >
-  <meta name="theme-color" content="#f7f7f7">
+
+  <meta
+    name="theme-color"
+    content="#f7f7f7"
+  >
 
   <title>シフト管理</title>
 
@@ -152,7 +157,9 @@
       grid-template-columns: repeat(5, 1fr);
       background: rgba(255,255,255,0.97);
       border-top: 1px solid #ddd;
-      padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+      padding:
+        8px 4px
+        calc(8px + env(safe-area-inset-bottom));
       z-index: 100;
     }
 
@@ -188,8 +195,7 @@
     }
 
     .text-input,
-    .time-input,
-    .select-input {
+    .time-input {
       display: block;
       width: 100%;
       min-height: 48px;
@@ -212,7 +218,10 @@
 
     .time-row {
       display: grid;
-      grid-template-columns: 1fr 28px 1fr;
+      grid-template-columns:
+        minmax(0,1fr)
+        28px
+        minmax(0,1fr);
       align-items: center;
       gap: 8px;
     }
@@ -372,7 +381,8 @@
       display: block;
     }
 
-    .calendar-header {
+    .calendar-header,
+    .summary-month-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -380,7 +390,8 @@
       margin-bottom: 16px;
     }
 
-    .calendar-header button {
+    .calendar-header button,
+    .summary-month-header button {
       width: 44px;
       height: 44px;
       border: 1px solid #ddd;
@@ -389,9 +400,11 @@
       font-size: 22px;
     }
 
-    .calendar-title {
+    .calendar-title,
+    .summary-month-title {
       font-size: 20px;
       font-weight: 700;
+      text-align: center;
     }
 
     .calendar-weekdays,
@@ -639,6 +652,46 @@
       flex: 0 0 auto;
     }
 
+    .summary-type-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .summary-type-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+    }
+
+    .summary-type-item:last-child {
+      border-bottom: none;
+    }
+
+    .summary-type-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      font-weight: 700;
+    }
+
+    .summary-type-stats {
+      text-align: right;
+      font-size: 13px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .summary-no-shifts {
+      color: #888;
+      text-align: center;
+      padding: 14px 0;
+      font-size: 14px;
+    }
+
     @media (max-width: 360px) {
       .page {
         padding: 16px;
@@ -676,16 +729,25 @@
   <main>
 
     <!-- ホーム -->
-    <section id="home" class="page active">
+    <section
+      id="home"
+      class="page active"
+    >
 
       <div class="card">
         <h2>次の勤務</h2>
 
-        <div id="nextShiftMain" class="big-text">
+        <div
+          id="nextShiftMain"
+          class="big-text"
+        >
           まだ登録されていません
         </div>
 
-        <div id="nextShiftSub" class="sub-text">
+        <div
+          id="nextShiftSub"
+          class="sub-text"
+        >
           シフトを登録するとここに表示されます
         </div>
       </div>
@@ -693,11 +755,17 @@
       <div class="card">
         <h2>今月の勤務</h2>
 
-        <div id="homeMonthDays" class="big-text">
+        <div
+          id="homeMonthDays"
+          class="big-text"
+        >
           0日
         </div>
 
-        <div id="homeMonthHours" class="sub-text">
+        <div
+          id="homeMonthHours"
+          class="sub-text"
+        >
           合計実働時間 0時間
         </div>
       </div>
@@ -713,11 +781,17 @@
 
 
     <!-- カレンダー -->
-    <section id="calendar" class="page">
+    <section
+      id="calendar"
+      class="page"
+    >
 
       <div class="calendar-header">
 
-        <button id="calendarPrev" type="button">
+        <button
+          id="calendarPrev"
+          type="button"
+        >
           ‹
         </button>
 
@@ -726,7 +800,10 @@
           class="calendar-title"
         ></div>
 
-        <button id="calendarNext" type="button">
+        <button
+          id="calendarNext"
+          type="button"
+        >
           ›
         </button>
 
@@ -756,7 +833,10 @@
 
 
     <!-- 一括登録 -->
-    <section id="register" class="page">
+    <section
+      id="register"
+      class="page"
+    >
 
       <div
         id="registerMessage"
@@ -842,11 +922,40 @@
 
 
     <!-- 集計 -->
-    <section id="summary" class="page">
+    <section
+      id="summary"
+      class="page"
+    >
+
+      <div class="summary-month-header">
+
+        <button
+          id="summaryPrev"
+          type="button"
+          aria-label="前の月"
+        >
+          ‹
+        </button>
+
+        <div
+          id="summaryMonthTitle"
+          class="summary-month-title"
+        >
+        </div>
+
+        <button
+          id="summaryNext"
+          type="button"
+          aria-label="次の月"
+        >
+          ›
+        </button>
+
+      </div>
 
       <div class="card">
 
-        <h2>今月の実働時間</h2>
+        <h2>実働時間</h2>
 
         <div
           id="summaryWorkHours"
@@ -875,6 +984,11 @@
           －
         </div>
 
+        <div
+          id="summaryMonthDays"
+          class="sub-text"
+        ></div>
+
       </div>
 
       <div class="card">
@@ -894,11 +1008,25 @@
 
       </div>
 
+      <div class="card">
+
+        <h2>勤務内訳</h2>
+
+        <div
+          id="summaryTypeList"
+          class="summary-type-list"
+        ></div>
+
+      </div>
+
     </section>
 
 
     <!-- 設定 -->
-    <section id="settings" class="page">
+    <section
+      id="settings"
+      class="page"
+    >
 
       <h2 class="section-title">
         勤務テンプレート
@@ -1175,11 +1303,6 @@
       class="shift-date-label"
     ></div>
 
-    <div
-      id="shiftEditMessage"
-      class="message"
-    ></div>
-
     <div class="form-group">
 
       <label class="form-label">
@@ -1287,11 +1410,6 @@
       class="shift-date-label"
     ></div>
 
-    <div
-      id="quickRegisterMessage"
-      class="message"
-    ></div>
-
     <div class="registration-tabs">
 
       <button
@@ -1313,7 +1431,6 @@
     </div>
 
 
-    <!-- テンプレートから -->
     <div
       id="quickTemplatePanel"
       class="quick-panel active"
@@ -1336,7 +1453,6 @@
     </div>
 
 
-    <!-- 直接入力 -->
     <div
       id="quickManualPanel"
       class="quick-panel"
@@ -1509,12 +1625,20 @@
   let mainCalendarDate = new Date();
   let registerCalendarDate = new Date();
 
+  let summaryDate = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    1
+  );
+
   let selectedDates = new Set();
+
   let selectedTemplateId = null;
 
   let pendingRegistration = null;
 
   let quickRegisterDateKey = null;
+
   let quickSelectedTemplateId = null;
 
 
@@ -1527,6 +1651,7 @@
     pages.forEach(page => {
       page.classList.remove("active");
     });
+
 
     document
       .getElementById(pageId)
@@ -1613,8 +1738,10 @@
       return null;
     }
 
+
     const [hours, minutes] =
       time.split(":").map(Number);
+
 
     return (
       hours * 60 +
@@ -1728,6 +1855,7 @@
         .split("-")
         .map(Number);
 
+
     return (
       parts[1] +
       "月" +
@@ -1749,6 +1877,7 @@
       dateKey
         .split("-")
         .map(Number);
+
 
     return (
       year +
@@ -1788,6 +1917,7 @@
           TEMPLATE_STORAGE_KEY
         );
 
+
       if (!saved) {
         return [];
       }
@@ -1795,6 +1925,7 @@
 
       const parsed =
         JSON.parse(saved);
+
 
       return Array.isArray(parsed)
         ? parsed
@@ -1827,6 +1958,7 @@
           SHIFT_STORAGE_KEY
         );
 
+
       if (!saved) {
         return [];
       }
@@ -1834,6 +1966,7 @@
 
       const parsed =
         JSON.parse(saved);
+
 
       return Array.isArray(parsed)
         ? parsed
@@ -1856,7 +1989,7 @@
 
 
   /* ============================
-     テンプレート作成・編集
+     テンプレート
   ============================ */
 
   const templateName =
@@ -1960,6 +2093,7 @@
             start,
             end
           });
+
         }
 
       });
@@ -2005,9 +2139,10 @@
 
 
     const output =
-      workSummary.querySelector(
-        "strong"
-      );
+      workSummary
+        .querySelector(
+          "strong"
+        );
 
 
     if (duration === null) {
@@ -2021,6 +2156,7 @@
 
     const breaks =
       calculateBreakMinutes();
+
 
     const actual =
       duration -
@@ -2158,31 +2294,14 @@
       endValue;
 
 
-    row.appendChild(
-      start
-    );
+    row.appendChild(start);
+    row.appendChild(separator);
+    row.appendChild(end);
 
-    row.appendChild(
-      separator
-    );
+    card.appendChild(header);
+    card.appendChild(row);
 
-    row.appendChild(
-      end
-    );
-
-
-    card.appendChild(
-      header
-    );
-
-    card.appendChild(
-      row
-    );
-
-
-    breakList.appendChild(
-      card
-    );
+    breakList.appendChild(card);
 
 
     remove.addEventListener(
@@ -2309,70 +2428,34 @@
   }
 
 
-  function validateTemplateForm() {
+  function saveTemplate() {
 
     const name =
-      templateName.value.trim();
-
-
-    if (!name) {
-
-      return {
-        ok: false,
-        message:
-          "テンプレート名を入力してください。"
-      };
-    }
+      templateName
+        .value
+        .trim();
 
 
     if (
+      !name ||
       !workStart.value ||
       !workEnd.value
     ) {
 
-      return {
-        ok: false,
-        message:
-          "勤務開始時刻と終了時刻を入力してください。"
-      };
+      showTemplateMessage(
+        "テンプレート名と勤務時間を入力してください。",
+        "error"
+      );
+
+      return;
     }
 
 
-    const workDuration =
+    const duration =
       calculateDuration(
         workStart.value,
         workEnd.value
       );
-
-
-    for (
-      const row
-      of getBreakRows()
-    ) {
-
-      const start =
-        row.querySelector(
-          ".break-start"
-        ).value;
-
-      const end =
-        row.querySelector(
-          ".break-end"
-        ).value;
-
-
-      if (
-        (start && !end) ||
-        (!start && end)
-      ) {
-
-        return {
-          ok: false,
-          message:
-            "休憩時間は開始と終了の両方を入力してください。"
-        };
-      }
-    }
 
 
     const breakMinutes =
@@ -2380,37 +2463,12 @@
 
 
     if (
-      breakMinutes >
-      workDuration
+      duration === null ||
+      breakMinutes > duration
     ) {
 
-      return {
-        ok: false,
-        message:
-          "休憩時間が勤務時間を超えています。"
-      };
-    }
-
-
-    return {
-      ok: true,
-      name,
-      workDuration,
-      breakMinutes
-    };
-  }
-
-
-  function saveTemplate() {
-
-    const validation =
-      validateTemplateForm();
-
-
-    if (!validation.ok) {
-
       showTemplateMessage(
-        validation.message,
+        "勤務時間または休憩時間を確認してください。",
         "error"
       );
 
@@ -2424,8 +2482,7 @@
 
     const data = {
 
-      name:
-        validation.name,
+      name,
 
       workStart:
         workStart.value,
@@ -2440,8 +2497,8 @@
         templateColor.value,
 
       actualMinutes:
-        validation.workDuration -
-        validation.breakMinutes
+        duration -
+        breakMinutes
     };
 
 
@@ -2455,14 +2512,17 @@
         );
 
 
-      if (index === -1) {
+      if (index < 0) {
         return;
       }
 
 
       templates[index] = {
+
         ...templates[index],
+
         ...data
+
       };
 
 
@@ -2482,6 +2542,7 @@
         "テンプレートを更新しました。",
         "success"
       );
+
 
       return;
     }
@@ -2518,15 +2579,12 @@
 
   function startTemplateEdit(id) {
 
-    const templates =
-      loadTemplates();
-
-
     const template =
-      templates.find(
-        item =>
-          item.id === id
-      );
+      loadTemplates()
+        .find(
+          item =>
+            item.id === id
+        );
 
 
     if (!template) {
@@ -2636,22 +2694,19 @@
     }
 
 
-    const result =
+    saveTemplates(
       templates.filter(
         item =>
           item.id !== id
-      );
-
-
-    saveTemplates(
-      result
+      )
     );
 
 
     if (
       selectedTemplateId === id
     ) {
-      selectedTemplateId = null;
+      selectedTemplateId =
+        null;
     }
 
 
@@ -2896,7 +2951,7 @@
 
 
   /* ============================
-     一括登録テンプレート
+     テンプレート選択
   ============================ */
 
   const templateChoiceList =
@@ -3183,6 +3238,7 @@
               selectedDates.add(
                 key
               );
+
             }
 
 
@@ -3210,6 +3266,7 @@
               openQuickRegister(
                 key
               );
+
             }
 
           }
@@ -3300,6 +3357,7 @@
 
 
         renderMainCalendar();
+
       }
     );
 
@@ -3323,6 +3381,7 @@
 
 
         renderMainCalendar();
+
       }
     );
 
@@ -3346,6 +3405,7 @@
 
 
         renderRegisterCalendar();
+
       }
     );
 
@@ -3369,6 +3429,7 @@
 
 
         renderRegisterCalendar();
+
       }
     );
 
@@ -3528,16 +3589,13 @@
     }
 
 
-    const templates =
-      loadTemplates();
-
-
     const template =
-      templates.find(
-        item =>
-          item.id ===
-          selectedTemplateId
-      );
+      loadTemplates()
+        .find(
+          item =>
+            item.id ===
+            selectedTemplateId
+        );
 
 
     if (!template) {
@@ -3595,6 +3653,7 @@
       performRegistration(
         "overwrite"
       );
+
     }
   }
 
@@ -3613,6 +3672,7 @@
           document.createElement(
             "div"
           );
+
 
         div.textContent =
           formatDateFull(
@@ -3702,6 +3762,7 @@
             existingIndex,
             1
           );
+
         }
 
 
@@ -3756,6 +3817,7 @@
         " 登録済みの" +
         skippedCount +
         "日はスキップしました。";
+
     }
 
 
@@ -3865,86 +3927,71 @@
     );
 
 
-  function getShiftBreakRows() {
+  function getShiftBreakData() {
 
     return Array.from(
       shiftEditBreakList
         .querySelectorAll(
           ".break-card"
         )
+    )
+    .map(row => {
+
+      const start =
+        row.querySelector(
+          ".shift-break-start"
+        ).value;
+
+      const end =
+        row.querySelector(
+          ".shift-break-end"
+        ).value;
+
+
+      return {
+        start,
+        end
+      };
+
+    })
+    .filter(
+      item =>
+        item.start &&
+        item.end
     );
-  }
-
-
-  function getShiftBreakData() {
-
-    const result = [];
-
-
-    getShiftBreakRows()
-      .forEach(row => {
-
-        const start =
-          row.querySelector(
-            ".shift-break-start"
-          ).value;
-
-        const end =
-          row.querySelector(
-            ".shift-break-end"
-          ).value;
-
-
-        if (
-          start &&
-          end
-        ) {
-
-          result.push({
-            start,
-            end
-          });
-        }
-
-      });
-
-
-    return result;
   }
 
 
   function calculateShiftBreakMinutes() {
 
-    let total = 0;
+    return getShiftBreakData()
+      .reduce(
+        (sum, item) => {
+
+          const duration =
+            calculateDuration(
+              item.start,
+              item.end
+            );
 
 
-    getShiftBreakData()
-      .forEach(item => {
-
-        const duration =
-          calculateDuration(
-            item.start,
-            item.end
+          return (
+            sum +
+            (
+              duration ||
+              0
+            )
           );
 
-
-        if (
-          duration !== null
-        ) {
-
-          total += duration;
-        }
-
-      });
-
-
-    return total;
+        },
+        0
+      );
   }
 
 
   function updateShiftEditSummary() {
 
-    const workDuration =
+    const duration =
       calculateDuration(
         shiftEditStart.value,
         shiftEditEnd.value
@@ -3959,7 +4006,7 @@
 
 
     if (
-      workDuration === null
+      duration === null
     ) {
 
       output.textContent =
@@ -3969,15 +4016,15 @@
     }
 
 
-    const breakMinutes =
+    const actual =
+      duration -
       calculateShiftBreakMinutes();
 
 
     output.textContent =
-      minutesToText(
-        workDuration -
-        breakMinutes
-      );
+      actual >= 0
+        ? minutesToText(actual)
+        : "休憩時間を確認してください";
   }
 
 
@@ -3998,13 +4045,50 @@
       "break-card";
 
 
-    card.innerHTML =
-      '<div class="break-header">' +
-        '<div class="break-title shift-break-title">' +
-        '休憩 ' +
-        shiftBreakCounter +
-        '</div>' +
-      '</div>';
+    const header =
+      document.createElement(
+        "div"
+      );
+
+    header.className =
+      "break-header";
+
+
+    const title =
+      document.createElement(
+        "div"
+      );
+
+    title.className =
+      "break-title";
+
+    title.textContent =
+      "休憩 " +
+      shiftBreakCounter;
+
+
+    const remove =
+      document.createElement(
+        "button"
+      );
+
+    remove.type =
+      "button";
+
+    remove.className =
+      "break-remove";
+
+    remove.textContent =
+      "削除";
+
+
+    header.appendChild(
+      title
+    );
+
+    header.appendChild(
+      remove
+    );
 
 
     const row =
@@ -4058,38 +4142,16 @@
       endValue;
 
 
-    const remove =
-      document.createElement(
-        "button"
-      );
-
-    remove.type =
-      "button";
-
-    remove.className =
-      "break-remove";
-
-    remove.textContent =
-      "削除";
-
-
-    card
-      .querySelector(
-        ".break-header"
-      )
-      .appendChild(
-        remove
-      );
-
-
     row.appendChild(start);
     row.appendChild(separator);
     row.appendChild(end);
 
+    card.appendChild(header);
     card.appendChild(row);
 
-    shiftEditBreakList
-      .appendChild(card);
+    shiftEditBreakList.appendChild(
+      card
+    );
 
 
     remove.addEventListener(
@@ -4124,7 +4186,8 @@
       loadShifts()
         .find(
           item =>
-            item.id === shiftId
+            item.id ===
+            shiftId
         );
 
 
@@ -4189,6 +4252,7 @@
     } else {
 
       addShiftBreakRow();
+
     }
 
 
@@ -4205,6 +4269,7 @@
 
     editingShiftId =
       null;
+
 
     shiftEditModal
       .classList
@@ -4235,8 +4300,15 @@
     }
 
 
-    const breaks =
+    const breakMinutes =
       calculateShiftBreakMinutes();
+
+
+    if (
+      breakMinutes > duration
+    ) {
+      return;
+    }
 
 
     const shifts =
@@ -4252,7 +4324,7 @@
 
 
     if (
-      index === -1
+      index < 0
     ) {
       return;
     }
@@ -4273,7 +4345,7 @@
 
       actualMinutes:
         duration -
-        breaks
+        breakMinutes
 
     };
 
@@ -4401,7 +4473,7 @@
 
 
   /* ============================
-     空いている日に新規登録
+     空き日の新規登録
   ============================ */
 
   const quickRegisterModal =
@@ -4470,12 +4542,11 @@
     );
 
 
-  function setQuickMode(
-    mode
-  ) {
+  function setQuickMode(mode) {
 
     const templateMode =
-      mode === "template";
+      mode ===
+      "template";
 
 
     quickTemplateTab
@@ -4537,6 +4608,7 @@
 
     quickColor.value =
       "#8b8b8b";
+
 
     document
       .getElementById(
@@ -4652,13 +4724,16 @@
           '</div>' +
 
           '<div class="choice-details">' +
+
             template.workStart +
             '〜' +
             template.workEnd +
+
             ' ／ 実働 ' +
             minutesToText(
               template.actualMinutes
             ) +
+
           '</div>';
 
 
@@ -4740,80 +4815,59 @@
   }
 
 
-  function getQuickBreakRows() {
+  function getQuickBreakData() {
 
     return Array.from(
       quickBreakList
         .querySelectorAll(
           ".break-card"
         )
-    );
-  }
+    )
+    .map(row => {
 
+      return {
 
-  function getQuickBreakData() {
-
-    const result = [];
-
-
-    getQuickBreakRows()
-      .forEach(row => {
-
-        const start =
+        start:
           row.querySelector(
             ".quick-break-start"
-          ).value;
+          ).value,
 
-        const end =
+        end:
           row.querySelector(
             ".quick-break-end"
-          ).value;
+          ).value
 
+      };
 
-        if (
-          start &&
-          end
-        ) {
-
-          result.push({
-            start,
-            end
-          });
-        }
-
-      });
-
-
-    return result;
+    })
+    .filter(
+      item =>
+        item.start &&
+        item.end
+    );
   }
 
 
   function calculateQuickBreakMinutes() {
 
-    let total = 0;
+    return getQuickBreakData()
+      .reduce(
+        (sum, item) => {
 
-
-    getQuickBreakData()
-      .forEach(item => {
-
-        const duration =
-          calculateDuration(
-            item.start,
-            item.end
+          return (
+            sum +
+            (
+              calculateDuration(
+                item.start,
+                item.end
+              ) ||
+              0
+            )
           );
 
-
-        if (
-          duration !== null
-        ) {
-
-          total += duration;
-        }
-
-      });
-
-
-    return total;
+        },
+        0
+      );
   }
 
 
@@ -4844,31 +4898,24 @@
     }
 
 
-    const breaks =
+    const actual =
+      duration -
       calculateQuickBreakMinutes();
 
 
-    const actual =
-      duration -
-      breaks;
-
-
-    if (
-      actual < 0
-    ) {
-
-      output.textContent =
-        "休憩時間を確認してください";
-
-      return;
-    }
-
-
     output.textContent =
-      minutesToText(actual) +
-      "（休憩 " +
-      minutesToText(breaks) +
-      "）";
+      actual >= 0
+        ? (
+            minutesToText(
+              actual
+            ) +
+            "（休憩 " +
+            minutesToText(
+              calculateQuickBreakMinutes()
+            ) +
+            "）"
+          )
+        : "休憩時間を確認してください";
   }
 
 
@@ -4993,8 +5040,9 @@
     card.appendChild(header);
     card.appendChild(row);
 
-    quickBreakList
-      .appendChild(card);
+    quickBreakList.appendChild(
+      card
+    );
 
 
     remove.addEventListener(
@@ -5023,26 +5071,10 @@
 
   function saveQuickManual() {
 
-    if (
-      !quickRegisterDateKey
-    ) {
-      return;
-    }
-
-
     const name =
       quickShiftName
         .value
         .trim();
-
-
-    if (
-      !name ||
-      !quickWorkStart.value ||
-      !quickWorkEnd.value
-    ) {
-      return;
-    }
 
 
     const duration =
@@ -5052,13 +5084,15 @@
       );
 
 
-    const breaks =
+    const breakMinutes =
       calculateQuickBreakMinutes();
 
 
     if (
+      !quickRegisterDateKey ||
+      !name ||
       duration === null ||
-      breaks > duration
+      breakMinutes > duration
     ) {
       return;
     }
@@ -5066,7 +5100,7 @@
 
     const actual =
       duration -
-      breaks;
+      breakMinutes;
 
 
     const shifts =
@@ -5394,18 +5428,18 @@
 
 
   /* ============================
-     集計
+     月別集計
   ============================ */
 
   function getRequiredMinutes(
     year,
-    month
+    monthNumber
   ) {
 
     const days =
       new Date(
         year,
-        month,
+        monthNumber,
         0
       ).getDate();
 
@@ -5429,21 +5463,31 @@
 
   function updateSummary() {
 
-    const now =
-      new Date();
-
-
     const year =
-      now.getFullYear();
+      summaryDate.getFullYear();
 
-    const month =
-      now.getMonth() + 1;
+    const monthIndex =
+      summaryDate.getMonth();
+
+    const monthNumber =
+      monthIndex + 1;
+
+
+    document
+      .getElementById(
+        "summaryMonthTitle"
+      )
+      .textContent =
+        year +
+        "年" +
+        monthNumber +
+        "月";
 
 
     const prefix =
       year +
       "-" +
-      String(month)
+      String(monthNumber)
         .padStart(2, "0");
 
 
@@ -5473,7 +5517,7 @@
     const required =
       getRequiredMinutes(
         year,
-        month
+        monthNumber
       );
 
 
@@ -5483,6 +5527,14 @@
         total -
         required
       );
+
+
+    const daysInMonth =
+      new Date(
+        year,
+        monthNumber,
+        0
+      ).getDate();
 
 
     document
@@ -5517,17 +5569,244 @@
 
     document
       .getElementById(
+        "summaryMonthDays"
+      )
+      .textContent =
+        daysInMonth +
+        "日月の所定労働時間";
+
+
+    document
+      .getElementById(
         "summaryOvertime"
       )
       .textContent =
         minutesToText(
           overtime
         );
+
+
+    renderSummaryTypes(
+      shifts
+    );
   }
 
 
+  function renderSummaryTypes(
+    shifts
+  ) {
+
+    const container =
+      document.getElementById(
+        "summaryTypeList"
+      );
+
+
+    container.innerHTML =
+      "";
+
+
+    if (
+      shifts.length === 0
+    ) {
+
+      container.innerHTML =
+        '<div class="summary-no-shifts">' +
+        'この月はまだシフトが登録されていません。' +
+        '</div>';
+
+      return;
+    }
+
+
+    const grouped =
+      {};
+
+
+    shifts.forEach(
+      shift => {
+
+        const name =
+          shift.templateName ||
+          "名称なし";
+
+
+        if (!grouped[name]) {
+
+          grouped[name] = {
+
+            name,
+
+            count: 0,
+
+            minutes: 0,
+
+            color:
+              shift.color ||
+              "#aaa"
+
+          };
+        }
+
+
+        grouped[name].count += 1;
+
+
+        grouped[name].minutes +=
+          Number(
+            shift.actualMinutes ||
+            0
+          );
+
+      }
+    );
+
+
+    Object.values(
+      grouped
+    )
+    .sort(
+      (a, b) =>
+        b.count -
+        a.count
+    )
+    .forEach(
+      item => {
+
+        const row =
+          document.createElement(
+            "div"
+          );
+
+        row.className =
+          "summary-type-item";
+
+
+        const name =
+          document.createElement(
+            "div"
+          );
+
+        name.className =
+          "summary-type-name";
+
+
+        const dot =
+          document.createElement(
+            "span"
+          );
+
+        dot.className =
+          "template-color";
+
+        dot.style.background =
+          item.color;
+
+
+        const label =
+          document.createElement(
+            "span"
+          );
+
+        label.textContent =
+          item.name;
+
+
+        name.appendChild(
+          dot
+        );
+
+        name.appendChild(
+          label
+        );
+
+
+        const stats =
+          document.createElement(
+            "div"
+          );
+
+        stats.className =
+          "summary-type-stats";
+
+
+        stats.innerHTML =
+          "<strong>" +
+          item.count +
+          "回</strong><br>" +
+          minutesToText(
+            item.minutes
+          );
+
+
+        row.appendChild(
+          name
+        );
+
+        row.appendChild(
+          stats
+        );
+
+
+        container.appendChild(
+          row
+        );
+
+      }
+    );
+  }
+
+
+  document
+    .getElementById(
+      "summaryPrev"
+    )
+    .addEventListener(
+      "click",
+      () => {
+
+        summaryDate =
+          new Date(
+            summaryDate
+              .getFullYear(),
+            summaryDate
+              .getMonth() - 1,
+            1
+          );
+
+
+        updateSummary();
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "summaryNext"
+    )
+    .addEventListener(
+      "click",
+      () => {
+
+        summaryDate =
+          new Date(
+            summaryDate
+              .getFullYear(),
+            summaryDate
+              .getMonth() + 1,
+            1
+          );
+
+
+        updateSummary();
+
+      }
+    );
+
+
   /* ============================
-     全画面更新
+     全体更新
   ============================ */
 
   function refreshAll() {
@@ -5541,6 +5820,7 @@
     updateHome();
 
     updateSummary();
+
   }
 
 
