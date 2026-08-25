@@ -150,6 +150,19 @@
       max-height:29px;
       flex:0 0 auto;
     }
+
+    .shift-dot.single-line {
+      display:block;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:clip;
+      -webkit-line-clamp:unset;
+      line-clamp:unset;
+      font-size:8.3px;
+      line-height:1.2;
+      text-align:center;
+      letter-spacing:-0.15px;
+    }
     .selection-status { background:#f6f6f6; padding:14px; border-radius:12px; margin-bottom:16px; font-size:14px; }
     .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:999; align-items:center; justify-content:center; padding:20px; }
     .modal-backdrop.show { display:flex; }
@@ -229,6 +242,7 @@
       .time-row { grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr); gap:5px; }
       .calendar-day { min-height:64px; padding:5px; }
       .shift-dot { font-size:8.5px; padding:3px 3px; }
+      .shift-dot.single-line { font-size:7.9px; letter-spacing:-0.2px; }
     }
   
     .summary-tabs {
@@ -781,6 +795,15 @@ function getReadableTextColor(hex){
   const brightness=(r*299+g*587+b*114)/1000;
   return brightness>=155 ? "#222" : "#fff";
 }
+
+function getJapaneseDisplayLength(text){
+  let length=0;
+  for(const ch of String(text||"")){
+    length += /[\x00-\x7F]/.test(ch) ? 0.5 : 1;
+  }
+  return length;
+}
+
 function moveMonth(d,a){return new Date(d.getFullYear(),d.getMonth()+a,1);}
 
 function localDateKey(date){
@@ -1592,7 +1615,9 @@ function buildCalendar(container,targetDate,selectable){
     if(selectable&&selectedDates.has(key))btn.classList.add("selected");
     const shiftBg=shift?(shift.color||"#ddd"):"#ddd";
     const shiftTextColor=shift?getReadableTextColor(shiftBg):"#222";
-    btn.innerHTML=`<span class="day-number">${d}</span>${shift?`<span class="shift-dot" style="background:${shiftBg};color:${shiftTextColor}">${escapeHtml(shift.type==="paidLeave"?"有休":shift.templateName)}</span>`:""}`;
+    const shiftLabel=shift?(shift.type==="paidLeave"?"有休":shift.templateName):"";
+    const shiftLabelClass=shift&&getJapaneseDisplayLength(shiftLabel)<=4?" single-line":"";
+    btn.innerHTML=`<span class="day-number">${d}</span>${shift?`<span class="shift-dot${shiftLabelClass}" style="background:${shiftBg};color:${shiftTextColor}">${escapeHtml(shiftLabel)}</span>`:""}`;
     btn.onclick=()=>{
       if(selectable){
         selectedDates.has(key)?selectedDates.delete(key):selectedDates.add(key);
