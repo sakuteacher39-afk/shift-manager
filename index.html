@@ -698,6 +698,11 @@
           <div class="sub-text">
             「末日」を選ぶと1日〜月末で集計します。数字を選ぶと、前回の締め日の翌日〜今回の締め日で集計します。
           </div>
+
+        <div class="form-group">
+          <label class="form-label">基礎時給</label>
+          <input id="baseHourlyRate" class="number-input" type="number" min="0" step="1">
+        </div>
         </div>
 
         <div class="form-group">
@@ -718,10 +723,7 @@
           <div class="sub-text">選択した月だけ、集計画面に賞与入力欄を表示します。複数月選択できます。</div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">基礎時給</label>
-          <input id="baseHourlyRate" class="number-input" type="number" min="0" step="1">
-        </div>
+        
         <div class="form-group">
           <label class="form-label">残業割増率（％）</label>
           <input id="overtimePremium" class="number-input" type="number" min="0" step="1" value="25">
