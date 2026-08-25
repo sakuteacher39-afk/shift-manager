@@ -1752,7 +1752,14 @@ function updateSummary(){
   document.getElementById("summaryOvertime").textContent=minutesToText(r.overtimeMinutes);
   document.getElementById("summaryLateNight").textContent=minutesToText(r.lateNightMinutes);
   document.getElementById("summaryEstimatedPay").textContent=money(r.total);
-  renderAnnualPaidLeave(new Date(y,m-1,1));renderMonthlyAllowanceForm();renderPayBreakdown(r);renderActualSalaryForm();renderAnnualDashboard();renderMonthlyChart();renderSummaryTypes(r.shifts);
+  renderAnnualPaidLeave(new Date(y,m-1,1));
+  renderMonthlyAllowanceForm();
+  renderBonusForm();
+  renderPayBreakdown(r);
+  renderActualSalaryForm();
+  renderAnnualDashboard();
+  renderMonthlyChart();
+  renderSummaryTypes(r.shifts);
 }
 document.getElementById("saveBonusButton").onclick=saveCurrentBonus;
 document.getElementById("saveActualSalaryButton").onclick=saveCurrentActualSalary;
