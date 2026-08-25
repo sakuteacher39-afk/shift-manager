@@ -257,6 +257,13 @@
     .summary-tab.active { background:#222; color:#fff; }
     .summary-tab-panel { display:none; }
     .summary-tab-panel.active { display:block; }
+
+.settings-accordion{border:1px solid #e1e1e1;border-radius:16px;background:#fff;margin-bottom:12px;overflow:hidden}
+.settings-accordion summary{list-style:none;display:flex;align-items:center;justify-content:space-between;min-height:58px;padding:0 16px;cursor:pointer;font-size:16px;font-weight:700}
+.settings-accordion summary::-webkit-details-marker{display:none}
+.settings-accordion summary::after{content:"▼";color:#888;font-size:12px}
+.settings-accordion[open] summary::after{content:"▲"}
+.settings-accordion-body{padding:14px;border-top:1px solid #eee}
 </style>
 </head>
 <body>
@@ -1984,6 +1991,45 @@ function setupSummaryTabs(){
 }
 setupSummaryTabs();
 
+
+function setupSettingsAccordions(){
+  const page=document.getElementById("settings");
+  if(!page||page.dataset.accordionReady==="1")return;
+  page.dataset.accordionReady="1";
+
+  const cards=[...page.querySelectorAll(":scope > .card")];
+  if(!cards.length)return;
+
+  const backupCard=cards.find(card=>
+    card.querySelector("#exportBackupButton,#importBackupButton") ||
+    /バックアップ/.test(card.textContent||"")
+  );
+
+  const ordered=cards.filter(card=>card!==backupCard);
+  if(backupCard)ordered.push(backupCard);
+
+  ordered.forEach((card,index)=>{
+    const h2=card.querySelector("h2");
+    let title=h2?.textContent?.trim()||`設定 ${index+1}`;
+    if(backupCard===card)title="バックアップ";
+
+    const details=document.createElement("details");
+    details.className="settings-accordion";
+
+    const summary=document.createElement("summary");
+    summary.textContent=title;
+
+    const body=document.createElement("div");
+    body.className="settings-accordion-body";
+
+    if(h2)h2.remove();
+    while(card.firstChild)body.appendChild(card.firstChild);
+
+    details.append(summary,body);
+    card.replaceWith(details);
+  });
+}
+setupSettingsAccordions();
 </script>
 </body>
 </html>
