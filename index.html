@@ -130,6 +130,7 @@
       flex:0 0 auto;
     }
     .shift-dot {
+      color:inherit;
       display:-webkit-box;
       width:100%;
       margin:0;
@@ -767,6 +768,19 @@ function monthToKey(y,m){return `${y}-${String(m).padStart(2,"0")}`;}
 function formatDateJapanese(k){const p=k.split("-").map(Number);return `${p[1]}月${p[2]}日`;}
 function formatDateFull(k){const p=k.split("-").map(Number);return `${p[0]}年${p[1]}月${p[2]}日`;}
 function escapeHtml(t){const d=document.createElement("div");d.textContent=t;return d.innerHTML;}
+function getReadableTextColor(hex){
+  if(!hex)return "#222";
+  const clean=String(hex).replace("#","").trim();
+  if(!/^[0-9a-fA-F]{6}$/.test(clean))return "#222";
+
+  const r=parseInt(clean.slice(0,2),16);
+  const g=parseInt(clean.slice(2,4),16);
+  const b=parseInt(clean.slice(4,6),16);
+
+  // Relative luminance approximation for UI contrast.
+  const brightness=(r*299+g*587+b*114)/1000;
+  return brightness>=155 ? "#222" : "#fff";
+}
 function moveMonth(d,a){return new Date(d.getFullYear(),d.getMonth()+a,1);}
 
 function localDateKey(date){
@@ -1576,7 +1590,9 @@ function buildCalendar(container,targetDate,selectable){
     const btn=document.createElement("button");btn.type="button";btn.className="calendar-day";
     if(shift){btn.classList.add("has-shift");btn.style.borderColor=shift.color||"#444";}
     if(selectable&&selectedDates.has(key))btn.classList.add("selected");
-    btn.innerHTML=`<span class="day-number">${d}</span>${shift?`<span class="shift-dot" style="background:${shift.color||"#ddd"}">${escapeHtml(shift.type==="paidLeave"?"有休":shift.templateName)}</span>`:""}`;
+    const shiftBg=shift?(shift.color||"#ddd"):"#ddd";
+    const shiftTextColor=shift?getReadableTextColor(shiftBg):"#222";
+    btn.innerHTML=`<span class="day-number">${d}</span>${shift?`<span class="shift-dot" style="background:${shiftBg};color:${shiftTextColor}">${escapeHtml(shift.type==="paidLeave"?"有休":shift.templateName)}</span>`:""}`;
     btn.onclick=()=>{
       if(selectable){
         selectedDates.has(key)?selectedDates.delete(key):selectedDates.add(key);
