@@ -174,7 +174,20 @@
       .time-row { grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr); gap:5px; }
       .calendar-day { min-height:52px; }
     }
-  </style>
+  
+    .summary-tabs {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:6px;
+      padding:6px; margin:0 0 18px; background:#f1f1f1;
+      border-radius:14px;
+    }
+    .summary-tab {
+      min-height:44px; border:0; border-radius:10px; background:transparent;
+      color:#777; font-size:14px; font-weight:700;
+    }
+    .summary-tab.active { background:#222; color:#fff; }
+    .summary-tab-panel { display:none; }
+    .summary-tab-panel.active { display:block; }
+</style>
 </head>
 <body>
 <div class="app">
@@ -248,6 +261,13 @@
         <button id="summaryNext" type="button">›</button>
       </div>
 
+      <div class="summary-tabs">
+        <button class="summary-tab active" type="button" data-summary-tab="monthly">今月</button>
+        <button class="summary-tab" type="button" data-summary-tab="annual">年間</button>
+        <button class="summary-tab" type="button" data-summary-tab="actual">明細比較</button>
+      </div>
+
+      <div id="summaryMonthlyPanel" class="summary-tab-panel active">
       <div class="card">
         <h2>給与対象期間</h2>
         <div id="summaryPayPeriod" class="period-text">－</div>
@@ -328,21 +348,12 @@
       </div>
 
       <div class="card">
-        <h2>給与明細との比較</h2>
-        <p class="sub-text">実際の給与明細に記載された総支給額を入力すると、アプリの見込みとの差額と誤差率を表示します。</p>
-        <div id="actualSalaryMessage" class="message"></div>
-        <div class="form-group">
-          <label class="form-label" for="actualGrossPay">実際の総支給額</label>
-          <input id="actualGrossPay" class="number-input" type="number" min="0" step="1" inputmode="numeric" placeholder="例：286180">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="actualSalaryMemo">メモ</label>
-          <textarea id="actualSalaryMemo" class="textarea-input" maxlength="200" placeholder="例：8月給与明細"></textarea>
-        </div>
-        <button id="saveActualSalaryButton" class="primary-button" type="button">この給与月の実績を保存</button>
-        <div id="actualSalaryComparison" class="compare-box"></div>
+        <h2>勤務内訳</h2>
+        <div id="summaryTypeList"></div>
+      </div>
       </div>
 
+      <div id="summaryAnnualPanel" class="summary-tab-panel">
       <div class="card">
         <h2>年間ダッシュボード</h2>
         <div id="annualDashboardPeriod" class="sub-text"></div>
@@ -361,10 +372,24 @@
         </div>
         <div id="chartLegend" class="chart-legend"></div>
       </div>
+      </div>
 
+      <div id="summaryActualPanel" class="summary-tab-panel">
       <div class="card">
-        <h2>勤務内訳</h2>
-        <div id="summaryTypeList"></div>
+        <h2>給与明細との比較</h2>
+        <p class="sub-text">実際の給与明細に記載された総支給額を入力すると、アプリの見込みとの差額と誤差率を表示します。</p>
+        <div id="actualSalaryMessage" class="message"></div>
+        <div class="form-group">
+          <label class="form-label" for="actualGrossPay">実際の総支給額</label>
+          <input id="actualGrossPay" class="number-input" type="number" min="0" step="1" inputmode="numeric" placeholder="例：286180">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="actualSalaryMemo">メモ</label>
+          <textarea id="actualSalaryMemo" class="textarea-input" maxlength="200" placeholder="例：8月給与明細"></textarea>
+        </div>
+        <button id="saveActualSalaryButton" class="primary-button" type="button">この給与月の実績を保存</button>
+        <div id="actualSalaryComparison" class="compare-box"></div>
+      </div>
       </div>
     </section>
 
@@ -1838,6 +1863,31 @@ updateWorkSummary();
 loadPaySettingsIntoForm();
 updateHome();
 updateSummary();
+
+function setupSummaryTabs(){
+  const buttons=[...document.querySelectorAll(".summary-tab")];
+  const panels={
+    monthly:document.getElementById("summaryMonthlyPanel"),
+    annual:document.getElementById("summaryAnnualPanel"),
+    actual:document.getElementById("summaryActualPanel")
+  };
+
+  function activate(name,scroll=false){
+    if(!panels[name])name="monthly";
+    buttons.forEach(btn=>btn.classList.toggle("active",btn.dataset.summaryTab===name));
+    Object.entries(panels).forEach(([key,panel])=>panel.classList.toggle("active",key===name));
+    try{localStorage.setItem("shiftManagerSummaryTab",name);}catch(e){}
+    if(scroll)document.getElementById("summary").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+
+  buttons.forEach(btn=>btn.addEventListener("click",()=>activate(btn.dataset.summaryTab,true)));
+
+  let saved="monthly";
+  try{saved=localStorage.getItem("shiftManagerSummaryTab")||"monthly";}catch(e){}
+  activate(saved,false);
+}
+setupSummaryTabs();
+
 </script>
 </body>
 </html>
