@@ -488,6 +488,24 @@
     .calendar-day .day-number { color:#111; }
     .calendar-day.sunday .day-number { color:#d32f2f; }
     .calendar-day.saturday .day-number { color:#1976d2; }
+
+    /* カレンダー曜日を少し大きく */
+    .calendar-weekdays .weekday {
+      font-size:15px;
+      font-weight:700;
+      line-height:1.4;
+    }
+
+    /* 前月・翌月の日付 */
+    .calendar-day.outside-month {
+      background:#f7f7f7;
+      border-color:#ececec;
+      cursor:default;
+      pointer-events:none;
+    }
+    .calendar-day.outside-month .day-number {
+      color:#b8b8b8 !important;
+    }
 </style>
 </head>
 <body>
@@ -1914,27 +1932,56 @@ function renderTemplateChoices(){
 /* カレンダー */
 function buildCalendar(container,targetDate,selectable){
   container.innerHTML="";
-  const y=targetDate.getFullYear(),m=targetDate.getMonth(),first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),shifts=loadShifts();
-  for(let i=0;i<first;i++){const e=document.createElement("div");e.className="calendar-day empty";container.appendChild(e);}
+  const y=targetDate.getFullYear();
+  const m=targetDate.getMonth();
+  const first=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  const prevDays=new Date(y,m,0).getDate();
+  const shifts=loadShifts();
+
+  function addOutsideDay(day){
+    const cell=document.createElement("div");
+    cell.className="calendar-day outside-month";
+    cell.setAttribute("aria-disabled","true");
+    cell.innerHTML=`<span class="day-number">${day}</span>`;
+    container.appendChild(cell);
+  }
+
+  // 月初より前：前月末の日付をグレー表示
+  for(let i=0;i<first;i++){
+    addOutsideDay(prevDays-first+i+1);
+  }
+
+  // 当月
   for(let d=1;d<=days;d++){
-    const key=dateToKey(y,m,d),shift=shifts.find(x=>x.date===key);
+    const key=dateToKey(y,m,d);
+    const shift=shifts.find(x=>x.date===key);
     const btn=document.createElement("button");
     btn.type="button";
     btn.className="calendar-day";
+
     const weekday=new Date(y,m,d).getDay();
     if(weekday===0)btn.classList.add("sunday");
     if(weekday===6)btn.classList.add("saturday");
-    if(shift){btn.classList.add("has-shift");btn.style.borderColor=shift.color||"#444";}
+
+    if(shift){
+      btn.classList.add("has-shift");
+      btn.style.borderColor=shift.color||"#444";
+    }
     if(selectable&&selectedDates.has(key))btn.classList.add("selected");
+
     const shiftBg=shift?(shift.color||"#ddd"):"#ddd";
     const shiftTextColor=shift?getReadableTextColor(shiftBg):"#222";
     const shiftLabel=shift?(shift.type==="paidLeave"?"有休":shift.templateName):"";
     const shiftLabelClass=shift&&getJapaneseDisplayLength(shiftLabel)<=4?" single-line":"";
+
     btn.innerHTML=`<span class="day-number">${d}</span>${shift?`<span class="shift-dot${shiftLabelClass}" style="background:${shiftBg};color:${shiftTextColor}">${escapeHtml(shiftLabel)}</span>`:""}`;
+
     btn.onclick=()=>{
       if(selectable){
         selectedDates.has(key)?selectedDates.delete(key):selectedDates.add(key);
-        renderRegisterCalendar();updateSelectionStatus();
+        renderRegisterCalendar();
+        updateSelectionStatus();
       }else{
         if(!shift)openQuickRegister(key);
         else if(shift.type==="paidLeave")openPaidLeaveEditor(shift.id);
@@ -1942,6 +1989,13 @@ function buildCalendar(container,targetDate,selectable){
       }
     };
     container.appendChild(btn);
+  }
+
+  // 月末より後：6週間ではなく、その月の最終週が埋まる分だけ翌月を表示
+  const used=first+days;
+  const trailing=(7-(used%7))%7;
+  for(let d=1;d<=trailing;d++){
+    addOutsideDay(d);
   }
 }
 function renderMainCalendar(){
