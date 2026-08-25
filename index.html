@@ -121,6 +121,18 @@
     .warning-note { padding:12px 14px; border-radius:12px; background:#f7f7f7; color:#666; font-size:12px; line-height:1.6; margin-top:12px; }
     .monthly-allowance-card { border:2px solid #e3e3e3; }
     .monthly-allowance-saved { margin-top:12px; padding:12px 14px; background:#f6f6f6; border-radius:12px; font-size:13px; line-height:1.6; }
+    .backup-card { border:2px solid #e3e3e3; }
+    .backup-actions { display:grid; gap:10px; margin-top:16px; }
+    .restore-file-label {
+      display:flex; align-items:center; justify-content:center; width:100%; min-height:50px;
+      border:1px solid #ccc; border-radius:14px; padding:14px; background:#fff; color:#222;
+      font-weight:700; cursor:pointer; text-align:center;
+    }
+    .restore-file-label input { display:none; }
+    .backup-status {
+      margin-top:12px; padding:12px 14px; border-radius:12px; background:#f6f6f6;
+      color:#666; font-size:13px; line-height:1.6;
+    }
     @media (max-width:360px) {
       .page { padding:16px; }
       .time-row { grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr); gap:5px; }
@@ -254,6 +266,44 @@
     </section>
 
     <section id="settings" class="page">
+      <h2 class="section-title">バックアップ</h2>
+
+      <div id="backupMessage" class="message"></div>
+
+      <div class="card backup-card">
+        <h2>データのバックアップ・復元</h2>
+
+        <p class="sub-text">
+          シフト、勤務テンプレート、給与設定、月ごとの追加手当を
+          1つのバックアップファイルにまとめて保存できます。
+        </p>
+
+        <div class="backup-actions">
+          <button
+            id="exportBackupButton"
+            class="primary-button"
+            type="button"
+          >
+            バックアップを書き出す
+          </button>
+
+          <label class="restore-file-label">
+            バックアップから復元
+            <input
+              id="restoreBackupInput"
+              type="file"
+              accept=".json,application/json"
+            >
+          </label>
+        </div>
+
+        <div id="backupStatus" class="backup-status">
+          バックアップを作成しておくと、Safariのデータ消去や端末変更時の復元に使えます。
+        </div>
+      </div>
+
+      <hr class="divider">
+
       <h2 class="section-title">給与設定</h2>
       <div id="paySettingsMessage" class="message"></div>
       <div class="card">
@@ -495,6 +545,144 @@ function loadPaySettings(){return {...DEFAULT_PAY_SETTINGS,...loadJson(PAY_STORA
 function savePaySettings(v){saveJson(PAY_STORAGE_KEY,v);}
 function loadMonthlyAllowances(){const v=loadJson(MONTHLY_ALLOWANCE_STORAGE_KEY,{});return v&&typeof v==="object"?v:{};}
 function saveMonthlyAllowances(v){saveJson(MONTHLY_ALLOWANCE_STORAGE_KEY,v);}
+
+/* バックアップ・復元 */
+const BACKUP_VERSION=1;
+
+function buildBackupData(){
+  return {
+    app:"shift-manager",
+    version:BACKUP_VERSION,
+    exportedAt:new Date().toISOString(),
+    data:{
+      templates:loadTemplates(),
+      shifts:loadShifts(),
+      paySettings:loadPaySettings(),
+      monthlyAllowances:loadMonthlyAllowances()
+    }
+  };
+}
+
+function backupFileName(){
+  const now=new Date();
+  const y=now.getFullYear();
+  const m=String(now.getMonth()+1).padStart(2,"0");
+  const d=String(now.getDate()).padStart(2,"0");
+  const h=String(now.getHours()).padStart(2,"0");
+  const min=String(now.getMinutes()).padStart(2,"0");
+  return `shift-manager-backup_${y}${m}${d}_${h}${min}.json`;
+}
+
+function exportBackup(){
+  try{
+    const backup=buildBackupData();
+    const blob=new Blob(
+      [JSON.stringify(backup,null,2)],
+      {type:"application/json"}
+    );
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;
+    a.download=backupFileName();
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+
+    const status=document.getElementById("backupStatus");
+    status.textContent=`バックアップを書き出しました。作成日時：${new Date().toLocaleString("ja-JP")}`;
+    showMessage(
+      document.getElementById("backupMessage"),
+      "バックアップファイルを書き出しました。"
+    );
+  }catch(error){
+    console.error(error);
+    showMessage(
+      document.getElementById("backupMessage"),
+      "バックアップの作成に失敗しました。",
+      "error"
+    );
+  }
+}
+
+function validateBackupObject(obj){
+  if(!obj||typeof obj!=="object")return false;
+  if(obj.app!=="shift-manager")return false;
+  if(!obj.data||typeof obj.data!=="object")return false;
+  if(!Array.isArray(obj.data.templates))return false;
+  if(!Array.isArray(obj.data.shifts))return false;
+  if(!obj.data.paySettings||typeof obj.data.paySettings!=="object")return false;
+  if(!obj.data.monthlyAllowances||typeof obj.data.monthlyAllowances!=="object")return false;
+  return true;
+}
+
+async function restoreBackupFromFile(file){
+  if(!file)return;
+
+  try{
+    const text=await file.text();
+    const backup=JSON.parse(text);
+
+    if(!validateBackupObject(backup)){
+      throw new Error("invalid backup");
+    }
+
+    const shiftCount=backup.data.shifts.length;
+    const templateCount=backup.data.templates.length;
+
+    const ok=confirm(
+      "バックアップから復元しますか？\n\n" +
+      `シフト：${shiftCount}件\n` +
+      `テンプレート：${templateCount}件\n\n` +
+      "現在この端末に保存されているシフト管理データは、バックアップの内容で置き換わります。"
+    );
+
+    if(!ok)return;
+
+    saveTemplates(backup.data.templates);
+    saveShifts(backup.data.shifts);
+    savePaySettings({
+      ...DEFAULT_PAY_SETTINGS,
+      ...backup.data.paySettings
+    });
+    saveMonthlyAllowances(backup.data.monthlyAllowances);
+
+    selectedDates.clear();
+    selectedTemplateId=null;
+    editingTemplateId=null;
+    editingShiftId=null;
+    pendingRegistration=null;
+    quickRegisterDateKey=null;
+    quickSelectedTemplateId=null;
+
+    clearTemplateForm();
+    loadPaySettingsIntoForm();
+    refreshAll();
+    renderSavedTemplates();
+    renderTemplateChoices();
+
+    const exportedText=backup.exportedAt
+      ? new Date(backup.exportedAt).toLocaleString("ja-JP")
+      : "日時不明";
+
+    document.getElementById("backupStatus").textContent=
+      `復元しました。バックアップ作成日時：${exportedText}`;
+
+    showMessage(
+      document.getElementById("backupMessage"),
+      "バックアップからデータを復元しました。"
+    );
+  }catch(error){
+    console.error(error);
+    showMessage(
+      document.getElementById("backupMessage"),
+      "このファイルはシフト管理アプリの有効なバックアップではありません。",
+      "error"
+    );
+  }finally{
+    document.getElementById("restoreBackupInput").value="";
+  }
+}
 
 function showPage(pageId){
   pages.forEach(p=>p.classList.remove("active"));
@@ -934,6 +1122,12 @@ function updateHome(){
   document.getElementById("homeEstimatedPay").textContent=money(r.total);
 }
 function refreshAll(){renderMainCalendar();renderRegisterCalendar();updateSelectionStatus();updateHome();updateSummary();}
+
+document.getElementById("exportBackupButton").addEventListener("click",exportBackup);
+document.getElementById("restoreBackupInput").addEventListener("change",event=>{
+  const file=event.target.files&&event.target.files[0];
+  restoreBackupFromFile(file);
+});
 
 /* 初期化 */
 addBreakRow();
