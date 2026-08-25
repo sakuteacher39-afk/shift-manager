@@ -55,8 +55,34 @@
     }
     .period-text { font-size:18px; font-weight:700; line-height:1.5; }
     .color-input { width:100%; height:48px; border:1px solid #ccc; border-radius:12px; padding:4px; background:#fff; }
-    .time-row { display:grid; grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr); align-items:center; gap:8px; }
-    .time-separator { text-align:center; color:#777; font-weight:700; }
+    .time-row {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr);
+      align-items:center;
+      gap:8px;
+      width:100%;
+      min-width:0;
+      overflow:hidden;
+    }
+    .time-row > .time-input {
+      width:100%;
+      min-width:0;
+      max-width:100%;
+      padding-left:8px;
+      padding-right:8px;
+    }
+    .time-separator {
+      width:22px;
+      min-width:22px;
+      text-align:center;
+      color:#777;
+      font-weight:700;
+      line-height:1;
+    }
+    input[type="time"] {
+      min-width:0;
+      max-width:100%;
+    }
     .break-card { border:1px solid #ddd; border-radius:14px; padding:14px; margin-bottom:12px; background:#fafafa; }
     .break-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
     .break-title { font-weight:700; font-size:14px; }
@@ -71,12 +97,133 @@
     .divider { border:0; border-top:1px solid #eee; margin:24px 0; }
     .empty-state { color:#888; text-align:center; padding:24px 12px; font-size:14px; }
     .template-list,.template-choice-list { display:grid; gap:12px; }
-    .template-item { border:1px solid #ddd; border-radius:14px; padding:14px; background:#fff; }
-    .template-name-row,.choice-title { display:flex; align-items:center; gap:9px; }
-    .template-color { width:16px; height:16px; border-radius:50%; flex:0 0 auto; border:1px solid rgba(0,0,0,.12); }
-    .template-name { font-size:17px; font-weight:700; }
-    .template-details,.choice-details { margin-top:8px; color:#666; font-size:14px; line-height:1.6; }
-    .template-actions { margin-top:14px; display:flex; justify-content:flex-end; gap:8px; }
+    .template-item {
+      border:1px solid #ddd;
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+    }
+    .template-item-header {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .template-name-wrap {
+      min-width:0;
+      display:flex;
+      align-items:center;
+      gap:9px;
+      flex-wrap:wrap;
+    }
+    .template-name-row,.choice-title {
+      display:flex;
+      align-items:center;
+      gap:9px;
+    }
+    .template-color {
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      flex:0 0 auto;
+      border:1px solid rgba(0,0,0,.12);
+    }
+    .template-name {
+      font-size:18px;
+      font-weight:700;
+      line-height:1.3;
+    }
+    .template-actual-badge {
+      display:inline-flex;
+      align-items:center;
+      min-height:28px;
+      padding:4px 9px;
+      border-radius:9px;
+      background:#f3f3f3;
+      color:#555;
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .template-details,.choice-details {
+      margin-top:8px;
+      color:#666;
+      font-size:14px;
+      line-height:1.6;
+    }
+    .template-info-grid {
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+    .template-info-block {
+      overflow:hidden;
+      border:1px solid #e3e3e3;
+      border-radius:12px;
+      background:#fafafa;
+    }
+    .template-info-title {
+      padding:8px 10px;
+      background:#f2f2f2;
+      color:#444;
+      font-size:12px;
+      font-weight:700;
+      text-align:center;
+    }
+    .template-info-body {
+      padding:10px 12px;
+      color:#444;
+      font-size:14px;
+      line-height:1.55;
+    }
+    .template-info-row {
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:3px 0;
+    }
+    .template-info-row + .template-info-row {
+      border-top:1px solid #ececec;
+      margin-top:4px;
+      padding-top:7px;
+    }
+    .template-info-row .label {
+      color:#777;
+      flex:0 0 auto;
+    }
+    .template-info-row .value {
+      text-align:right;
+      font-weight:600;
+      min-width:0;
+    }
+    .template-allowance-row {
+      margin-top:10px;
+      padding:9px 11px;
+      border-radius:10px;
+      background:#f6f6f6;
+      color:#555;
+      font-size:13px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .template-actions {
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      flex:0 0 auto;
+    }
+    .template-actions .edit-button,
+    .template-actions .danger-button {
+      min-height:40px;
+      padding:8px 12px;
+    }
+    @media (min-width:390px) {
+      .template-info-grid {
+        grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+      }
+    }
     .template-choice { width:100%; border:2px solid #ddd; border-radius:14px; padding:14px; background:#fff; text-align:left; }
     .template-choice.selected { border-color:#222; background:#f6f6f6; }
     .choice-title { font-weight:700; font-size:16px; }
@@ -239,7 +386,18 @@
     }
     @media (max-width:360px) {
       .page { padding:16px; }
-      .time-row { grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr); gap:5px; }
+      .time-row {
+        grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr);
+        gap:5px;
+      }
+      .time-row > .time-input {
+        padding-left:6px;
+        padding-right:6px;
+      }
+      .time-separator {
+        width:18px;
+        min-width:18px;
+      }
       .calendar-day { min-height:64px; padding:5px; }
       .shift-dot { font-size:8.5px; padding:3px 3px; }
       .shift-dot.single-line { font-size:7.9px; letter-spacing:-0.2px; }
@@ -1620,17 +1778,89 @@ function deleteTemplate(id){
   renderSavedTemplates();renderTemplateChoices();
 }
 function renderSavedTemplates(){
-  const ts=loadTemplates();savedTemplateList.innerHTML="";
-  if(!ts.length){savedTemplateList.innerHTML='<div class="empty-state">まだテンプレートがありません。</div>';return;}
+  const ts=loadTemplates();
+  savedTemplateList.innerHTML="";
+
+  if(!ts.length){
+    savedTemplateList.innerHTML='<div class="empty-state">まだテンプレートがありません。</div>';
+    return;
+  }
+
   ts.forEach(t=>{
-    const item=document.createElement("div");item.className="template-item";
-    let b=(t.breaks||[]).map((x,i)=>`<br>休憩${i+1} ${x.start}〜${x.end}`).join("")||"<br>休憩なし";
-    item.innerHTML=`<div class="template-name-row"><span class="template-color" style="background:${t.color||"#aaa"}"></span><div class="template-name">${escapeHtml(t.name)}</div></div>
-    <div class="template-details">勤務 ${t.workStart}〜${t.workEnd}${b}<br><strong>実働 ${minutesToText(t.actualMinutes)}</strong>${num(t.allowance)>0?`<br>勤務手当 ${money(t.allowance)}`:""}</div>`;
-    const actions=document.createElement("div");actions.className="template-actions";
-    const e=document.createElement("button");e.type="button";e.className="edit-button";e.textContent="編集";e.onclick=()=>startTemplateEdit(t.id);
-    const d=document.createElement("button");d.type="button";d.className="danger-button";d.textContent="削除";d.onclick=()=>deleteTemplate(t.id);
-    actions.append(e,d);item.appendChild(actions);savedTemplateList.appendChild(item);
+    const item=document.createElement("div");
+    item.className="template-item";
+
+    const breaks=t.breaks||[];
+    const breakRows=breaks.length
+      ? breaks.map((x,i)=>`
+          <div class="template-info-row">
+            <span class="label">休憩${i+1}</span>
+            <span class="value">${x.start}〜${x.end}</span>
+          </div>
+        `).join("")
+      : `
+          <div class="template-info-row">
+            <span class="label">休憩</span>
+            <span class="value">なし</span>
+          </div>
+        `;
+
+    item.innerHTML=`
+      <div class="template-item-header">
+        <div class="template-name-wrap">
+          <span class="template-color" style="background:${t.color||"#aaa"}"></span>
+          <div class="template-name">${escapeHtml(t.name)}</div>
+          <span class="template-actual-badge">実働 ${minutesToText(t.actualMinutes)}</span>
+        </div>
+      </div>
+
+      <div class="template-info-grid">
+        <div class="template-info-block">
+          <div class="template-info-title">勤務時間</div>
+          <div class="template-info-body">
+            <div class="template-info-row">
+              <span class="label">勤務</span>
+              <span class="value">${t.workStart}〜${t.workEnd}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="template-info-block">
+          <div class="template-info-title">休憩時間</div>
+          <div class="template-info-body">
+            ${breakRows}
+          </div>
+        </div>
+      </div>
+
+      ${num(t.allowance)>0?`
+        <div class="template-allowance-row">
+          <span>この勤務だけの手当</span>
+          <strong>${money(t.allowance)}</strong>
+        </div>
+      `:""}
+    `;
+
+    const header=item.querySelector(".template-item-header");
+    const actions=document.createElement("div");
+    actions.className="template-actions";
+
+    const e=document.createElement("button");
+    e.type="button";
+    e.className="edit-button";
+    e.textContent="編集";
+    e.onclick=()=>startTemplateEdit(t.id);
+
+    const d=document.createElement("button");
+    d.type="button";
+    d.className="danger-button";
+    d.textContent="削除";
+    d.onclick=()=>deleteTemplate(t.id);
+
+    actions.append(e,d);
+    header.appendChild(actions);
+
+    savedTemplateList.appendChild(item);
   });
 }
 document.getElementById("addBreakButton").onclick=()=>addBreakRow();
