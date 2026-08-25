@@ -1693,8 +1693,41 @@ function calculateMonthPay(y,m){
   const shiftAllowances=shifts.reduce((s,x)=>s+num(x.allowance),0);
   const perDayAllowances=shifts.length*num(settings.perDayAllowance);
   const paidLeavePay=paidLeaves.length*num(settings.paidLeaveDailyAmount);
-  const fixedAllowance=num(settings.monthlyFixedAllowance),variableAllowance=num(monthlyVariable.amount);
-  return {shifts,allEntries,paidLeaves,paidLeaveDays:paidLeaves.length,paidLeavePay,settings,period,actualMinutes,requiredMinutes,overtimeMinutes,lateNightMinutes,basePay,overtimePremiumPay,lateNightPremiumPay,shiftAllowances,perDayAllowances,monthlyFixedAllowance:fixedAllowance,monthlyVariableAllowance:variableAllowance,total:basePay+overtimePremiumPay+lateNightPremiumPay+shiftAllowances+perDayAllowances+paidLeavePay+fixedAllowance+variableAllowance};
+  const fixedAllowance=num(settings.monthlyFixedAllowance);
+  const variableAllowance=num(monthlyVariable.amount);
+  const bonusAmount=isBonusMonth(y,m)?num(bonus.amount):0;
+
+  return {
+    shifts,
+    allEntries,
+    paidLeaves,
+    paidLeaveDays:paidLeaves.length,
+    paidLeavePay,
+    settings,
+    period,
+    actualMinutes,
+    requiredMinutes,
+    overtimeMinutes,
+    lateNightMinutes,
+    basePay,
+    overtimePremiumPay,
+    lateNightPremiumPay,
+    shiftAllowances,
+    perDayAllowances,
+    monthlyFixedAllowance:fixedAllowance,
+    monthlyVariableAllowance:variableAllowance,
+    bonusAmount,
+    total:
+      basePay+
+      overtimePremiumPay+
+      lateNightPremiumPay+
+      shiftAllowances+
+      perDayAllowances+
+      paidLeavePay+
+      fixedAllowance+
+      variableAllowance+
+      bonusAmount
+  };
 }
 function renderPayBreakdown(r){
   const c=document.getElementById("salaryBreakdown");c.innerHTML="";
