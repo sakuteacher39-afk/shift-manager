@@ -150,6 +150,13 @@
     .chart-legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; font-size:12px; color:#666; }
     .legend-dot { display:inline-block; width:10px; height:10px; border-radius:2px; background:#333; margin-right:5px; }
     .legend-dot.secondary { background:#aaa; }
+    .bonus-months-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+    .bonus-month-check {
+      display:flex; align-items:center; justify-content:center; gap:6px; min-height:42px;
+      border:1px solid #ccc; border-radius:10px; background:#fff; font-size:13px;
+    }
+    .bonus-month-check input { width:18px; height:18px; }
+    .bonus-card { border:2px solid #e3e3e3; }
     .backup-card { border:2px solid #e3e3e3; }
     .backup-actions { display:grid; gap:10px; margin-top:16px; }
     .restore-file-label {
@@ -294,6 +301,25 @@
         <div id="monthlyAllowanceSaved" class="monthly-allowance-saved"></div>
       </div>
 
+      <div id="bonusCard" class="card bonus-card" style="display:none;">
+        <h2>賞与</h2>
+        <p class="sub-text">この給与月は賞与月に設定されています。賞与額を入力すると給与見込みと年間集計に加算します。</p>
+        <div id="bonusMessage" class="message"></div>
+
+        <div class="form-group">
+          <label class="form-label" for="bonusAmount">賞与額</label>
+          <input id="bonusAmount" class="number-input" type="number" min="0" step="1" inputmode="numeric" placeholder="例：420000">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="bonusMemo">賞与メモ</label>
+          <textarea id="bonusMemo" class="textarea-input" maxlength="200" placeholder="例：夏季賞与"></textarea>
+        </div>
+
+        <button id="saveBonusButton" class="primary-button" type="button">この給与月の賞与を保存</button>
+        <div id="bonusSaved" class="monthly-allowance-saved"></div>
+      </div>
+
       <div class="card">
         <h2>給与見込み</h2>
         <div id="salaryBreakdown"></div>
@@ -402,6 +428,12 @@
           <label class="form-label" for="paidLeaveBaseMonth">有休基準月</label>
           <select id="paidLeaveBaseMonth" class="select-input"></select>
           <div class="sub-text">この月の1日から翌年の前月末までを、有休5日取得の管理期間として自動集計します。</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">賞与月</label>
+          <div id="bonusMonthsGrid" class="bonus-months-grid"></div>
+          <div class="sub-text">選択した月だけ、集計画面に賞与入力欄を表示します。複数月選択できます。</div>
         </div>
 
         <div class="form-group">
@@ -616,11 +648,13 @@ const SHIFT_STORAGE_KEY="shiftManagerShifts";
 const PAY_STORAGE_KEY="shiftManagerPaySettings";
 const MONTHLY_ALLOWANCE_STORAGE_KEY="shiftManagerMonthlyAllowances";
 const ACTUAL_SALARY_STORAGE_KEY="shiftManagerActualSalaries";
+const BONUS_STORAGE_KEY="shiftManagerBonuses";
 
 const DEFAULT_PAY_SETTINGS={
   closingDay:"end",
   paidLeaveDailyAmount:0,
   paidLeaveBaseMonth:1,
+  bonusMonths:[],
   baseHourlyRate:0,
   overtimePremium:25,
   lateNightPremium:25,
@@ -732,6 +766,31 @@ function populateClosingDayOptions(){
   }
 }
 
+function populateBonusMonthOptions(){
+  const grid=document.getElementById("bonusMonthsGrid");
+  if(!grid||grid.children.length)return;
+
+  for(let month=1;month<=12;month++){
+    const label=document.createElement("label");
+    label.className="bonus-month-check";
+    label.innerHTML=`<input type="checkbox" value="${month}"><span>${month}月</span>`;
+    grid.appendChild(label);
+  }
+}
+
+function getSelectedBonusMonths(){
+  return [...document.querySelectorAll("#bonusMonthsGrid input[type=checkbox]:checked")]
+    .map(input=>parseInt(input.value,10))
+    .filter(month=>month>=1&&month<=12);
+}
+
+function applyBonusMonthSettings(months){
+  const selected=new Set((months||[]).map(Number));
+  document.querySelectorAll("#bonusMonthsGrid input[type=checkbox]").forEach(input=>{
+    input.checked=selected.has(parseInt(input.value,10));
+  });
+}
+
 function populatePaidLeaveBaseMonthOptions(){
   const select=document.getElementById("paidLeaveBaseMonth");
   if(!select||select.options.length)return;
@@ -771,6 +830,13 @@ function getActualSalary(y,m){
   const saved=loadActualSalaries()[monthToKey(y,m)];
   return saved?{gross:Math.max(0,num(saved.gross)),memo:String(saved.memo||"")}:{gross:0,memo:""};
 }
+function loadBonuses(){const v=loadJson(BONUS_STORAGE_KEY,{});return v&&typeof v==="object"?v:{};}
+function saveBonuses(v){saveJson(BONUS_STORAGE_KEY,v);}
+function getBonus(y,m){
+  const saved=loadBonuses()[monthToKey(y,m)];
+  return saved?{amount:Math.max(0,num(saved.amount)),memo:String(saved.memo||"")}:{amount:0,memo:""};
+}
+
 
 /* バックアップ・復元 */
 const BACKUP_VERSION=1;
@@ -785,7 +851,8 @@ function buildBackupData(){
       shifts:loadShifts(),
       paySettings:loadPaySettings(),
       monthlyAllowances:loadMonthlyAllowances(),
-      actualSalaries:loadActualSalaries()
+      actualSalaries:loadActualSalaries(),
+      bonuses:loadBonuses()
     }
   };
 }
@@ -874,6 +941,7 @@ async function restoreBackupFromFile(file){
     });
     saveMonthlyAllowances(backup.data.monthlyAllowances);
     saveActualSalaries(backup.data.actualSalaries||{});
+    saveBonuses(backup.data.bonuses||{});
 
     selectedDates.clear();
     selectedTemplateId=null;
@@ -929,6 +997,55 @@ document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",(
 function showMessage(el,text,type="success"){
   el.textContent=text;el.className=`message show ${type}`;
   setTimeout(()=>{el.className="message";},3000);
+}
+
+/* 賞与 */
+function isBonusMonth(y,m){
+  const settings=loadPaySettings();
+  return (settings.bonusMonths||[]).map(Number).includes(m);
+}
+
+function renderBonusForm(){
+  const y=summaryDate.getFullYear();
+  const m=summaryDate.getMonth()+1;
+  const card=document.getElementById("bonusCard");
+
+  if(!isBonusMonth(y,m)){
+    card.style.display="none";
+    return;
+  }
+
+  card.style.display="block";
+
+  const saved=getBonus(y,m);
+  document.getElementById("bonusAmount").value=saved.amount||"";
+  document.getElementById("bonusMemo").value=saved.memo;
+
+  const display=document.getElementById("bonusSaved");
+  display.innerHTML=(saved.amount<=0&&!saved.memo)
+    ?"この給与月の賞与はまだ登録されていません。"
+    :`<strong>保存済み：${money(saved.amount)}</strong>${saved.memo?`<br>${escapeHtml(saved.memo)}`:""}`;
+}
+
+function saveCurrentBonus(){
+  const y=summaryDate.getFullYear();
+  const m=summaryDate.getMonth()+1;
+
+  if(!isBonusMonth(y,m)){
+    return;
+  }
+
+  const all=loadBonuses();
+  all[monthToKey(y,m)]={
+    amount:Math.max(0,num(document.getElementById("bonusAmount").value)),
+    memo:document.getElementById("bonusMemo").value.trim()
+  };
+  saveBonuses(all);
+
+  showMessage(document.getElementById("bonusMessage"),`${y}年${m}月給与の賞与を保存しました。`);
+
+  updateSummary();
+  updateHome();
 }
 
 /* 給与明細実績・年間ダッシュボード・月別グラフ */
@@ -996,18 +1113,37 @@ function getYearPayrollResults(year){
 
 function renderAnnualDashboard(){
   const year=summaryDate.getFullYear();
-  const results=getYearPayrollResults(year);
+  const now=new Date();
+
+  let lastMonth=12;
+  if(year===now.getFullYear()){
+    const settings=loadPaySettings();
+    const payrollMonth=getPayrollMonthForDate(now,settings.closingDay||"end");
+    lastMonth=payrollMonth.monthNumber;
+  }else if(year>now.getFullYear()){
+    lastMonth=0;
+  }
+
+  const results=getYearPayrollResults(year).filter(r=>r.month<=lastMonth);
 
   const totalWorkDays=results.reduce((s,r)=>s+r.calc.shifts.length,0);
   const totalMinutes=results.reduce((s,r)=>s+r.calc.actualMinutes,0);
   const totalOvertime=results.reduce((s,r)=>s+r.calc.overtimeMinutes,0);
   const totalLateNight=results.reduce((s,r)=>s+r.calc.lateNightMinutes,0);
   const totalPaidLeave=results.reduce((s,r)=>s+r.calc.paidLeaveDays,0);
+
+  const bonusTotal=results.reduce((s,r)=>s+r.calc.bonusAmount,0);
   const estimatedTotal=results.reduce((s,r)=>s+r.calc.total,0);
+  const normalEstimatedTotal=estimatedTotal-bonusTotal;
+
   const actualMonths=results.filter(r=>r.actual.gross>0);
   const actualTotal=actualMonths.reduce((s,r)=>s+r.actual.gross,0);
 
-  document.getElementById("annualDashboardPeriod").textContent=`${year}年1月〜12月の給与月集計`;
+  const periodText=lastMonth>0
+    ? `${year}年1月〜${lastMonth}月の給与月集計`
+    : `${year}年はまだ集計対象期間前です`;
+
+  document.getElementById("annualDashboardPeriod").textContent=periodText;
 
   const items=[
     ["勤務日数",`${totalWorkDays}日`],
@@ -1015,7 +1151,9 @@ function renderAnnualDashboard(){
     ["残業時間",minutesToText(totalOvertime)],
     ["深夜時間",minutesToText(totalLateNight)],
     ["有休日数",`${totalPaidLeave}日`],
-    ["総支給見込み",money(estimatedTotal)],
+    ["現在までの通常給与見込み",money(normalEstimatedTotal)],
+    ["現在までの賞与見込み",money(bonusTotal)],
+    ["現在までの総支給見込み",money(estimatedTotal)],
     ["実際の総支給累計",actualMonths.length?money(actualTotal):"未入力"],
     ["明細入力済み",`${actualMonths.length}か月`]
   ];
@@ -1120,6 +1258,7 @@ function renderMonthlyChart(){
 const closingDay=document.getElementById("closingDay");
 const paidLeaveDailyAmount=document.getElementById("paidLeaveDailyAmount");
 const paidLeaveBaseMonth=document.getElementById("paidLeaveBaseMonth");
+const bonusMonthsGrid=document.getElementById("bonusMonthsGrid");
 const baseHourlyRate=document.getElementById("baseHourlyRate");
 const overtimePremium=document.getElementById("overtimePremium");
 const lateNightPremium=document.getElementById("lateNightPremium");
@@ -1134,6 +1273,7 @@ function loadPaySettingsIntoForm(){
   closingDay.value=String(s.closingDay||"end");
   paidLeaveDailyAmount.value=num(s.paidLeaveDailyAmount);
   paidLeaveBaseMonth.value=String(s.paidLeaveBaseMonth||1);
+  applyBonusMonthSettings(s.bonusMonths||[]);
   baseHourlyRate.value=s.baseHourlyRate;
   overtimePremium.value=s.overtimePremium;
   lateNightPremium.value=s.lateNightPremium;
@@ -1147,6 +1287,7 @@ document.getElementById("savePaySettingsButton").addEventListener("click",()=>{
     closingDay:closingDay.value||"end",
     paidLeaveDailyAmount:Math.max(0,num(paidLeaveDailyAmount.value)),
     paidLeaveBaseMonth:Math.min(12,Math.max(1,parseInt(paidLeaveBaseMonth.value,10)||1)),
+    bonusMonths:getSelectedBonusMonths(),
     baseHourlyRate:Math.max(0,num(baseHourlyRate.value)),
     overtimePremium:Math.max(0,num(overtimePremium.value)),
     lateNightPremium:Math.max(0,num(lateNightPremium.value)),
@@ -1521,6 +1662,7 @@ function calculateMonthPay(y,m){
   const paidLeaves=allEntries.filter(s=>s.type==="paidLeave");
   const shifts=allEntries.filter(s=>s.type!=="paidLeave");
   const monthlyVariable=getMonthlyAllowance(y,m);
+  const bonus=getBonus(y,m);
   const actualMinutes=shifts.reduce((s,x)=>s+num(x.actualMinutes),0);
   const requiredMinutes=getRequiredMinutes(y,m);
   const overtimeMinutes=Math.max(0,actualMinutes-requiredMinutes);
@@ -1537,7 +1679,7 @@ function calculateMonthPay(y,m){
 }
 function renderPayBreakdown(r){
   const c=document.getElementById("salaryBreakdown");c.innerHTML="";
-  [["通常賃金",r.basePay],["残業割増",r.overtimePremiumPay],["深夜割増",r.lateNightPremiumPay],["勤務別手当",r.shiftAllowances],["1勤務あたり共通手当",r.perDayAllowances],["有給手当",r.paidLeavePay],["毎月固定の手当",r.monthlyFixedAllowance],["この給与月の追加手当",r.monthlyVariableAllowance]].forEach(([l,v])=>{
+  [["通常賃金",r.basePay],["残業割増",r.overtimePremiumPay],["深夜割増",r.lateNightPremiumPay],["勤務別手当",r.shiftAllowances],["1勤務あたり共通手当",r.perDayAllowances],["有給手当",r.paidLeavePay],["毎月固定の手当",r.monthlyFixedAllowance],["この給与月の追加手当",r.monthlyVariableAllowance],["賞与",r.bonusAmount]].forEach(([l,v])=>{
     const row=document.createElement("div");row.className="pay-row";row.innerHTML=`<div class="pay-label">${l}</div><div class="pay-value">${money(v)}</div>`;c.appendChild(row);
   });
 }
@@ -1593,6 +1735,7 @@ function updateSummary(){
   document.getElementById("summaryEstimatedPay").textContent=money(r.total);
   renderAnnualPaidLeave(new Date(y,m-1,1));renderMonthlyAllowanceForm();renderPayBreakdown(r);renderActualSalaryForm();renderAnnualDashboard();renderMonthlyChart();renderSummaryTypes(r.shifts);
 }
+document.getElementById("saveBonusButton").onclick=saveCurrentBonus;
 document.getElementById("saveActualSalaryButton").onclick=saveCurrentActualSalary;
 document.getElementById("chartPayTab").onclick=()=>setChartMode("pay");
 document.getElementById("chartHoursTab").onclick=()=>setChartMode("hours");
@@ -1625,6 +1768,7 @@ document.getElementById("restoreBackupInput").addEventListener("change",event=>{
 /* 初期化 */
 populateClosingDayOptions();
 populatePaidLeaveBaseMonthOptions();
+populateBonusMonthOptions();
 addBreakRow();
 renderSavedTemplates();
 renderTemplateChoices();
