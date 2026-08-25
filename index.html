@@ -89,12 +89,66 @@
     .calendar-title,.summary-month-title { font-size:20px; font-weight:700; text-align:center; }
     .calendar-weekdays,.calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
     .weekday { text-align:center; font-size:12px; color:#777; padding:6px 0; }
-    .calendar-day { min-width:0; min-height:60px; border:1px solid #e1e1e1; border-radius:10px; background:#fff; padding:5px; text-align:left; }
-    .calendar-day.empty { border-color:transparent; background:transparent; }
-    .calendar-day.selected { outline:3px solid #222; outline-offset:-3px; }
-    .calendar-day.has-shift { border-width:2px; }
-    .day-number { font-size:13px; font-weight:700; }
-    .shift-dot { display:block; margin-top:5px; padding:3px 4px; border-radius:6px; font-size:9px; line-height:1.2; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+    .calendar-day {
+      min-width:0;
+      min-height:68px;
+      border:1px solid #e1e1e1;
+      border-radius:10px;
+      background:#fff;
+      padding:6px;
+      text-align:left;
+      display:flex;
+      flex-direction:column;
+      align-items:stretch;
+      justify-content:flex-start;
+      gap:5px;
+      overflow:hidden;
+      vertical-align:top;
+    }
+    .calendar-day.empty {
+      border-color:transparent;
+      background:transparent;
+    }
+    .calendar-day.selected {
+      outline:3px solid #222;
+      outline-offset:-3px;
+    }
+    .calendar-day.has-shift {
+      border-width:2px;
+    }
+    .day-number {
+      display:block;
+      width:100%;
+      min-height:17px;
+      margin:0;
+      padding:0;
+      font-size:13px;
+      line-height:17px;
+      font-weight:700;
+      text-align:left;
+      align-self:flex-start;
+      flex:0 0 auto;
+    }
+    .shift-dot {
+      display:-webkit-box;
+      width:100%;
+      margin:0;
+      padding:4px 4px;
+      border-radius:6px;
+      font-size:9px;
+      line-height:1.2;
+      overflow:hidden;
+      white-space:normal;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+      text-overflow:ellipsis;
+      -webkit-box-orient:vertical;
+      -webkit-line-clamp:2;
+      line-clamp:2;
+      min-height:19px;
+      max-height:29px;
+      flex:0 0 auto;
+    }
     .selection-status { background:#f6f6f6; padding:14px; border-radius:12px; margin-bottom:16px; font-size:14px; }
     .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:999; align-items:center; justify-content:center; padding:20px; }
     .modal-backdrop.show { display:flex; }
@@ -172,7 +226,8 @@
     @media (max-width:360px) {
       .page { padding:16px; }
       .time-row { grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr); gap:5px; }
-      .calendar-day { min-height:52px; }
+      .calendar-day { min-height:64px; padding:5px; }
+      .shift-dot { font-size:8.5px; padding:3px 3px; }
     }
   
     .summary-tabs {
