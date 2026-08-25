@@ -227,7 +227,7 @@
       </div>
 
       <div class="card">
-        <h2>年間有休取得</h2>
+        <h2>有休5日取得管理</h2>
         <div id="annualPaidLeaveMain" class="paid-leave-main">0日</div>
         <div id="annualPaidLeaveSub" class="sub-text">取得義務まであと5日</div>
         <div id="annualPaidLeaveList" class="paid-leave-list"></div>
@@ -340,6 +340,12 @@
           <label class="form-label">有休1日分の金額</label>
           <input id="paidLeaveDailyAmount" class="number-input" type="number" min="0" step="1" value="0">
           <div class="sub-text">有休を登録した日数 × この金額を、給与見込みの「有給手当」に加算します。</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="paidLeaveBaseMonth">有休基準月</label>
+          <select id="paidLeaveBaseMonth" class="select-input"></select>
+          <div class="sub-text">この月の1日から翌年の前月末までを、有休5日取得の管理期間として自動集計します。</div>
         </div>
 
         <div class="form-group">
@@ -557,6 +563,7 @@ const MONTHLY_ALLOWANCE_STORAGE_KEY="shiftManagerMonthlyAllowances";
 const DEFAULT_PAY_SETTINGS={
   closingDay:"end",
   paidLeaveDailyAmount:0,
+  paidLeaveBaseMonth:1,
   baseHourlyRate:0,
   overtimePremium:25,
   lateNightPremium:25,
@@ -666,6 +673,27 @@ function populateClosingDayOptions(){
     option.textContent=`${day}日`;
     select.appendChild(option);
   }
+}
+
+function populatePaidLeaveBaseMonthOptions(){
+  const select=document.getElementById("paidLeaveBaseMonth");
+  if(!select||select.options.length)return;
+  for(let month=1;month<=12;month++){
+    const option=document.createElement("option");
+    option.value=String(month);
+    option.textContent=`${month}月`;
+    select.appendChild(option);
+  }
+}
+
+function getPaidLeavePeriod(referenceDate,baseMonth){
+  const month=Math.min(12,Math.max(1,parseInt(baseMonth,10)||1));
+  const year=referenceDate.getFullYear();
+  const currentMonth=referenceDate.getMonth()+1;
+  const startYear=currentMonth>=month ? year : year-1;
+  const start=new Date(startYear,month-1,1);
+  const end=new Date(startYear+1,month-1,0);
+  return {start,end};
 }
 
 function loadJson(key,fallback){
@@ -841,6 +869,7 @@ function showMessage(el,text,type="success"){
 /* 給与設定 */
 const closingDay=document.getElementById("closingDay");
 const paidLeaveDailyAmount=document.getElementById("paidLeaveDailyAmount");
+const paidLeaveBaseMonth=document.getElementById("paidLeaveBaseMonth");
 const baseHourlyRate=document.getElementById("baseHourlyRate");
 const overtimePremium=document.getElementById("overtimePremium");
 const lateNightPremium=document.getElementById("lateNightPremium");
@@ -854,6 +883,7 @@ function loadPaySettingsIntoForm(){
   const s=loadPaySettings();
   closingDay.value=String(s.closingDay||"end");
   paidLeaveDailyAmount.value=num(s.paidLeaveDailyAmount);
+  paidLeaveBaseMonth.value=String(s.paidLeaveBaseMonth||1);
   baseHourlyRate.value=s.baseHourlyRate;
   overtimePremium.value=s.overtimePremium;
   lateNightPremium.value=s.lateNightPremium;
@@ -866,6 +896,7 @@ document.getElementById("savePaySettingsButton").addEventListener("click",()=>{
   savePaySettings({
     closingDay:closingDay.value||"end",
     paidLeaveDailyAmount:Math.max(0,num(paidLeaveDailyAmount.value)),
+    paidLeaveBaseMonth:Math.min(12,Math.max(1,parseInt(paidLeaveBaseMonth.value,10)||1)),
     baseHourlyRate:Math.max(0,num(baseHourlyRate.value)),
     overtimePremium:Math.max(0,num(overtimePremium.value)),
     lateNightPremium:Math.max(0,num(lateNightPremium.value)),
@@ -1260,12 +1291,30 @@ function renderPayBreakdown(r){
     const row=document.createElement("div");row.className="pay-row";row.innerHTML=`<div class="pay-label">${l}</div><div class="pay-value">${money(v)}</div>`;c.appendChild(row);
   });
 }
-function getPaidLeavesForYear(year){return loadShifts().filter(s=>s.type==="paidLeave"&&s.date.startsWith(`${year}-`)).sort((a,b)=>a.date.localeCompare(b.date));}
-function renderAnnualPaidLeave(year){
-  const leaves=getPaidLeavesForYear(year),count=leaves.length,remaining=Math.max(0,5-count);
-  document.getElementById("annualPaidLeaveMain").textContent=`${year}年 ${count}日`;
-  document.getElementById("annualPaidLeaveSub").textContent=count>=5?"年間5日の取得目安を達成しています":`取得義務まであと${remaining}日`;
-  document.getElementById("annualPaidLeaveList").textContent=leaves.length?`取得日：${leaves.map(x=>formatDateJapanese(x.date)).join("、")}`:"まだ有休は登録されていません。";
+function getPaidLeavesForPeriod(start,end){
+  const startKey=localDateKey(start);
+  const endKey=localDateKey(end);
+  return loadShifts()
+    .filter(s=>s.type==="paidLeave"&&s.date>=startKey&&s.date<=endKey)
+    .sort((a,b)=>a.date.localeCompare(b.date));
+}
+function renderAnnualPaidLeave(referenceDate){
+  const settings=loadPaySettings();
+  const period=getPaidLeavePeriod(referenceDate,settings.paidLeaveBaseMonth||1);
+  const leaves=getPaidLeavesForPeriod(period.start,period.end);
+  const count=leaves.length;
+  const remaining=Math.max(0,5-count);
+  const periodText=`${period.start.getFullYear()}/${period.start.getMonth()+1}/1〜${period.end.getFullYear()}/${period.end.getMonth()+1}/${period.end.getDate()}`;
+
+  document.getElementById("annualPaidLeaveMain").textContent=`${count}日 / 5日`;
+  document.getElementById("annualPaidLeaveSub").textContent=
+    count>=5
+      ? `取得期間：${periodText}　取得目安を達成`
+      : `取得期間：${periodText}　あと${remaining}日`;
+  document.getElementById("annualPaidLeaveList").textContent=
+    leaves.length
+      ? `取得日：${leaves.map(x=>formatDateJapanese(x.date)).join("、")}`
+      : "まだ有休は登録されていません。";
 }
 function renderSummaryTypes(shifts){
   const c=document.getElementById("summaryTypeList");c.innerHTML="";
@@ -1292,7 +1341,7 @@ function updateSummary(){
   document.getElementById("summaryOvertime").textContent=minutesToText(r.overtimeMinutes);
   document.getElementById("summaryLateNight").textContent=minutesToText(r.lateNightMinutes);
   document.getElementById("summaryEstimatedPay").textContent=money(r.total);
-  renderAnnualPaidLeave(y);renderMonthlyAllowanceForm();renderPayBreakdown(r);renderSummaryTypes(r.shifts);
+  renderAnnualPaidLeave(new Date(y,m-1,1));renderMonthlyAllowanceForm();renderPayBreakdown(r);renderSummaryTypes(r.shifts);
 }
 document.getElementById("summaryPrev").onclick=()=>{summaryDate=moveMonth(summaryDate,-1);updateSummary();};
 document.getElementById("summaryNext").onclick=()=>{summaryDate=moveMonth(summaryDate,1);updateSummary();};
@@ -1321,6 +1370,7 @@ document.getElementById("restoreBackupInput").addEventListener("change",event=>{
 
 /* 初期化 */
 populateClosingDayOptions();
+populatePaidLeaveBaseMonthOptions();
 addBreakRow();
 renderSavedTemplates();
 renderTemplateChoices();
