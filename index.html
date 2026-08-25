@@ -480,6 +480,14 @@
         max-inline-size:calc((100% - 28px) / 2);
       }
     }
+
+    /* 曜日・日付の色 */
+    .calendar-weekdays .weekday { color:#111; }
+    .calendar-weekdays .weekday:first-child { color:#d32f2f; }
+    .calendar-weekdays .weekday:last-child { color:#1976d2; }
+    .calendar-day .day-number { color:#111; }
+    .calendar-day.sunday .day-number { color:#d32f2f; }
+    .calendar-day.saturday .day-number { color:#1976d2; }
 </style>
 </head>
 <body>
@@ -1910,7 +1918,12 @@ function buildCalendar(container,targetDate,selectable){
   for(let i=0;i<first;i++){const e=document.createElement("div");e.className="calendar-day empty";container.appendChild(e);}
   for(let d=1;d<=days;d++){
     const key=dateToKey(y,m,d),shift=shifts.find(x=>x.date===key);
-    const btn=document.createElement("button");btn.type="button";btn.className="calendar-day";
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="calendar-day";
+    const weekday=new Date(y,m,d).getDay();
+    if(weekday===0)btn.classList.add("sunday");
+    if(weekday===6)btn.classList.add("saturday");
     if(shift){btn.classList.add("has-shift");btn.style.borderColor=shift.color||"#444";}
     if(selectable&&selectedDates.has(key))btn.classList.add("selected");
     const shiftBg=shift?(shift.color||"#ddd"):"#ddd";
