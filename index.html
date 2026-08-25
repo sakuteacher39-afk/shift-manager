@@ -44,11 +44,16 @@
     .nav .icon { display:block; font-size:22px; margin-bottom:3px; }
     .form-group { margin-bottom:18px; }
     .form-label { display:block; font-size:14px; font-weight:700; margin-bottom:8px; }
-    .text-input,.time-input,.number-input,.textarea-input {
+    .text-input,.time-input,.number-input,.textarea-input,.select-input {
       display:block; width:100%; min-height:48px; border:1px solid #ccc; border-radius:12px;
       background:#fff; color:#222; padding:10px 12px; font-size:16px;
     }
     .textarea-input { min-height:80px; resize:vertical; }
+    .select-input {
+      display:block; width:100%; min-height:48px; border:1px solid #ccc; border-radius:12px;
+      background:#fff; color:#222; padding:10px 12px; font-size:16px;
+    }
+    .period-text { font-size:18px; font-weight:700; line-height:1.5; }
     .color-input { width:100%; height:48px; border:1px solid #ccc; border-radius:12px; padding:4px; background:#fff; }
     .time-row { display:grid; grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr); align-items:center; gap:8px; }
     .time-separator { text-align:center; color:#777; font-weight:700; }
@@ -162,7 +167,7 @@
       <div class="card">
         <h2>今月の給与見込み</h2>
         <div id="homeEstimatedPay" class="big-text">¥0</div>
-        <div class="sub-text">控除前・概算</div>
+        <div id="homePayPeriod" class="sub-text">控除前・概算</div>
       </div>
       <button class="primary-button" data-page="register">シフトを登録する</button>
     </section>
@@ -213,6 +218,12 @@
       </div>
 
       <div class="card">
+        <h2>給与対象期間</h2>
+        <div id="summaryPayPeriod" class="period-text">－</div>
+        <div id="summaryClosingDayText" class="sub-text"></div>
+      </div>
+
+      <div class="card">
         <h2>実働時間</h2>
         <div id="summaryWorkHours" class="big-text">0時間</div>
         <div id="summaryWorkDays" class="sub-text">勤務日数 0日</div>
@@ -237,8 +248,8 @@
       </div>
 
       <div class="card monthly-allowance-card">
-        <h2>この月の追加手当</h2>
-        <p class="sub-text">表示中の月だけに保存されます。前月・翌月には影響しません。</p>
+        <h2>この給与月の追加手当</h2>
+        <p class="sub-text">表示中の給与月だけに保存されます。前月・翌月には影響しません。</p>
         <div id="monthlyAllowanceMessage" class="message"></div>
         <div class="form-group">
           <label class="form-label" for="monthlyVariableAllowance">追加手当</label>
@@ -248,7 +259,7 @@
           <label class="form-label" for="monthlyAllowanceMemo">手当メモ</label>
           <textarea id="monthlyAllowanceMemo" class="textarea-input" maxlength="200" placeholder="例：応援勤務手当、繁忙期手当など"></textarea>
         </div>
-        <button id="saveMonthlyAllowanceButton" class="primary-button" type="button">この月の手当を保存</button>
+        <button id="saveMonthlyAllowanceButton" class="primary-button" type="button">この給与月の手当を保存</button>
         <div id="monthlyAllowanceSaved" class="monthly-allowance-saved"></div>
       </div>
 
@@ -307,6 +318,14 @@
       <h2 class="section-title">給与設定</h2>
       <div id="paySettingsMessage" class="message"></div>
       <div class="card">
+        <div class="form-group">
+          <label class="form-label" for="closingDay">給与の締め日</label>
+          <select id="closingDay" class="select-input"></select>
+          <div class="sub-text">
+            「末日」を選ぶと1日〜月末で集計します。数字を選ぶと、前回の締め日の翌日〜今回の締め日で集計します。
+          </div>
+        </div>
+
         <div class="form-group">
           <label class="form-label">基礎時給</label>
           <input id="baseHourlyRate" class="number-input" type="number" min="0" step="1">
@@ -499,6 +518,7 @@ const PAY_STORAGE_KEY="shiftManagerPaySettings";
 const MONTHLY_ALLOWANCE_STORAGE_KEY="shiftManagerMonthlyAllowances";
 
 const DEFAULT_PAY_SETTINGS={
+  closingDay:"end",
   baseHourlyRate:0,
   overtimePremium:25,
   lateNightPremium:25,
@@ -532,6 +552,83 @@ function formatDateJapanese(k){const p=k.split("-").map(Number);return `${p[1]}�
 function formatDateFull(k){const p=k.split("-").map(Number);return `${p[0]}年${p[1]}月${p[2]}日`;}
 function escapeHtml(t){const d=document.createElement("div");d.textContent=t;return d.innerHTML;}
 function moveMonth(d,a){return new Date(d.getFullYear(),d.getMonth()+a,1);}
+
+function localDateKey(date){
+  return dateToKey(date.getFullYear(),date.getMonth(),date.getDate());
+}
+
+function formatShortDate(date){
+  return `${date.getMonth()+1}月${date.getDate()}日`;
+}
+
+function getClosingDate(year,monthNumber,closingDay){
+  const lastDay=new Date(year,monthNumber,0).getDate();
+  const day=closingDay==="end"
+    ? lastDay
+    : Math.min(Math.max(1,parseInt(closingDay,10)||lastDay),lastDay);
+  return new Date(year,monthNumber-1,day);
+}
+
+function getPayrollPeriod(year,monthNumber,closingDay){
+  const end=getClosingDate(year,monthNumber,closingDay);
+
+  if(closingDay==="end"){
+    return {
+      start:new Date(year,monthNumber-1,1),
+      end
+    };
+  }
+
+  const previousMonthDate=new Date(year,monthNumber-2,1);
+  const previousEnd=getClosingDate(
+    previousMonthDate.getFullYear(),
+    previousMonthDate.getMonth()+1,
+    closingDay
+  );
+
+  const start=new Date(previousEnd);
+  start.setDate(start.getDate()+1);
+
+  return {start,end};
+}
+
+function getPayrollMonthForDate(date,closingDay){
+  const year=date.getFullYear();
+  const monthNumber=date.getMonth()+1;
+
+  if(closingDay==="end"){
+    return {year,monthNumber};
+  }
+
+  const thisClosing=getClosingDate(year,monthNumber,closingDay);
+
+  if(date<=thisClosing){
+    return {year,monthNumber};
+  }
+
+  const next=new Date(year,monthNumber,1);
+  return {
+    year:next.getFullYear(),
+    monthNumber:next.getMonth()+1
+  };
+}
+
+function populateClosingDayOptions(){
+  const select=document.getElementById("closingDay");
+  if(!select||select.options.length)return;
+
+  const endOption=document.createElement("option");
+  endOption.value="end";
+  endOption.textContent="末日";
+  select.appendChild(endOption);
+
+  for(let day=1;day<=31;day++){
+    const option=document.createElement("option");
+    option.value=String(day);
+    option.textContent=`${day}日`;
+    select.appendChild(option);
+  }
+}
 
 function loadJson(key,fallback){
   try{const s=localStorage.getItem(key);if(!s)return fallback;return JSON.parse(s);}catch{return fallback;}
@@ -704,6 +801,7 @@ function showMessage(el,text,type="success"){
 }
 
 /* 給与設定 */
+const closingDay=document.getElementById("closingDay");
 const baseHourlyRate=document.getElementById("baseHourlyRate");
 const overtimePremium=document.getElementById("overtimePremium");
 const lateNightPremium=document.getElementById("lateNightPremium");
@@ -715,6 +813,7 @@ const paySettingsMessage=document.getElementById("paySettingsMessage");
 
 function loadPaySettingsIntoForm(){
   const s=loadPaySettings();
+  closingDay.value=String(s.closingDay||"end");
   baseHourlyRate.value=s.baseHourlyRate;
   overtimePremium.value=s.overtimePremium;
   lateNightPremium.value=s.lateNightPremium;
@@ -725,6 +824,7 @@ function loadPaySettingsIntoForm(){
 }
 document.getElementById("savePaySettingsButton").addEventListener("click",()=>{
   savePaySettings({
+    closingDay:closingDay.value||"end",
     baseHourlyRate:Math.max(0,num(baseHourlyRate.value)),
     overtimePremium:Math.max(0,num(overtimePremium.value)),
     lateNightPremium:Math.max(0,num(lateNightPremium.value)),
@@ -747,7 +847,7 @@ function renderMonthlyAllowanceForm(){
   document.getElementById("monthlyVariableAllowance").value=s.amount||"";
   document.getElementById("monthlyAllowanceMemo").value=s.memo;
   document.getElementById("monthlyAllowanceSaved").innerHTML=(s.amount<=0&&!s.memo)
-    ?"この月の追加手当はまだ登録されていません。"
+    ?"この給与月の追加手当はまだ登録されていません。"
     :`<strong>保存済み：${money(s.amount)}</strong>${s.memo?`<br>${escapeHtml(s.memo)}`:""}`;
 }
 document.getElementById("saveMonthlyAllowanceButton").addEventListener("click",()=>{
@@ -758,7 +858,7 @@ document.getElementById("saveMonthlyAllowanceButton").addEventListener("click",(
     memo:document.getElementById("monthlyAllowanceMemo").value.trim()
   };
   saveMonthlyAllowances(all);
-  showMessage(document.getElementById("monthlyAllowanceMessage"),`${y}年${m}月の手当を保存しました。`);
+  showMessage(document.getElementById("monthlyAllowanceMessage"),`${y}年${m}月給与の手当を保存しました。`);
   updateSummary();updateHome();
 });
 
@@ -1071,18 +1171,52 @@ function getRequiredMinutes(y,m){
   if(days===31)return 177*60;if(days===30)return 171*60;if(days===29)return 165*60;return 160*60;
 }
 function calculateMonthPay(y,m){
-  const prefix=monthToKey(y,m),shifts=loadShifts().filter(s=>s.date.startsWith(prefix)),settings=loadPaySettings(),monthlyVariable=getMonthlyAllowance(y,m);
-  const actualMinutes=shifts.reduce((s,x)=>s+num(x.actualMinutes),0),requiredMinutes=getRequiredMinutes(y,m),overtimeMinutes=Math.max(0,actualMinutes-requiredMinutes);
-  const lateNightMinutes=shifts.reduce((s,x)=>s+calculateLateNightMinutes(x,settings),0),baseHourly=num(settings.baseHourlyRate);
+  const settings=loadPaySettings();
+  const period=getPayrollPeriod(y,m,settings.closingDay||"end");
+  const startKey=localDateKey(period.start);
+  const endKey=localDateKey(period.end);
+
+  const shifts=loadShifts().filter(s=>
+    s.date>=startKey &&
+    s.date<=endKey
+  );
+
+  const monthlyVariable=getMonthlyAllowance(y,m);
+  const actualMinutes=shifts.reduce((s,x)=>s+num(x.actualMinutes),0);
+  const requiredMinutes=getRequiredMinutes(y,m);
+  const overtimeMinutes=Math.max(0,actualMinutes-requiredMinutes);
+  const lateNightMinutes=shifts.reduce((s,x)=>s+calculateLateNightMinutes(x,settings),0);
+  const baseHourly=num(settings.baseHourlyRate);
+
   const basePay=actualMinutes/60*baseHourly;
   const overtimePremiumPay=overtimeMinutes/60*baseHourly*(num(settings.overtimePremium)/100);
   const lateNightPremiumPay=lateNightMinutes/60*baseHourly*(num(settings.lateNightPremium)/100);
-  const shiftAllowances=shifts.reduce((s,x)=>s+num(x.allowance),0),perDayAllowances=shifts.length*num(settings.perDayAllowance),fixedAllowance=num(settings.monthlyFixedAllowance),variableAllowance=num(monthlyVariable.amount);
-  return {shifts,actualMinutes,requiredMinutes,overtimeMinutes,lateNightMinutes,basePay,overtimePremiumPay,lateNightPremiumPay,shiftAllowances,perDayAllowances,monthlyFixedAllowance:fixedAllowance,monthlyVariableAllowance:variableAllowance,total:basePay+overtimePremiumPay+lateNightPremiumPay+shiftAllowances+perDayAllowances+fixedAllowance+variableAllowance};
+  const shiftAllowances=shifts.reduce((s,x)=>s+num(x.allowance),0);
+  const perDayAllowances=shifts.length*num(settings.perDayAllowance);
+  const fixedAllowance=num(settings.monthlyFixedAllowance);
+  const variableAllowance=num(monthlyVariable.amount);
+
+  return {
+    shifts,
+    settings,
+    period,
+    actualMinutes,
+    requiredMinutes,
+    overtimeMinutes,
+    lateNightMinutes,
+    basePay,
+    overtimePremiumPay,
+    lateNightPremiumPay,
+    shiftAllowances,
+    perDayAllowances,
+    monthlyFixedAllowance:fixedAllowance,
+    monthlyVariableAllowance:variableAllowance,
+    total:basePay+overtimePremiumPay+lateNightPremiumPay+shiftAllowances+perDayAllowances+fixedAllowance+variableAllowance
+  };
 }
 function renderPayBreakdown(r){
   const c=document.getElementById("salaryBreakdown");c.innerHTML="";
-  [["通常賃金",r.basePay],["残業割増",r.overtimePremiumPay],["深夜割増",r.lateNightPremiumPay],["勤務別手当",r.shiftAllowances],["1勤務あたり共通手当",r.perDayAllowances],["毎月固定の手当",r.monthlyFixedAllowance],["この月の追加手当",r.monthlyVariableAllowance]].forEach(([l,v])=>{
+  [["通常賃金",r.basePay],["残業割増",r.overtimePremiumPay],["深夜割増",r.lateNightPremiumPay],["勤務別手当",r.shiftAllowances],["1勤務あたり共通手当",r.perDayAllowances],["毎月固定の手当",r.monthlyFixedAllowance],["この給与月の追加手当",r.monthlyVariableAllowance]].forEach(([l,v])=>{
     const row=document.createElement("div");row.className="pay-row";row.innerHTML=`<div class="pay-label">${l}</div><div class="pay-value">${money(v)}</div>`;c.appendChild(row);
   });
 }
@@ -1098,11 +1232,16 @@ function renderSummaryTypes(shifts){
 }
 function updateSummary(){
   const y=summaryDate.getFullYear(),m=summaryDate.getMonth()+1,r=calculateMonthPay(y,m),days=new Date(y,m,0).getDate();
-  document.getElementById("summaryMonthTitle").textContent=`${y}年${m}月`;
+  document.getElementById("summaryMonthTitle").textContent=`${y}年${m}月給与`;
+  document.getElementById("summaryPayPeriod").textContent=
+    `${formatShortDate(r.period.start)} 〜 ${formatShortDate(r.period.end)}`;
+  document.getElementById("summaryClosingDayText").textContent=
+    `締め日：${r.settings.closingDay==="end" ? "末日" : r.settings.closingDay+"日"}`;
   document.getElementById("summaryWorkHours").textContent=minutesToText(r.actualMinutes);
   document.getElementById("summaryWorkDays").textContent=`勤務日数 ${r.shifts.length}日`;
   document.getElementById("summaryRequiredHours").textContent=minutesToText(r.requiredMinutes);
-  document.getElementById("summaryMonthDays").textContent=`${days}日月の所定労働時間`;
+  document.getElementById("summaryMonthDays").textContent=
+    `${days}日月の所定労働時間（${y}年${m}月給与の基準）`;
   document.getElementById("summaryOvertime").textContent=minutesToText(r.overtimeMinutes);
   document.getElementById("summaryLateNight").textContent=minutesToText(r.lateNightMinutes);
   document.getElementById("summaryEstimatedPay").textContent=money(r.total);
@@ -1116,10 +1255,14 @@ function updateHome(){
   const main=document.getElementById("nextShiftMain"),sub=document.getElementById("nextShiftSub");
   if(!future.length){main.textContent="まだ登録されていません";sub.textContent="シフトを登録するとここに表示されます";}
   else{const n=future[0];main.textContent=`${formatDateJapanese(n.date)} ${n.templateName}`;sub.textContent=`${n.workStart}〜${n.workEnd} ／ 実働 ${minutesToText(n.actualMinutes)}`;}
-  const r=calculateMonthPay(now.getFullYear(),now.getMonth()+1);
+  const paySettings=loadPaySettings();
+  const payrollMonth=getPayrollMonthForDate(now,paySettings.closingDay||"end");
+  const r=calculateMonthPay(payrollMonth.year,payrollMonth.monthNumber);
   document.getElementById("homeMonthDays").textContent=`${r.shifts.length}日`;
   document.getElementById("homeMonthHours").textContent=`合計実働時間 ${minutesToText(r.actualMinutes)}`;
   document.getElementById("homeEstimatedPay").textContent=money(r.total);
+  document.getElementById("homePayPeriod").textContent=
+    `${payrollMonth.year}年${payrollMonth.monthNumber}月給与 / ${formatShortDate(r.period.start)}〜${formatShortDate(r.period.end)} / 控除前・概算`;
 }
 function refreshAll(){renderMainCalendar();renderRegisterCalendar();updateSelectionStatus();updateHome();updateSummary();}
 
@@ -1130,6 +1273,7 @@ document.getElementById("restoreBackupInput").addEventListener("change",event=>{
 });
 
 /* 初期化 */
+populateClosingDayOptions();
 addBreakRow();
 renderSavedTemplates();
 renderTemplateChoices();
