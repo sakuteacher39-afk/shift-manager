@@ -129,6 +129,27 @@
     .paid-leave-box { background:#f6f6f6; border-radius:14px; padding:14px; margin-top:12px; font-size:14px; line-height:1.7; }
     .paid-leave-main { font-size:24px; font-weight:700; margin-bottom:4px; }
     .paid-leave-list { margin-top:8px; color:#666; font-size:13px; line-height:1.6; }
+    .dashboard-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .dashboard-item { background:#f6f6f6; border-radius:14px; padding:14px; }
+    .dashboard-item .label { color:#777; font-size:12px; line-height:1.4; }
+    .dashboard-item .value { margin-top:5px; font-size:20px; font-weight:700; line-height:1.3; }
+    .compare-box { background:#f6f6f6; border-radius:14px; padding:14px; margin-top:12px; }
+    .compare-row { display:flex; justify-content:space-between; gap:12px; padding:7px 0; font-size:14px; }
+    .compare-row strong { text-align:right; }
+    .compare-diff { margin-top:8px; padding-top:12px; border-top:1px solid #ddd; font-size:18px; font-weight:700; }
+    .chart-tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px; }
+    .chart-tab { min-height:42px; border:1px solid #ccc; border-radius:10px; background:#fff; color:#666; font-size:12px; font-weight:700; }
+    .chart-tab.active { background:#222; color:#fff; border-color:#222; }
+    .chart-wrap { width:100%; overflow-x:auto; }
+    .bar-chart { min-width:660px; height:260px; display:flex; align-items:flex-end; gap:10px; padding:20px 6px 30px; border-bottom:1px solid #ddd; }
+    .bar-group { flex:1 0 42px; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:4px; }
+    .bar-stack { width:100%; flex:1; display:flex; align-items:flex-end; justify-content:center; gap:3px; }
+    .bar { width:16px; min-height:2px; background:#333; border-radius:5px 5px 0 0; }
+    .bar.secondary { background:#aaa; }
+    .bar-label { font-size:11px; color:#666; white-space:nowrap; }
+    .chart-legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; font-size:12px; color:#666; }
+    .legend-dot { display:inline-block; width:10px; height:10px; border-radius:2px; background:#333; margin-right:5px; }
+    .legend-dot.secondary { background:#aaa; }
     .backup-card { border:2px solid #e3e3e3; }
     .backup-actions { display:grid; gap:10px; margin-top:16px; }
     .restore-file-label {
@@ -278,6 +299,41 @@
         <div id="salaryBreakdown"></div>
         <div class="pay-total"><span>合計</span><strong id="summaryEstimatedPay">¥0</strong></div>
         <div class="warning-note">控除前の概算です。会社独自の給与計算、端数処理、各種手当条件などにより実際の給与額と差が出る場合があります。</div>
+      </div>
+
+      <div class="card">
+        <h2>給与明細との比較</h2>
+        <p class="sub-text">実際の給与明細に記載された総支給額を入力すると、アプリの見込みとの差額と誤差率を表示します。</p>
+        <div id="actualSalaryMessage" class="message"></div>
+        <div class="form-group">
+          <label class="form-label" for="actualGrossPay">実際の総支給額</label>
+          <input id="actualGrossPay" class="number-input" type="number" min="0" step="1" inputmode="numeric" placeholder="例：286180">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="actualSalaryMemo">メモ</label>
+          <textarea id="actualSalaryMemo" class="textarea-input" maxlength="200" placeholder="例：8月給与明細"></textarea>
+        </div>
+        <button id="saveActualSalaryButton" class="primary-button" type="button">この給与月の実績を保存</button>
+        <div id="actualSalaryComparison" class="compare-box"></div>
+      </div>
+
+      <div class="card">
+        <h2>年間ダッシュボード</h2>
+        <div id="annualDashboardPeriod" class="sub-text"></div>
+        <div id="annualDashboardGrid" class="dashboard-grid" style="margin-top:12px;"></div>
+      </div>
+
+      <div class="card">
+        <h2>月別グラフ</h2>
+        <div class="chart-tabs">
+          <button id="chartPayTab" class="chart-tab active" type="button">総支給</button>
+          <button id="chartHoursTab" class="chart-tab" type="button">実働時間</button>
+          <button id="chartOvertimeTab" class="chart-tab" type="button">残業時間</button>
+        </div>
+        <div class="chart-wrap">
+          <div id="monthlyChart" class="bar-chart"></div>
+        </div>
+        <div id="chartLegend" class="chart-legend"></div>
       </div>
 
       <div class="card">
@@ -559,6 +615,7 @@ const TEMPLATE_STORAGE_KEY="shiftManagerTemplates";
 const SHIFT_STORAGE_KEY="shiftManagerShifts";
 const PAY_STORAGE_KEY="shiftManagerPaySettings";
 const MONTHLY_ALLOWANCE_STORAGE_KEY="shiftManagerMonthlyAllowances";
+const ACTUAL_SALARY_STORAGE_KEY="shiftManagerActualSalaries";
 
 const DEFAULT_PAY_SETTINGS={
   closingDay:"end",
@@ -708,6 +765,12 @@ function loadPaySettings(){return {...DEFAULT_PAY_SETTINGS,...loadJson(PAY_STORA
 function savePaySettings(v){saveJson(PAY_STORAGE_KEY,v);}
 function loadMonthlyAllowances(){const v=loadJson(MONTHLY_ALLOWANCE_STORAGE_KEY,{});return v&&typeof v==="object"?v:{};}
 function saveMonthlyAllowances(v){saveJson(MONTHLY_ALLOWANCE_STORAGE_KEY,v);}
+function loadActualSalaries(){const v=loadJson(ACTUAL_SALARY_STORAGE_KEY,{});return v&&typeof v==="object"?v:{};}
+function saveActualSalaries(v){saveJson(ACTUAL_SALARY_STORAGE_KEY,v);}
+function getActualSalary(y,m){
+  const saved=loadActualSalaries()[monthToKey(y,m)];
+  return saved?{gross:Math.max(0,num(saved.gross)),memo:String(saved.memo||"")}:{gross:0,memo:""};
+}
 
 /* バックアップ・復元 */
 const BACKUP_VERSION=1;
@@ -721,7 +784,8 @@ function buildBackupData(){
       templates:loadTemplates(),
       shifts:loadShifts(),
       paySettings:loadPaySettings(),
-      monthlyAllowances:loadMonthlyAllowances()
+      monthlyAllowances:loadMonthlyAllowances(),
+      actualSalaries:loadActualSalaries()
     }
   };
 }
@@ -809,6 +873,7 @@ async function restoreBackupFromFile(file){
       ...backup.data.paySettings
     });
     saveMonthlyAllowances(backup.data.monthlyAllowances);
+    saveActualSalaries(backup.data.actualSalaries||{});
 
     selectedDates.clear();
     selectedTemplateId=null;
@@ -864,6 +929,191 @@ document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",(
 function showMessage(el,text,type="success"){
   el.textContent=text;el.className=`message show ${type}`;
   setTimeout(()=>{el.className="message";},3000);
+}
+
+/* 給与明細実績・年間ダッシュボード・月別グラフ */
+let currentChartMode="pay";
+
+function renderActualSalaryForm(){
+  const y=summaryDate.getFullYear();
+  const m=summaryDate.getMonth()+1;
+  const saved=getActualSalary(y,m);
+  const result=calculateMonthPay(y,m);
+
+  document.getElementById("actualGrossPay").value=saved.gross||"";
+  document.getElementById("actualSalaryMemo").value=saved.memo;
+
+  const box=document.getElementById("actualSalaryComparison");
+
+  if(saved.gross<=0){
+    box.innerHTML=
+      `<div class="compare-row"><span>アプリの総支給見込み</span><strong>${money(result.total)}</strong></div>`+
+      `<div class="sub-text" style="margin-top:6px;">実際の総支給額を保存すると差額を表示します。</div>`;
+    return;
+  }
+
+  const diff=saved.gross-result.total;
+  const errorRate=result.total>0?(diff/result.total)*100:0;
+  const diffText=`${diff>0?"+":""}${money(diff)}`;
+  const rateText=`${errorRate>0?"+":""}${errorRate.toFixed(2)}%`;
+
+  box.innerHTML=
+    `<div class="compare-row"><span>見込み</span><strong>${money(result.total)}</strong></div>`+
+    `<div class="compare-row"><span>実際の総支給</span><strong>${money(saved.gross)}</strong></div>`+
+    `<div class="compare-row compare-diff"><span>差額</span><strong>${diffText}</strong></div>`+
+    `<div class="compare-row"><span>誤差率</span><strong>${rateText}</strong></div>`+
+    (saved.memo?`<div class="sub-text" style="margin-top:8px;">${escapeHtml(saved.memo)}</div>`:"");
+}
+
+function saveCurrentActualSalary(){
+  const y=summaryDate.getFullYear();
+  const m=summaryDate.getMonth()+1;
+  const gross=Math.max(0,num(document.getElementById("actualGrossPay").value));
+  const memo=document.getElementById("actualSalaryMemo").value.trim();
+
+  const all=loadActualSalaries();
+  all[monthToKey(y,m)]={gross,memo};
+  saveActualSalaries(all);
+
+  showMessage(document.getElementById("actualSalaryMessage"),`${y}年${m}月給与の実績を保存しました。`);
+
+  renderActualSalaryForm();
+  renderAnnualDashboard();
+  renderMonthlyChart();
+}
+
+function getYearPayrollResults(year){
+  const results=[];
+  for(let month=1;month<=12;month++){
+    results.push({
+      month,
+      calc:calculateMonthPay(year,month),
+      actual:getActualSalary(year,month)
+    });
+  }
+  return results;
+}
+
+function renderAnnualDashboard(){
+  const year=summaryDate.getFullYear();
+  const results=getYearPayrollResults(year);
+
+  const totalWorkDays=results.reduce((s,r)=>s+r.calc.shifts.length,0);
+  const totalMinutes=results.reduce((s,r)=>s+r.calc.actualMinutes,0);
+  const totalOvertime=results.reduce((s,r)=>s+r.calc.overtimeMinutes,0);
+  const totalLateNight=results.reduce((s,r)=>s+r.calc.lateNightMinutes,0);
+  const totalPaidLeave=results.reduce((s,r)=>s+r.calc.paidLeaveDays,0);
+  const estimatedTotal=results.reduce((s,r)=>s+r.calc.total,0);
+  const actualMonths=results.filter(r=>r.actual.gross>0);
+  const actualTotal=actualMonths.reduce((s,r)=>s+r.actual.gross,0);
+
+  document.getElementById("annualDashboardPeriod").textContent=`${year}年1月〜12月の給与月集計`;
+
+  const items=[
+    ["勤務日数",`${totalWorkDays}日`],
+    ["実働時間",minutesToText(totalMinutes)],
+    ["残業時間",minutesToText(totalOvertime)],
+    ["深夜時間",minutesToText(totalLateNight)],
+    ["有休日数",`${totalPaidLeave}日`],
+    ["総支給見込み",money(estimatedTotal)],
+    ["実際の総支給累計",actualMonths.length?money(actualTotal):"未入力"],
+    ["明細入力済み",`${actualMonths.length}か月`]
+  ];
+
+  const grid=document.getElementById("annualDashboardGrid");
+  grid.innerHTML="";
+  items.forEach(([label,value])=>{
+    const div=document.createElement("div");
+    div.className="dashboard-item";
+    div.innerHTML=`<div class="label">${label}</div><div class="value">${value}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+function setChartMode(mode){
+  currentChartMode=mode;
+  document.getElementById("chartPayTab").classList.toggle("active",mode==="pay");
+  document.getElementById("chartHoursTab").classList.toggle("active",mode==="hours");
+  document.getElementById("chartOvertimeTab").classList.toggle("active",mode==="overtime");
+  renderMonthlyChart();
+}
+
+function renderMonthlyChart(){
+  const year=summaryDate.getFullYear();
+  const results=getYearPayrollResults(year);
+  const chart=document.getElementById("monthlyChart");
+  const legend=document.getElementById("chartLegend");
+
+  chart.innerHTML="";
+  legend.innerHTML="";
+
+  if(currentChartMode==="pay"){
+    const maxValue=Math.max(1,...results.map(r=>Math.max(r.calc.total,r.actual.gross)));
+
+    results.forEach(r=>{
+      const group=document.createElement("div");
+      group.className="bar-group";
+
+      const stack=document.createElement("div");
+      stack.className="bar-stack";
+
+      const est=document.createElement("div");
+      est.className="bar";
+      est.style.height=`${Math.max(2,(r.calc.total/maxValue)*190)}px`;
+      est.title=`${r.month}月 見込み ${money(r.calc.total)}`;
+
+      const actual=document.createElement("div");
+      actual.className="bar secondary";
+      actual.style.height=r.actual.gross>0?`${Math.max(2,(r.actual.gross/maxValue)*190)}px`:"2px";
+      actual.style.opacity=r.actual.gross>0?"1":"0.2";
+      actual.title=r.actual.gross>0?`${r.month}月 実際 ${money(r.actual.gross)}`:`${r.month}月 実際 未入力`;
+
+      stack.append(est,actual);
+
+      const label=document.createElement("div");
+      label.className="bar-label";
+      label.textContent=`${r.month}月`;
+
+      group.append(stack,label);
+      chart.appendChild(group);
+    });
+
+    legend.innerHTML=
+      `<span><span class="legend-dot"></span>総支給見込み</span>`+
+      `<span><span class="legend-dot secondary"></span>実際の総支給</span>`;
+    return;
+  }
+
+  const values=results.map(r=>currentChartMode==="hours"?r.calc.actualMinutes/60:r.calc.overtimeMinutes/60);
+  const maxValue=Math.max(1,...values);
+
+  results.forEach((r,index)=>{
+    const group=document.createElement("div");
+    group.className="bar-group";
+
+    const stack=document.createElement("div");
+    stack.className="bar-stack";
+
+    const bar=document.createElement("div");
+    bar.className="bar";
+    bar.style.height=`${Math.max(2,(values[index]/maxValue)*190)}px`;
+    bar.title=currentChartMode==="hours"
+      ?`${r.month}月 実働 ${minutesToText(r.calc.actualMinutes)}`
+      :`${r.month}月 残業 ${minutesToText(r.calc.overtimeMinutes)}`;
+
+    stack.appendChild(bar);
+
+    const label=document.createElement("div");
+    label.className="bar-label";
+    label.textContent=`${r.month}月`;
+
+    group.append(stack,label);
+    chart.appendChild(group);
+  });
+
+  legend.innerHTML=currentChartMode==="hours"
+    ?`<span><span class="legend-dot"></span>実働時間</span>`
+    :`<span><span class="legend-dot"></span>残業時間</span>`;
 }
 
 /* 給与設定 */
@@ -1341,8 +1591,12 @@ function updateSummary(){
   document.getElementById("summaryOvertime").textContent=minutesToText(r.overtimeMinutes);
   document.getElementById("summaryLateNight").textContent=minutesToText(r.lateNightMinutes);
   document.getElementById("summaryEstimatedPay").textContent=money(r.total);
-  renderAnnualPaidLeave(new Date(y,m-1,1));renderMonthlyAllowanceForm();renderPayBreakdown(r);renderSummaryTypes(r.shifts);
+  renderAnnualPaidLeave(new Date(y,m-1,1));renderMonthlyAllowanceForm();renderPayBreakdown(r);renderActualSalaryForm();renderAnnualDashboard();renderMonthlyChart();renderSummaryTypes(r.shifts);
 }
+document.getElementById("saveActualSalaryButton").onclick=saveCurrentActualSalary;
+document.getElementById("chartPayTab").onclick=()=>setChartMode("pay");
+document.getElementById("chartHoursTab").onclick=()=>setChartMode("hours");
+document.getElementById("chartOvertimeTab").onclick=()=>setChartMode("overtime");
 document.getElementById("summaryPrev").onclick=()=>{summaryDate=moveMonth(summaryDate,-1);updateSummary();};
 document.getElementById("summaryNext").onclick=()=>{summaryDate=moveMonth(summaryDate,1);updateSummary();};
 
