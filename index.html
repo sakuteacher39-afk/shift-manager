@@ -258,12 +258,50 @@
     .summary-tab-panel { display:none; }
     .summary-tab-panel.active { display:block; }
 
-.settings-accordion{border:1px solid #e1e1e1;border-radius:16px;background:#fff;margin-bottom:12px;overflow:hidden}
-.settings-accordion summary{list-style:none;display:flex;align-items:center;justify-content:space-between;min-height:58px;padding:0 16px;cursor:pointer;font-size:16px;font-weight:700}
-.settings-accordion summary::-webkit-details-marker{display:none}
-.settings-accordion summary::after{content:"▼";color:#888;font-size:12px}
-.settings-accordion[open] summary::after{content:"▲"}
-.settings-accordion-body{padding:14px;border-top:1px solid #eee}
+    .settings-accordion {
+      border:1px solid #e1e1e1;
+      border-radius:16px;
+      background:#fff;
+      margin-bottom:14px;
+      overflow:hidden;
+    }
+    .settings-accordion summary {
+      list-style:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      min-height:60px;
+      padding:0 16px;
+      cursor:pointer;
+      font-size:16px;
+      font-weight:700;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .settings-accordion summary::-webkit-details-marker { display:none; }
+    .settings-accordion summary::after {
+      content:"▼";
+      color:#888;
+      font-size:12px;
+    }
+    .settings-accordion[open] summary::after { content:"▲"; }
+    .settings-accordion-body {
+      padding:16px 14px 14px;
+      border-top:1px solid #eee;
+    }
+    .settings-accordion-body > .card {
+      margin:0;
+      padding:0;
+      border:0;
+      border-radius:0;
+      box-shadow:none;
+    }
+    .settings-accordion-body #templateFormTitle {
+      display:none;
+    }
+    .settings-saved-title {
+      margin:28px 0 14px;
+      font-size:20px;
+    }
 </style>
 </head>
 <body>
@@ -471,47 +509,11 @@
     </section>
 
     <section id="settings" class="page">
-      <h2 class="section-title">バックアップ</h2>
-
-      <div id="backupMessage" class="message"></div>
-
-      <div class="card backup-card">
-        <h2>データのバックアップ・復元</h2>
-
-        <p class="sub-text">
-          シフト、勤務テンプレート、給与設定、月ごとの追加手当を
-          1つのバックアップファイルにまとめて保存できます。
-        </p>
-
-        <div class="backup-actions">
-          <button
-            id="exportBackupButton"
-            class="primary-button"
-            type="button"
-          >
-            バックアップを書き出す
-          </button>
-
-          <label class="restore-file-label">
-            バックアップから復元
-            <input
-              id="restoreBackupInput"
-              type="file"
-              accept=".json,application/json"
-            >
-          </label>
-        </div>
-
-        <div id="backupStatus" class="backup-status">
-          バックアップを作成しておくと、Safariのデータ消去や端末変更時の復元に使えます。
-        </div>
-      </div>
-
-      <hr class="divider">
-
-      <h2 class="section-title">給与設定</h2>
-      <div id="paySettingsMessage" class="message"></div>
-      <div class="card">
+      <details class="settings-accordion">
+        <summary>給与設定</summary>
+        <div class="settings-accordion-body">
+          <div id="paySettingsMessage" class="message"></div>
+<div class="card">
         <div class="form-group">
           <label class="form-label" for="closingDay">給与の締め日</label>
           <select id="closingDay" class="select-input"></select>
@@ -569,13 +571,15 @@
         </div>
         <button id="savePaySettingsButton" class="primary-button" type="button">給与設定を保存</button>
       </div>
+        </div>
+      </details>
 
-      <hr class="divider">
-
-      <h2 class="section-title">勤務テンプレート</h2>
-      <div id="templateMessage" class="message"></div>
-      <div id="templateEditNote" class="edit-mode-note">テンプレートを編集中です。<br>保存済みシフトには自動反映されません。</div>
-      <div class="card">
+      <details class="settings-accordion">
+        <summary>新しいテンプレート作成</summary>
+        <div class="settings-accordion-body">
+          <div id="templateMessage" class="message"></div>
+          <div id="templateEditNote" class="edit-mode-note">テンプレートを編集中です。<br>保存済みシフトには自動反映されません。</div>
+<div class="card">
         <h2 id="templateFormTitle">新しいテンプレート</h2>
         <div class="form-group">
           <label class="form-label">テンプレート名</label>
@@ -608,10 +612,47 @@
         <button id="saveTemplateButton" class="primary-button" type="button">テンプレートを保存</button>
         <button id="cancelTemplateEditButton" class="secondary-button template-cancel-edit" type="button">編集をキャンセル</button>
       </div>
+        </div>
+      </details>
 
-      <hr class="divider">
-      <h2 class="section-title">保存済みテンプレート</h2>
+      <h2 class="settings-saved-title">保存済みテンプレート</h2>
       <div id="savedTemplateList" class="template-list"></div>
+
+      <details class="settings-accordion" style="margin-top:28px;">
+        <summary>バックアップ</summary>
+        <div class="settings-accordion-body">
+          <div id="backupMessage" class="message"></div>
+<div class="card backup-card">
+<p class="sub-text">
+          シフト、勤務テンプレート、給与設定、月ごとの追加手当を
+          1つのバックアップファイルにまとめて保存できます。
+        </p>
+
+        <div class="backup-actions">
+          <button
+            id="exportBackupButton"
+            class="primary-button"
+            type="button"
+          >
+            バックアップを書き出す
+          </button>
+
+          <label class="restore-file-label">
+            バックアップから復元
+            <input
+              id="restoreBackupInput"
+              type="file"
+              accept=".json,application/json"
+            >
+          </label>
+        </div>
+
+        <div id="backupStatus" class="backup-status">
+          バックアップを作成しておくと、Safariのデータ消去や端末変更時の復元に使えます。
+        </div>
+      </div>
+        </div>
+      </details>
     </section>
   </main>
 
@@ -1991,45 +2032,6 @@ function setupSummaryTabs(){
 }
 setupSummaryTabs();
 
-
-function setupSettingsAccordions(){
-  const page=document.getElementById("settings");
-  if(!page||page.dataset.accordionReady==="1")return;
-  page.dataset.accordionReady="1";
-
-  const cards=[...page.querySelectorAll(":scope > .card")];
-  if(!cards.length)return;
-
-  const backupCard=cards.find(card=>
-    card.querySelector("#exportBackupButton,#importBackupButton") ||
-    /バックアップ/.test(card.textContent||"")
-  );
-
-  const ordered=cards.filter(card=>card!==backupCard);
-  if(backupCard)ordered.push(backupCard);
-
-  ordered.forEach((card,index)=>{
-    const h2=card.querySelector("h2");
-    let title=h2?.textContent?.trim()||`設定 ${index+1}`;
-    if(backupCard===card)title="バックアップ";
-
-    const details=document.createElement("details");
-    details.className="settings-accordion";
-
-    const summary=document.createElement("summary");
-    summary.textContent=title;
-
-    const body=document.createElement("div");
-    body.className="settings-accordion-body";
-
-    if(h2)h2.remove();
-    while(card.firstChild)body.appendChild(card.firstChild);
-
-    details.append(summary,body);
-    card.replaceWith(details);
-  });
-}
-setupSettingsAccordions();
 </script>
 </body>
 </html>
