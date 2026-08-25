@@ -1113,35 +1113,41 @@ function getYearPayrollResults(year){
 
 function renderAnnualDashboard(){
   const year=summaryDate.getFullYear();
-  const now=new Date();
+  const allResults=getYearPayrollResults(year);
 
-  let lastMonth=12;
-  if(year===now.getFullYear()){
-    const settings=loadPaySettings();
-    const payrollMonth=getPayrollMonthForDate(now,settings.closingDay||"end");
-    lastMonth=payrollMonth.monthNumber;
-  }else if(year>now.getFullYear()){
-    lastMonth=0;
-  }
+  const activeResults=allResults.filter(r=>{
+    const monthlyAllowance=getMonthlyAllowance(year,r.month);
+    const bonus=getBonus(year,r.month);
 
-  const results=getYearPayrollResults(year).filter(r=>r.month<=lastMonth);
+    return (
+      r.calc.shifts.length>0 ||
+      r.calc.paidLeaveDays>0 ||
+      num(monthlyAllowance.amount)>0 ||
+      (isBonusMonth(year,r.month) && num(bonus.amount)>0)
+    );
+  });
 
-  const totalWorkDays=results.reduce((s,r)=>s+r.calc.shifts.length,0);
-  const totalMinutes=results.reduce((s,r)=>s+r.calc.actualMinutes,0);
-  const totalOvertime=results.reduce((s,r)=>s+r.calc.overtimeMinutes,0);
-  const totalLateNight=results.reduce((s,r)=>s+r.calc.lateNightMinutes,0);
-  const totalPaidLeave=results.reduce((s,r)=>s+r.calc.paidLeaveDays,0);
+  const totalWorkDays=activeResults.reduce((s,r)=>s+r.calc.shifts.length,0);
+  const totalMinutes=activeResults.reduce((s,r)=>s+r.calc.actualMinutes,0);
+  const totalOvertime=activeResults.reduce((s,r)=>s+r.calc.overtimeMinutes,0);
+  const totalLateNight=activeResults.reduce((s,r)=>s+r.calc.lateNightMinutes,0);
+  const totalPaidLeave=activeResults.reduce((s,r)=>s+r.calc.paidLeaveDays,0);
 
-  const bonusTotal=results.reduce((s,r)=>s+r.calc.bonusAmount,0);
-  const estimatedTotal=results.reduce((s,r)=>s+r.calc.total,0);
-  const normalEstimatedTotal=estimatedTotal-bonusTotal;
+  const bonusTotal=activeResults.reduce((s,r)=>s+r.calc.bonusAmount,0);
+  const estimatedTotal=activeResults.reduce((s,r)=>s+r.calc.total,0);
+  const normalEstimatedTotal=activeResults.reduce(
+    (s,r)=>s+(r.calc.total-r.calc.bonusAmount),
+    0
+  );
 
-  const actualMonths=results.filter(r=>r.actual.gross>0);
+  const actualMonths=allResults.filter(r=>r.actual.gross>0);
   const actualTotal=actualMonths.reduce((s,r)=>s+r.actual.gross,0);
 
-  const periodText=lastMonth>0
-    ? `${year}年1月〜${lastMonth}月の給与月集計`
-    : `${year}年はまだ集計対象期間前です`;
+  let periodText=`${year}年・登録済み給与月の集計`;
+  if(activeResults.length){
+    const months=activeResults.map(r=>r.month);
+    periodText=`${year}年 ${months.join("・")}月の登録済み給与月集計`;
+  }
 
   document.getElementById("annualDashboardPeriod").textContent=periodText;
 
