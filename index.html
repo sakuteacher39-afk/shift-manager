@@ -1133,12 +1133,25 @@ function renderAnnualDashboard(){
   const totalLateNight=activeResults.reduce((s,r)=>s+r.calc.lateNightMinutes,0);
   const totalPaidLeave=activeResults.reduce((s,r)=>s+r.calc.paidLeaveDays,0);
 
-  const bonusTotal=activeResults.reduce((s,r)=>s+r.calc.bonusAmount,0);
-  const estimatedTotal=activeResults.reduce((s,r)=>s+r.calc.total,0);
-  const normalEstimatedTotal=activeResults.reduce(
-    (s,r)=>s+(r.calc.total-r.calc.bonusAmount),
+  const bonusTotal=activeResults.reduce(
+    (s,r)=>s+num(r.calc.bonusAmount),
     0
   );
+
+  const normalEstimatedTotal=activeResults.reduce(
+    (s,r)=>s+
+      num(r.calc.basePay)+
+      num(r.calc.overtimePremiumPay)+
+      num(r.calc.lateNightPremiumPay)+
+      num(r.calc.shiftAllowances)+
+      num(r.calc.perDayAllowances)+
+      num(r.calc.paidLeavePay)+
+      num(r.calc.monthlyFixedAllowance)+
+      num(r.calc.monthlyVariableAllowance),
+    0
+  );
+
+  const estimatedTotal=normalEstimatedTotal+bonusTotal;
 
   const actualMonths=allResults.filter(r=>r.actual.gross>0);
   const actualTotal=actualMonths.reduce((s,r)=>s+r.actual.gross,0);
