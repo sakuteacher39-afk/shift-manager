@@ -109,7 +109,7 @@
     .conflict-list { background:#f7f7f7; border-radius:12px; padding:12px; margin:14px 0; font-size:14px; line-height:1.8; }
     .shift-detail-name { display:flex; align-items:center; gap:9px; font-size:18px; font-weight:700; margin-bottom:16px; }
     .shift-date-label { color:#666; font-size:14px; margin-bottom:18px; }
-    .registration-tabs { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:18px; }
+    .registration-tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:18px; }
     .registration-tab { min-height:46px; border:1px solid #ccc; border-radius:12px; background:#fff; font-weight:700; color:#666; }
     .registration-tab.active { background:#222; color:#fff; border-color:#222; }
     .quick-panel { display:none; }
@@ -126,6 +126,9 @@
     .warning-note { padding:12px 14px; border-radius:12px; background:#f7f7f7; color:#666; font-size:12px; line-height:1.6; margin-top:12px; }
     .monthly-allowance-card { border:2px solid #e3e3e3; }
     .monthly-allowance-saved { margin-top:12px; padding:12px 14px; background:#f6f6f6; border-radius:12px; font-size:13px; line-height:1.6; }
+    .paid-leave-box { background:#f6f6f6; border-radius:14px; padding:14px; margin-top:12px; font-size:14px; line-height:1.7; }
+    .paid-leave-main { font-size:24px; font-weight:700; margin-bottom:4px; }
+    .paid-leave-list { margin-top:8px; color:#666; font-size:13px; line-height:1.6; }
     .backup-card { border:2px solid #e3e3e3; }
     .backup-actions { display:grid; gap:10px; margin-top:16px; }
     .restore-file-label {
@@ -221,6 +224,13 @@
         <h2>給与対象期間</h2>
         <div id="summaryPayPeriod" class="period-text">－</div>
         <div id="summaryClosingDayText" class="sub-text"></div>
+      </div>
+
+      <div class="card">
+        <h2>年間有休取得</h2>
+        <div id="annualPaidLeaveMain" class="paid-leave-main">0日</div>
+        <div id="annualPaidLeaveSub" class="sub-text">取得義務まであと5日</div>
+        <div id="annualPaidLeaveList" class="paid-leave-list"></div>
       </div>
 
       <div class="card">
@@ -324,6 +334,12 @@
           <div class="sub-text">
             「末日」を選ぶと1日〜月末で集計します。数字を選ぶと、前回の締め日の翌日〜今回の締め日で集計します。
           </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">有休1日分の金額</label>
+          <input id="paidLeaveDailyAmount" class="number-input" type="number" min="0" step="1" value="0">
+          <div class="sub-text">有休を登録した日数 × この金額を、給与見込みの「有給手当」に加算します。</div>
         </div>
 
         <div class="form-group">
@@ -457,6 +473,18 @@
   </div>
 </div>
 
+<div id="paidLeaveModal" class="modal-backdrop">
+  <div class="modal">
+    <h2>有休</h2>
+    <div id="paidLeaveModalDate" class="shift-date-label"></div>
+    <div class="paid-leave-box">この日は有休として登録されています。</div>
+    <div class="modal-actions">
+      <button id="deletePaidLeaveButton" class="modal-danger" type="button">この有休を削除</button>
+      <button id="closePaidLeaveButton" class="modal-cancel" type="button">閉じる</button>
+    </div>
+  </div>
+</div>
+
 <div id="quickRegisterModal" class="modal-backdrop">
   <div class="modal">
     <h2>この日にシフトを登録</h2>
@@ -464,6 +492,7 @@
     <div class="registration-tabs">
       <button id="quickTemplateTab" class="registration-tab active" type="button">テンプレート</button>
       <button id="quickManualTab" class="registration-tab" type="button">直接入力</button>
+      <button id="quickPaidLeaveTab" class="registration-tab" type="button">有休</button>
     </div>
 
     <div id="quickTemplatePanel" class="quick-panel active">
@@ -507,6 +536,14 @@
       <button id="quickManualSaveButton" class="primary-button" type="button" style="margin-top:18px;">この日に登録</button>
     </div>
 
+    <div id="quickPaidLeavePanel" class="quick-panel">
+      <div class="paid-leave-box">
+        <strong>この日を有休として登録します。</strong><br>
+        年間取得日数へ自動集計し、給与対象期間に含まれる場合は設定した「有休1日分の金額」を給与見込みへ加算します。
+      </div>
+      <button id="quickPaidLeaveSaveButton" class="primary-button" type="button" style="margin-top:16px;">この日に有休を登録</button>
+    </div>
+
     <button id="cancelQuickRegisterButton" class="modal-cancel" type="button" style="width:100%;margin-top:12px;">キャンセル</button>
   </div>
 </div>
@@ -519,6 +556,7 @@ const MONTHLY_ALLOWANCE_STORAGE_KEY="shiftManagerMonthlyAllowances";
 
 const DEFAULT_PAY_SETTINGS={
   closingDay:"end",
+  paidLeaveDailyAmount:0,
   baseHourlyRate:0,
   overtimePremium:25,
   lateNightPremium:25,
@@ -802,6 +840,7 @@ function showMessage(el,text,type="success"){
 
 /* 給与設定 */
 const closingDay=document.getElementById("closingDay");
+const paidLeaveDailyAmount=document.getElementById("paidLeaveDailyAmount");
 const baseHourlyRate=document.getElementById("baseHourlyRate");
 const overtimePremium=document.getElementById("overtimePremium");
 const lateNightPremium=document.getElementById("lateNightPremium");
@@ -814,6 +853,7 @@ const paySettingsMessage=document.getElementById("paySettingsMessage");
 function loadPaySettingsIntoForm(){
   const s=loadPaySettings();
   closingDay.value=String(s.closingDay||"end");
+  paidLeaveDailyAmount.value=num(s.paidLeaveDailyAmount);
   baseHourlyRate.value=s.baseHourlyRate;
   overtimePremium.value=s.overtimePremium;
   lateNightPremium.value=s.lateNightPremium;
@@ -825,6 +865,7 @@ function loadPaySettingsIntoForm(){
 document.getElementById("savePaySettingsButton").addEventListener("click",()=>{
   savePaySettings({
     closingDay:closingDay.value||"end",
+    paidLeaveDailyAmount:Math.max(0,num(paidLeaveDailyAmount.value)),
     baseHourlyRate:Math.max(0,num(baseHourlyRate.value)),
     overtimePremium:Math.max(0,num(overtimePremium.value)),
     lateNightPremium:Math.max(0,num(lateNightPremium.value)),
@@ -1014,13 +1055,15 @@ function buildCalendar(container,targetDate,selectable){
     const btn=document.createElement("button");btn.type="button";btn.className="calendar-day";
     if(shift){btn.classList.add("has-shift");btn.style.borderColor=shift.color||"#444";}
     if(selectable&&selectedDates.has(key))btn.classList.add("selected");
-    btn.innerHTML=`<span class="day-number">${d}</span>${shift?`<span class="shift-dot" style="background:${shift.color||"#ddd"}">${escapeHtml(shift.templateName)}</span>`:""}`;
+    btn.innerHTML=`<span class="day-number">${d}</span>${shift?`<span class="shift-dot" style="background:${shift.color||"#ddd"}">${escapeHtml(shift.type==="paidLeave"?"有休":shift.templateName)}</span>`:""}`;
     btn.onclick=()=>{
       if(selectable){
         selectedDates.has(key)?selectedDates.delete(key):selectedDates.add(key);
         renderRegisterCalendar();updateSelectionStatus();
       }else{
-        shift?openShiftEditor(shift.id):openQuickRegister(key);
+        if(!shift)openQuickRegister(key);
+        else if(shift.type==="paidLeave")openPaidLeaveEditor(shift.id);
+        else openShiftEditor(shift.id);
       }
     };
     container.appendChild(btn);
@@ -1115,11 +1158,13 @@ const quickRegisterModal=document.getElementById("quickRegisterModal"),quickTemp
 const quickShiftName=document.getElementById("quickShiftName"),quickWorkStart=document.getElementById("quickWorkStart"),quickWorkEnd=document.getElementById("quickWorkEnd");
 const quickBreakList=document.getElementById("quickBreakList"),quickAllowance=document.getElementById("quickAllowance"),quickColor=document.getElementById("quickColor"),quickWorkSummary=document.getElementById("quickWorkSummary");
 function setQuickMode(mode){
-  const tm=mode==="template";
+  const tm=mode==="template",mm=mode==="manual",pm=mode==="paidLeave";
   document.getElementById("quickTemplateTab").classList.toggle("active",tm);
-  document.getElementById("quickManualTab").classList.toggle("active",!tm);
+  document.getElementById("quickManualTab").classList.toggle("active",mm);
+  document.getElementById("quickPaidLeaveTab").classList.toggle("active",pm);
   document.getElementById("quickTemplatePanel").classList.toggle("active",tm);
-  document.getElementById("quickManualPanel").classList.toggle("active",!tm);
+  document.getElementById("quickManualPanel").classList.toggle("active",mm);
+  document.getElementById("quickPaidLeavePanel").classList.toggle("active",pm);
 }
 function openQuickRegister(key){
   quickRegisterDateKey=key;quickSelectedTemplateId=null;document.getElementById("quickRegisterDate").textContent=formatDateFull(key);
@@ -1157,12 +1202,29 @@ function saveQuickManual(){
   }
   closeQuickRegister();refreshAll();renderSavedTemplates();renderTemplateChoices();
 }
+function saveQuickPaidLeave(){
+  if(!quickRegisterDateKey)return;
+  const shifts=loadShifts();
+  if(shifts.some(s=>s.date===quickRegisterDateKey)){alert("この日にはすでに予定が登録されています。");return;}
+  shifts.push({id:createId(),date:quickRegisterDateKey,type:"paidLeave",templateId:null,templateName:"有休",workStart:"",workEnd:"",breaks:[],allowance:0,color:"#d7b85a",actualMinutes:0});
+  shifts.sort((a,b)=>a.date.localeCompare(b.date));saveShifts(shifts);closeQuickRegister();refreshAll();
+}
+let editingPaidLeaveId=null;
+const paidLeaveModal=document.getElementById("paidLeaveModal");
+function openPaidLeaveEditor(id){const leave=loadShifts().find(x=>x.id===id&&x.type==="paidLeave");if(!leave)return;editingPaidLeaveId=id;document.getElementById("paidLeaveModalDate").textContent=formatDateFull(leave.date);paidLeaveModal.classList.add("show");}
+function closePaidLeaveEditor(){editingPaidLeaveId=null;paidLeaveModal.classList.remove("show");}
+function deleteEditingPaidLeave(){if(!editingPaidLeaveId)return;const shifts=loadShifts(),leave=shifts.find(x=>x.id===editingPaidLeaveId);if(!leave)return;if(!confirm(`${formatDateFull(leave.date)}の有休を削除しますか？`))return;saveShifts(shifts.filter(x=>x.id!==editingPaidLeaveId));closePaidLeaveEditor();refreshAll();}
+
 document.getElementById("quickTemplateTab").onclick=()=>setQuickMode("template");
 document.getElementById("quickManualTab").onclick=()=>setQuickMode("manual");
+document.getElementById("quickPaidLeaveTab").onclick=()=>setQuickMode("paidLeave");
 document.getElementById("quickTemplateSaveButton").onclick=saveQuickFromTemplate;
+document.getElementById("quickPaidLeaveSaveButton").onclick=saveQuickPaidLeave;
 document.getElementById("quickManualSaveButton").onclick=saveQuickManual;
 document.getElementById("addQuickBreakButton").onclick=()=>addQuickBreakRow();
 document.getElementById("cancelQuickRegisterButton").onclick=closeQuickRegister;
+document.getElementById("deletePaidLeaveButton").onclick=deleteEditingPaidLeave;
+document.getElementById("closePaidLeaveButton").onclick=closePaidLeaveEditor;
 quickWorkStart.oninput=updateQuickSummary;quickWorkEnd.oninput=updateQuickSummary;
 
 /* 集計 */
@@ -1173,52 +1235,37 @@ function getRequiredMinutes(y,m){
 function calculateMonthPay(y,m){
   const settings=loadPaySettings();
   const period=getPayrollPeriod(y,m,settings.closingDay||"end");
-  const startKey=localDateKey(period.start);
-  const endKey=localDateKey(period.end);
-
-  const shifts=loadShifts().filter(s=>
-    s.date>=startKey &&
-    s.date<=endKey
-  );
-
+  const startKey=localDateKey(period.start),endKey=localDateKey(period.end);
+  const allEntries=loadShifts().filter(s=>s.date>=startKey&&s.date<=endKey);
+  const paidLeaves=allEntries.filter(s=>s.type==="paidLeave");
+  const shifts=allEntries.filter(s=>s.type!=="paidLeave");
   const monthlyVariable=getMonthlyAllowance(y,m);
   const actualMinutes=shifts.reduce((s,x)=>s+num(x.actualMinutes),0);
   const requiredMinutes=getRequiredMinutes(y,m);
   const overtimeMinutes=Math.max(0,actualMinutes-requiredMinutes);
   const lateNightMinutes=shifts.reduce((s,x)=>s+calculateLateNightMinutes(x,settings),0);
   const baseHourly=num(settings.baseHourlyRate);
-
   const basePay=actualMinutes/60*baseHourly;
   const overtimePremiumPay=overtimeMinutes/60*baseHourly*(num(settings.overtimePremium)/100);
   const lateNightPremiumPay=lateNightMinutes/60*baseHourly*(num(settings.lateNightPremium)/100);
   const shiftAllowances=shifts.reduce((s,x)=>s+num(x.allowance),0);
   const perDayAllowances=shifts.length*num(settings.perDayAllowance);
-  const fixedAllowance=num(settings.monthlyFixedAllowance);
-  const variableAllowance=num(monthlyVariable.amount);
-
-  return {
-    shifts,
-    settings,
-    period,
-    actualMinutes,
-    requiredMinutes,
-    overtimeMinutes,
-    lateNightMinutes,
-    basePay,
-    overtimePremiumPay,
-    lateNightPremiumPay,
-    shiftAllowances,
-    perDayAllowances,
-    monthlyFixedAllowance:fixedAllowance,
-    monthlyVariableAllowance:variableAllowance,
-    total:basePay+overtimePremiumPay+lateNightPremiumPay+shiftAllowances+perDayAllowances+fixedAllowance+variableAllowance
-  };
+  const paidLeavePay=paidLeaves.length*num(settings.paidLeaveDailyAmount);
+  const fixedAllowance=num(settings.monthlyFixedAllowance),variableAllowance=num(monthlyVariable.amount);
+  return {shifts,allEntries,paidLeaves,paidLeaveDays:paidLeaves.length,paidLeavePay,settings,period,actualMinutes,requiredMinutes,overtimeMinutes,lateNightMinutes,basePay,overtimePremiumPay,lateNightPremiumPay,shiftAllowances,perDayAllowances,monthlyFixedAllowance:fixedAllowance,monthlyVariableAllowance:variableAllowance,total:basePay+overtimePremiumPay+lateNightPremiumPay+shiftAllowances+perDayAllowances+paidLeavePay+fixedAllowance+variableAllowance};
 }
 function renderPayBreakdown(r){
   const c=document.getElementById("salaryBreakdown");c.innerHTML="";
-  [["通常賃金",r.basePay],["残業割増",r.overtimePremiumPay],["深夜割増",r.lateNightPremiumPay],["勤務別手当",r.shiftAllowances],["1勤務あたり共通手当",r.perDayAllowances],["毎月固定の手当",r.monthlyFixedAllowance],["この給与月の追加手当",r.monthlyVariableAllowance]].forEach(([l,v])=>{
+  [["通常賃金",r.basePay],["残業割増",r.overtimePremiumPay],["深夜割増",r.lateNightPremiumPay],["勤務別手当",r.shiftAllowances],["1勤務あたり共通手当",r.perDayAllowances],["有給手当",r.paidLeavePay],["毎月固定の手当",r.monthlyFixedAllowance],["この給与月の追加手当",r.monthlyVariableAllowance]].forEach(([l,v])=>{
     const row=document.createElement("div");row.className="pay-row";row.innerHTML=`<div class="pay-label">${l}</div><div class="pay-value">${money(v)}</div>`;c.appendChild(row);
   });
+}
+function getPaidLeavesForYear(year){return loadShifts().filter(s=>s.type==="paidLeave"&&s.date.startsWith(`${year}-`)).sort((a,b)=>a.date.localeCompare(b.date));}
+function renderAnnualPaidLeave(year){
+  const leaves=getPaidLeavesForYear(year),count=leaves.length,remaining=Math.max(0,5-count);
+  document.getElementById("annualPaidLeaveMain").textContent=`${year}年 ${count}日`;
+  document.getElementById("annualPaidLeaveSub").textContent=count>=5?"年間5日の取得目安を達成しています":`取得義務まであと${remaining}日`;
+  document.getElementById("annualPaidLeaveList").textContent=leaves.length?`取得日：${leaves.map(x=>formatDateJapanese(x.date)).join("、")}`:"まだ有休は登録されていません。";
 }
 function renderSummaryTypes(shifts){
   const c=document.getElementById("summaryTypeList");c.innerHTML="";
@@ -1238,27 +1285,27 @@ function updateSummary(){
   document.getElementById("summaryClosingDayText").textContent=
     `締め日：${r.settings.closingDay==="end" ? "末日" : r.settings.closingDay+"日"}`;
   document.getElementById("summaryWorkHours").textContent=minutesToText(r.actualMinutes);
-  document.getElementById("summaryWorkDays").textContent=`勤務日数 ${r.shifts.length}日`;
+  document.getElementById("summaryWorkDays").textContent=`勤務日数 ${r.shifts.length}日 / 有休 ${r.paidLeaveDays}日`;
   document.getElementById("summaryRequiredHours").textContent=minutesToText(r.requiredMinutes);
   document.getElementById("summaryMonthDays").textContent=
     `${days}日月の所定労働時間（${y}年${m}月給与の基準）`;
   document.getElementById("summaryOvertime").textContent=minutesToText(r.overtimeMinutes);
   document.getElementById("summaryLateNight").textContent=minutesToText(r.lateNightMinutes);
   document.getElementById("summaryEstimatedPay").textContent=money(r.total);
-  renderMonthlyAllowanceForm();renderPayBreakdown(r);renderSummaryTypes(r.shifts);
+  renderAnnualPaidLeave(y);renderMonthlyAllowanceForm();renderPayBreakdown(r);renderSummaryTypes(r.shifts);
 }
 document.getElementById("summaryPrev").onclick=()=>{summaryDate=moveMonth(summaryDate,-1);updateSummary();};
 document.getElementById("summaryNext").onclick=()=>{summaryDate=moveMonth(summaryDate,1);updateSummary();};
 
 function updateHome(){
-  const shifts=loadShifts(),now=new Date(),today=dateToKey(now.getFullYear(),now.getMonth(),now.getDate()),future=shifts.filter(s=>s.date>=today).sort((a,b)=>a.date.localeCompare(b.date));
+  const shifts=loadShifts(),now=new Date(),today=dateToKey(now.getFullYear(),now.getMonth(),now.getDate()),future=shifts.filter(s=>s.date>=today&&s.type!=="paidLeave").sort((a,b)=>a.date.localeCompare(b.date));
   const main=document.getElementById("nextShiftMain"),sub=document.getElementById("nextShiftSub");
   if(!future.length){main.textContent="まだ登録されていません";sub.textContent="シフトを登録するとここに表示されます";}
   else{const n=future[0];main.textContent=`${formatDateJapanese(n.date)} ${n.templateName}`;sub.textContent=`${n.workStart}〜${n.workEnd} ／ 実働 ${minutesToText(n.actualMinutes)}`;}
   const paySettings=loadPaySettings();
   const payrollMonth=getPayrollMonthForDate(now,paySettings.closingDay||"end");
   const r=calculateMonthPay(payrollMonth.year,payrollMonth.monthNumber);
-  document.getElementById("homeMonthDays").textContent=`${r.shifts.length}日`;
+  document.getElementById("homeMonthDays").textContent=r.paidLeaveDays>0?`${r.shifts.length}勤務 + 有休${r.paidLeaveDays}日`:`${r.shifts.length}日`;
   document.getElementById("homeMonthHours").textContent=`合計実働時間 ${minutesToText(r.actualMinutes)}`;
   document.getElementById("homeEstimatedPay").textContent=money(r.total);
   document.getElementById("homePayPeriod").textContent=
